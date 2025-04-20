@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import AuthForm from "@/components/AuthForm";
 import Link from "next/link";
-import EnvTest from "@/components/EnvTest";
 
 export default function Home() {
   return (
@@ -78,7 +77,6 @@ export default function Home() {
       {/* Auth Form */}
       <div className="mb-16">
         <h3 className="text-2xl font-bold text-primary-dark mb-6 text-center">Join Our Community</h3>
-        <EnvTest />
         <AuthForm />
       </div>
     </Layout>
