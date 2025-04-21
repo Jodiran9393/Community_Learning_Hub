@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import CategoryList from "@/components/forum/CategoryList";
 
 export default function ForumPage() {
   return (
@@ -18,52 +19,9 @@ export default function ForumPage() {
           </div>
         </div>
         
-        {/* Placeholder for future forum categories */}
-        <div className="grid gap-6">
-          <div className="p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-bold text-primary-dark mb-2">General Discussion</h3>
-            <p className="text-neutral-700 dark:text-neutral-300 mb-4">
-              Introduce yourself and discuss general topics related to AI and machine learning.
-            </p>
-            <div className="flex justify-between text-sm text-neutral-500 dark:text-neutral-400">
-              <span>0 threads</span>
-              <span>0 posts</span>
-            </div>
-          </div>
-          
-          <div className="p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-bold text-primary-dark mb-2">Project Showcase</h3>
-            <p className="text-neutral-700 dark:text-neutral-300 mb-4">
-              Share your AI projects and get feedback from the community.
-            </p>
-            <div className="flex justify-between text-sm text-neutral-500 dark:text-neutral-400">
-              <span>0 threads</span>
-              <span>0 posts</span>
-            </div>
-          </div>
-          
-          <div className="p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-bold text-primary-dark mb-2">Help & Support</h3>
-            <p className="text-neutral-700 dark:text-neutral-300 mb-4">
-              Ask questions and get help with your AI learning journey.
-            </p>
-            <div className="flex justify-between text-sm text-neutral-500 dark:text-neutral-400">
-              <span>0 threads</span>
-              <span>0 posts</span>
-            </div>
-          </div>
-          
-          <div className="p-6 bg-white dark:bg-neutral-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-bold text-primary-dark mb-2">Resources & Tutorials</h3>
-            <p className="text-neutral-700 dark:text-neutral-300 mb-4">
-              Share and discover learning resources, tutorials, and articles.
-            </p>
-            <div className="flex justify-between text-sm text-neutral-500 dark:text-neutral-400">
-              <span>0 threads</span>
-              <span>0 posts</span>
-            </div>
-          </div>
-        </div>
+        {/* Forum Categories */}
+        <h2 className="text-2xl font-bold text-primary-dark mb-4">Categories</h2>
+        <CategoryList />
       </div>
     </Layout>
   );
