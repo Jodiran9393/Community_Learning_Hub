@@ -3,16 +3,17 @@ import { getPostBySlug, getAllPosts, compileMdxToHtml } from "@/lib/mdx";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-type BlogPostParams = {
-  slug: string;
-};
-
 // Generate static paths for all blog posts
 export async function generateStaticParams() {
-  // ...
+  const posts = await getAllPosts();
+  
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
 }
 
-export default async function BlogPostPage({ params }: { params: BlogPostParams }) {
+// Let's simplify this component to avoid type issues
+export default async function BlogPostPage({ params }: any) {
   const post = await getPostBySlug(params.slug);
   
   if (!post) {
@@ -28,7 +29,7 @@ export default async function BlogPostPage({ params }: { params: BlogPostParams 
           href="/blog"
           className="inline-block mb-6 text-primary hover:text-primary-dark transition-colors"
         >
-          ← Back to all posts
+          &larr; Back to all posts
         </Link>
         
         <article className="prose dark:prose-invert prose-lg max-w-none">
@@ -36,7 +37,7 @@ export default async function BlogPostPage({ params }: { params: BlogPostParams 
           
           <div className="flex items-center text-sm text-neutral-500 dark:text-neutral-400 mb-8">
             <span>{new Date(post.date).toLocaleDateString()}</span>
-            <span className="mx-2">•</span>
+            <span className="mx-2">&middot;</span>
             <span>{post.author}</span>
           </div>
           
