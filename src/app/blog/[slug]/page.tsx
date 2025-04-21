@@ -3,22 +3,16 @@ import { getPostBySlug, getAllPosts, compileMdxToHtml } from "@/lib/mdx";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
-}
+type BlogPostParams = {
+  slug: string;
+};
 
 // Generate static paths for all blog posts
 export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  // ...
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: { params: BlogPostParams }) {
   const post = await getPostBySlug(params.slug);
   
   if (!post) {
