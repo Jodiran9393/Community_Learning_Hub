@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+
+<body style="background: linear-gradient(135deg, #000005 0%, #1a1a2e 100%);">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">Community Learning Hub</a>
+        </div>
+        <div class="nav-menu">
+            <a href="index.html" class="nav-btn-outline">Home</a>
+            <button onclick="signOut()" class="nav-btn-text">Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="auth-container" style="min-height: calc(100vh - 80px);">
+        <div class="auth-card" style="max-width: 600px;">
+            <div class="auth-header">
+                <h1><span class="gradient-text">My Profile</span></h1>
+                <p id="user-email"></p>
+            </div>
+
+            <div id="profile-content" style="color: white;">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <p id="display-name" style="color: #aaccff; font-size: 1.1rem;">Loading...</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Member Since</label>
+                    <p id="member-since" style="color: #aaccff; font-size: 1.1rem;">Loading...</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Membership Tier</label>
+                    <div
+                        style="display: inline-block; padding: 0.5rem 1rem; background: linear-gradient(90deg, #4c8bf5, #d367c1); border-radius: 20px; font-weight: bold;">
+                        FREE
+                    </div>
+                    <p style="color: #aaccff; font-size: 0.9rem; margin-top: 0.5rem;">
+                        Upgrade to Premium to unlock exclusive features!
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <button class="submit-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        Upgrade to Premium - Coming Soon
+                    </button>
+                </div>
+            </div>
+
+            <div id="loading" style="text-align: center; color: white; padding: 2rem;">
+                Loading profile...
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script>
+        async function loadProfile() {
+            const user = await getCurrentUser();
+
+            if (!user) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('profile-content').style.display = 'block';
+
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('display-name').textContent =
+                user.user_metadata?.display_name || 'Not set';
+
+            const createdDate = new Date(user.created_at);
+            document.getElementById('member-since').textContent =
+                createdDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // Hide profile content initially
+        document.getElementById('profile-content').style.display = 'none';
+
+        // Load profile when page loads
+        loadProfile();
+    </script>
+</body>
+
+</html>

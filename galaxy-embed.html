@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Galaxy Embed</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000005;
+            overflow: hidden;
+        }
+
+        #galaxy-container {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+
+    <!-- Load Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Load d3-force-3d for physics -->
+    <script src="https://unpkg.com/d3-force-3d@3"></script>
+    <!-- OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+</head>
+
+<body>
+    <div id="galaxy-container"></div>
+
+    <script>
+        // --- DATA ---
+        const GROUPS = {
+            WEB: { id: 1, color: '#4c8bf5' },
+            AI: { id: 2, color: '#d367c1' },
+            DESIGN: { id: 3, color: '#a060ff' },
+            COMMUNITY: { id: 4, color: '#ffffff' }
+        };
+
+        const graphData = {
+            nodes: [
+                { id: 'CLH', group: 4, val: 100, name: 'CLH HUB', desc: 'The heart of our community.' },
+                { id: 'React', group: 1, val: 30, name: 'React.js', desc: 'Modern UI library.' },
+                { id: 'HTML', group: 1, val: 20, name: 'HTML5', desc: 'Structural foundation.' },
+                { id: 'CSS', group: 1, val: 20, name: 'CSS3', desc: 'Styling mastery.' },
+                { id: 'JS', group: 1, val: 30, name: 'JavaScript', desc: 'Web interactions.' },
+                { id: 'NextJS', group: 1, val: 20, name: 'Next.js', desc: 'React Framework.' },
+                { id: 'TS', group: 1, val: 20, name: 'TypeScript', desc: 'Typed JavaScript.' },
+                { id: 'LLM', group: 2, val: 30, name: 'LLMs', desc: 'Large Language Models.' },
+                { id: 'Prompting', group: 2, val: 20, name: 'Prompting', desc: 'AI Communication.' },
+                { id: 'Agents', group: 2, val: 25, name: 'AI Agents', desc: 'Autonomous systems.' },
+                { id: 'Python', group: 2, val: 20, name: 'Python', desc: 'AI & Backend.' },
+                { id: 'Figma', group: 3, val: 20, name: 'Figma', desc: 'Design Tool.' },
+                { id: 'UI', group: 3, val: 20, name: 'UI / UX', desc: 'User Experience.' },
+                { id: 'A11y', group: 3, val: 15, name: 'Accessibility', desc: 'Inclusive building.' }
+            ],
+            links: [
+                { source: 'CLH', target: 'React' }, { source: 'CLH', target: 'LLM' }, { source: 'CLH', target: 'UI' },
+                { source: 'React', target: 'JS' }, { source: 'React', target: 'NextJS' }, { source: 'JS', target: 'TS' },
+                { source: 'HTML', target: 'CSS' }, { source: 'CSS', target: 'UI' },
+                { source: 'LLM', target: 'Agents' }, { source: 'LLM', target: 'Prompting' }, { source: 'LLM', target: 'Python' },
+                { source: 'Python', target: 'JS' }, { source: 'UI', target: 'Figma' }, { source: 'UI', target: 'A11y' }
+            ]
+        };
+
+        // --- SCENE SETUP ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 0, 350);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000005);
+        document.getElementById('galaxy-container').appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // --- STARFIELD ---
+        const starGeo = new THREE.BufferGeometry();
+        const posArray = new Float32Array(2000 * 3);
+        for (let i = 0; i < 2000 * 3; i++) posArray[i] = (Math.random() - 0.5) * 4000;
+        starGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 2, color: 0xffffff, transparent: true, opacity: 0.8 }));
+        scene.add(stars);
+
+        // --- HELPER FUNCTIONS ---
+        function getNodeColor(node) {
+            if (node.group === 1) return GROUPS.WEB.color;
+            if (node.group === 2) return GROUPS.AI.color;
+            if (node.group === 3) return GROUPS.DESIGN.color;
+            if (node.group === 4) return GROUPS.COMMUNITY.color;
+            return '#ffffff';
+        }
+
+        function makeTextSprite(message, color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 256;
+            const context = canvas.getContext('2d');
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.font = "Bold 48px Poppins, sans-serif";
+            context.fillStyle = "rgba(255, 255, 255, 0.95)";
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.shadowColor = "rgba(0, 0, 0, 1)";
+            context.shadowBlur = 8;
+            context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            return sprite;
+        }
+
+        // --- CREATE 3D OBJECTS ---
+        const nodeObjects = new THREE.Group();
+        const linkObjects = new THREE.Group();
+        scene.add(nodeObjects);
+        scene.add(linkObjects);
+
+        const nodeToMesh = new Map();
+
+        graphData.nodes.forEach(node => {
+            const group = new THREE.Group();
+            const color = new THREE.Color(getNodeColor(node));
+            const radius = Math.cbrt(node.val) * 1.5;
+
+            // Sphere
+            const sphereGeo = new THREE.SphereGeometry(radius, 32, 32);
+            const sphereMat = new THREE.MeshLambertMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.6,
+                transparent: true,
+                opacity: 0.9
+            });
+            const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+            group.add(sphere);
+
+            // Label
+            const sprite = makeTextSprite(node.name, color);
+            const scale = 4 + (node.val / 5);
+            sprite.scale.set(scale * 3, scale * 1.5, 1);
+            sprite.position.y = radius + 4;
+            group.add(sprite);
+
+            group.userData = node;
+            nodeObjects.add(group);
+            nodeToMesh.set(node.id, group);
+        });
+
+        // Links
+        graphData.links.forEach(link => {
+            const lineMat = new THREE.LineBasicMaterial({ color: 0x334466, transparent: true, opacity: 0.4 });
+            const lineGeo = new THREE.BufferGeometry();
+            lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
+            const line = new THREE.Line(lineGeo, lineMat);
+            line.userData = link;
+            linkObjects.add(line);
+        });
+
+        // --- LIGHTING ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 0.8, 1000);
+        pointLight.position.set(0, 0, 300);
+        scene.add(pointLight);
+
+        // --- PHYSICS SIMULATION with d3-force-3d ---
+        const simulation = d3.forceSimulation(graphData.nodes)
+            .force('link', d3.forceLink(graphData.links).id(d => d.id).distance(70))
+            .force('charge', d3.forceManyBody().strength(-200))
+            .force('center', d3.forceCenter(0, 0, 0));
+
+        // Update positions
+        simulation.on('tick', () => {
+            graphData.nodes.forEach(node => {
+                const mesh = nodeToMesh.get(node.id);
+                if (mesh) {
+                    mesh.position.set(node.x || 0, node.y || 0, node.z || 0);
+                }
+            });
+
+            linkObjects.children.forEach((line, i) => {
+                const link = graphData.links[i];
+                const sourceNode = graphData.nodes.find(n => n.id === link.source.id || n.id === link.source);
+                const targetNode = graphData.nodes.find(n => n.id === link.target.id || n.id === link.target);
+                if (sourceNode && targetNode) {
+                    const positions = line.geometry.attributes.position.array;
+                    positions[0] = sourceNode.x || 0;
+                    positions[1] = sourceNode.y || 0;
+                    positions[2] = sourceNode.z || 0;
+                    positions[3] = targetNode.x || 0;
+                    positions[4] = targetNode.y || 0;
+                    positions[5] = targetNode.z || 0;
+                    line.geometry.attributes.position.needsUpdate = true;
+                }
+            });
+        });
+
+        // --- RAYCASTING FOR CLICKS ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        renderer.domElement.addEventListener('click', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(nodeObjects.children, true);
+
+            if (intersects.length > 0) {
+                const clickedGroup = intersects[0].object.parent;
+                const node = clickedGroup.userData;
+                if (node) {
+                    window.parent.postMessage({ type: 'NODE_CLICK', node: JSON.parse(JSON.stringify(node)) }, '*');
+                }
+            }
+        });
+
+        // --- ANIMATION LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- RESIZE ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>

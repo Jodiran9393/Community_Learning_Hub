@@ -1,0 +1,4 @@
+<!-- Load UnrealBloomPass separately -->
+    <script src="https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/RenderPass.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js"></script>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Debug Test</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000005;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            z-index: 1000;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info">
+        <h3>Debug Info:</h3>
+        <div id="status">Loading...</div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const status = document.getElementById('status');
+
+        function log(msg) {
+            status.innerHTML += '<br>' + msg;
+            console.log(msg);
+        }
+
+        log('Starting...');
+
+        const canvas = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 0, 300);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000005);
+
+        log('THREE.js version: ' + THREE.REVISION);
+        log('Renderer created');
+
+        // Create ONE test node with a GIANT label
+        const testNode = { name: 'TEST LABEL', x: 0, y: 0, z: 0 };
+
+        // Create sphere
+        const sphereGeo = new THREE.SphereGeometry(20, 32, 32);
+        const sphereMat = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: false });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        sphere.position.set(0, 0, 0);
+        scene.add(sphere);
+        log('Red sphere added at center');
+
+        // Create TEXT LABEL - GIANT and BRIGHT
+        log('Creating canvas for label...');
+        const canvas2d = document.createElement('canvas');
+        canvas2d.width = 1024; // Even bigger
+        canvas2d.height = 256;
+        const ctx = canvas2d.getContext('2d');
+
+        // Fill background to see the canvas boundaries
+        ctx.fillStyle = 'rgba(0, 255, 0, 0.3)'; // Semi-transparent green bg
+        ctx.fillRect(0, 0, canvas2d.width, canvas2d.height);
+
+        // Draw text
+        ctx.font = 'Bold 80px Arial';
+        ctx.fillStyle = 'yellow'; // BRIGHT YELLOW
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 3;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.strokeText('TEST LABEL', 512, 128);
+        ctx.fillText('TEST LABEL', 512, 128);
+
+        log('Canvas text drawn');
+
+        // Create sprite
+        const texture = new THREE.Texture(canvas2d);
+        texture.needsUpdate = true;
+        log('Texture created, needsUpdate = true');
+
+        const spriteMat = new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            depthTest: false // Ensure it's always visible
+        });
+        const sprite = new THREE.Sprite(spriteMat);
+        sprite.scale.set(200, 50, 1); // HUGE scale
+        sprite.position.set(0, 40, 0); // Above the sphere
+        scene.add(sprite);
+        log('Sprite added to scene at (0, 40, 0) with scale 200x50');
+
+        // Add ambient light
+        const light = new THREE.AmbientLight(0xffffff, 1.0);
+        scene.add(light);
+
+        // Add axes helper
+        const axesHelper = new THREE.AxesHelper(100);
+        scene.add(axesHelper);
+        log('Axes helper added (R=X, G=Y, B=Z)');
+
+        let frame = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Slow rotation
+            camera.position.x = 300 * Math.sin(frame * 0.01);
+            camera.position.z = 300 * Math.cos(frame * 0.01);
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+            frame++;
+
+            if (frame === 1) {
+                log('First frame rendered!');
+            }
+        }
+        animate();
+
+        log('Animation started. You should see a RED SPHERE with YELLOW "TEST LABEL" text above it.');
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Galaxy V2</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000005;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // SIMPLE 3D FORCE GRAPH - NO EXTERNAL LIBRARIES
+        const canvas = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.z = 400;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000005);
+
+        // DATA
+        const nodes = [
+            { id: 'CLH', group: 4, val: 100, name: 'CLH HUB' },
+            { id: 'React', group: 1, val: 30, name: 'React.js' },
+            { id: 'HTML', group: 1, val: 20, name: 'HTML5' },
+            { id: 'CSS', group: 1, val: 20, name: 'CSS3' },
+            { id: 'JS', group: 1, val: 30, name: 'JavaScript' },
+            { id: 'NextJS', group: 1, val: 20, name: 'Next.js' },
+            { id: 'TS', group: 1, val: 20, name: 'TypeScript' },
+            { id: 'LLM', group: 2, val: 30, name: 'LLMs' },
+            { id: 'Prompting', group: 2, val: 20, name: 'Prompting' },
+            { id: 'Agents', group: 2, val: 25, name: 'AI Agents' },
+            { id: 'Python', group: 2, val: 20, name: 'Python' },
+            { id: 'Figma', group: 3, val: 20, name: 'Figma' },
+            { id: 'UI', group: 3, val: 20, name: 'UI/UX' },
+            { id: 'A11y', group: 3, val: 15, name: 'Accessibility' }
+        ];
+
+        const links = [
+            ['CLH', 'React'], ['CLH', 'LLM'], ['CLH', 'UI'],
+            ['React', 'JS'], ['React', 'NextJS'], ['JS', 'TS'],
+            ['HTML', 'CSS'], ['CSS', 'UI'],
+            ['LLM', 'Agents'], ['LLM', 'Prompting'], ['LLM', 'Python'],
+            ['Python', 'JS'], ['UI', 'Figma'], ['UI', 'A11y']
+        ];
+
+        // COLORS
+        const colors = {
+            1: 0x4c8bf5, // WEB - blue
+            2: 0xd367c1, // AI - pink
+            3: 0xa060ff, // DESIGN - purple
+            4: 0xffffff  // COMMUNITY - white
+        };
+
+        // CREATE NODES
+        const nodeGroup = new THREE.Group();
+        const nodeLookup = {};
+
+        nodes.forEach((node, i) => {
+            // Position in a sphere
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const r = 150;
+            node.x = r * Math.sin(phi) * Math.cos(theta);
+            node.y = r * Math.sin(phi) * Math.sin(theta);
+            node.z = r * Math.cos(phi);
+
+            const group = new THREE.Group();
+            const radius = Math.cbrt(node.val) * 1.5;
+            const color = new THREE.Color(colors[node.group]);
+
+            // Sphere
+            const sphereGeo = new THREE.SphereGeometry(radius, 32, 32);
+            const sphereMat = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.8
+            });
+            const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+            group.add(sphere);
+
+            // TEXT LABEL using Canvas2D - BIGGER AND BRIGHTER
+            const canvas2d = document.createElement('canvas');
+            canvas2d.width = 1024; // Larger canvas
+            canvas2d.height = 256;
+            const ctx = canvas2d.getContext('2d');
+            ctx.font = 'Bold 60px Arial, sans-serif'; // Bigger font
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 4;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeText(node.name, 512, 128); // Black outline
+            ctx.fillText(node.name, 512, 128); // White fill
+
+            const texture = new THREE.Texture(canvas2d);
+            texture.needsUpdate = true;
+
+            const spriteMat = new THREE.SpriteMaterial({
+                map: texture,
+                transparent: true,
+                depthTest: false // Always visible
+            });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(100, 25, 1); // Much larger scale
+            sprite.position.y = radius + 15; // Slightly higher
+            group.add(sprite);
+
+            group.position.set(node.x, node.y, node.z);
+            nodeGroup.add(group);
+            nodeLookup[node.id] = group;
+        });
+        scene.add(nodeGroup);
+
+        // CREATE LINKS
+        const linkGroup = new THREE.Group();
+        links.forEach(([source, target]) => {
+            const sourceNode = nodes.find(n => n.id === source);
+            const targetNode = nodes.find(n => n.id === target);
+
+            const points = [
+                new THREE.Vector3(sourceNode.x, sourceNode.y, sourceNode.z),
+                new THREE.Vector3(targetNode.x, targetNode.y, targetNode.z)
+            ];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x334466, transparent: true, opacity: 0.3 });
+            const line = new THREE.Line(geometry, material);
+            linkGroup.add(line);
+        });
+        scene.add(linkGroup);
+
+        // STARFIELD
+        const starGeo = new THREE.BufferGeometry();
+        const starVerts = [];
+        for (let i = 0; i < 2000; i++) {
+            const x = (Math.random() - 0.5) * 2000;
+            const y = (Math.random() - 0.5) * 2000;
+            const z = (Math.random() - 0.5) * 2000;
+            starVerts.push(x, y, z);
+        }
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+        // LIGHTING
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        // ANIMATION
+        let angle = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Slow rotation
+            angle += 0.001;
+            camera.position.x = 400 * Math.sin(angle);
+            camera.position.z = 400 * Math.cos(angle);
+            camera.lookAt(0, 0, 0);
+
+            // Rotate node group slightly
+            nodeGroup.rotation.y += 0.0005;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // RESIZE
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>
