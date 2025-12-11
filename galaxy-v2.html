@@ -97,17 +97,17 @@
 
             // TEXT LABEL using Canvas2D - BIGGER AND BRIGHTER
             const canvas2d = document.createElement('canvas');
-            canvas2d.width = 1024; // Larger canvas
-            canvas2d.height = 256;
+            canvas2d.width = 2048; // Even larger canvas for clarity
+            canvas2d.height = 512;
             const ctx = canvas2d.getContext('2d');
-            ctx.font = 'Bold 60px Arial, sans-serif'; // Bigger font
+            ctx.font = 'Bold 120px Arial, sans-serif'; // Double the font size
             ctx.fillStyle = 'white';
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 4;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.strokeText(node.name, 512, 128); // Black outline
-            ctx.fillText(node.name, 512, 128); // White fill
+            ctx.strokeText(node.name, 1024, 256); // Black outline (centered)
+            ctx.fillText(node.name, 1024, 256); // White fill (centered)
 
             const texture = new THREE.Texture(canvas2d);
             texture.needsUpdate = true;
@@ -118,8 +118,8 @@
                 depthTest: false // Always visible
             });
             const sprite = new THREE.Sprite(spriteMat);
-            sprite.scale.set(100, 25, 1); // Much larger scale
-            sprite.position.y = radius + 15; // Slightly higher
+            sprite.scale.set(150, 37.5, 1); // 1.5x larger scale (maintaining aspect ratio)
+            sprite.position.y = radius + 20; // Slightly higher for visibility
             group.add(sprite);
 
             group.position.set(node.x, node.y, node.z);

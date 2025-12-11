@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Constellation Demo</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000005;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+        canvas { display: block; }
+        
+        /* Controls */
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(76, 139, 245, 0.5);
+            color: white;
+            z-index: 100;
+        }
+        #controls h2 {
+            margin: 0 0 15px 0;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        button {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px 0;
+            width: 100%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        button:hover { 
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+        
+        /* Stats HUD */
+        #stats {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(76, 139, 245, 0.5);
+            color: white;
+            min-width: 200px;
+        }
+        #stats h3 {
+            margin: 0 0 15px 0;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .stat-value {
+            color: #4c8bf5;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        /* Legend */
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(76, 139, 245, 0.5);
+            color: white;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .glow {
+            box-shadow: 0 0 15px currentColor;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <!-- Controls -->
+    <div id="controls">
+        <h2>🎮 Demo Controls</h2>
+        <button onclick="completeAll()">✅ Complete All</button>
+        <button onclick="halfProgress()">⏳ Half In Progress</button>
+        <button onclick="resetAll()">🔄 Reset All</button>
+    </div>
+    
+    <!-- Stats -->
+    <div id="stats">
+        <h3>📊 Your Progress</h3>
+        <div class="stat-row">
+            <span>Completed:</span>
+            <span class="stat-value" id="completed">0/14</span>
+        </div>
+        <div class="stat-row">
+            <span>In Progress:</span>
+            <span class="stat-value" id="inprogress">0/14</span>
+        </div>
+        <div class="stat-row">
+            <span>Not Started:</span>
+            <span class="stat-value" id="notstarted">14/14</span>
+        </div>
+    </div>
+    
+    <!-- Legend -->
+    <div id="legend">
+        <div class="legend-item">
+            <div class="legend-dot glow" style="background: #4caf50; color: #4caf50;"></div>
+            <span>✓ Completed</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot glow" style="background: #ffd700; color: #ffd700;"></div>
+            <span>⏳ In Progress</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #4c8bf5;"></div>
+            <span>○ Not Started</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Node data
+        const nodes = [
+            { id: 'CLH', group: 4, val: 100, name: 'CLH HUB', status: 'not_started' },
+            { id: 'React', group: 1, val: 30, name: 'React.js', status: 'not_started' },
+            { id: 'HTML', group: 1, val: 20, name: 'HTML5', status: 'not_started' },
+            { id: 'CSS', group: 1, val: 20, name: 'CSS3', status: 'not_started' },
+            { id: 'JS', group: 1, val: 30, name: 'JavaScript', status: 'not_started' },
+            { id: 'NextJS', group: 1, val: 20, name: 'Next.js', status: 'not_started' },
+            { id: 'TS', group: 1, val: 20, name: 'TypeScript', status: 'not_started' },
+            { id: 'LLM', group: 2, val: 30, name: 'LLMs', status: 'not_started' },
+            { id: 'Prompting', group: 2, val: 20, name: 'Prompting', status: 'not_started' },
+            { id: 'Agents', group: 2, val: 25, name: 'AI Agents', status: 'not_started' },
+            { id: 'Python', group: 2, val: 20, name: 'Python', status: 'not_started' },
+            { id: 'Figma', group: 3, val: 20, name: 'Figma', status: 'not_started' },
+            { id: 'UI', group: 3, val: 20, name: 'UI/UX', status: 'not_started' },
+            { id: 'A11y', group: 3, val: 15, name: 'Accessibility', status: 'not_started' }
+        ];
+
+        const links = [
+            ['CLH', 'React'], ['CLH', 'LLM'], ['CLH', 'UI'],
+            ['React', 'JS'], ['React', 'NextJS'], ['JS', 'TS'],
+            ['HTML', 'CSS'], ['CSS', 'UI'],
+            ['LLM', 'Agents'], ['LLM', 'Prompting'], ['LLM', 'Python'],
+            ['Python', 'JS'], ['UI', 'Figma'], ['UI', 'A11y']
+        ];
+
+        // Base colors
+        const baseColors = {
+            1: 0x4c8bf5, 2: 0xd367c1, 3: 0xa060ff, 4: 0xffffff
+        };
+
+        // Status colors
+        const statusColors = {
+            completed: 0x4caf50,
+            in_progress: 0xffd700,
+            not_started: null
+        };
+
+        // Scene setup
+        const canvas = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.z = 400;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000005);
+
+        const nodeGroup = new THREE.Group();
+        const nodeMeshes = {};
+
+        // Build galaxy
+        function buildGalaxy() {
+            nodeGroup.clear();
+
+            nodes.forEach((node, i) => {
+                // Position
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const r = 150;
+                node.x = r * Math.sin(phi) * Math.cos(theta);
+                node.y = r * Math.sin(phi) * Math.sin(theta);
+                node.z = r * Math.cos(phi);
+
+                const group = new THREE.Group();
+                const radius = Math.cbrt(node.val) * 1.5;
+
+                // Color based on status
+                let color;
+                if (node.status === 'completed') {
+                    color = new THREE.Color(statusColors.completed);
+                } else if (node.status === 'in_progress') {
+                    color = new THREE.Color(statusColors.in_progress);
+                } else {
+                    color = new THREE.Color(baseColors[node.group]);
+                }
+
+                // Opacity based on status
+                const opacity = node.status === 'not_started' ? 0.5 : 0.95;
+
+                // Main sphere
+                const sphereGeo = new THREE.SphereGeometry(radius, 32, 32);
+                const sphereMat = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: opacity
+                });
+                const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+                group.add(sphere);
+                nodeMeshes[node.id] = sphere;
+
+                // Glow for completed/in-progress
+                if (node.status !== 'not_started') {
+                    const glowGeo = new THREE.SphereGeometry(radius * 1.4, 32, 32);
+                    const glowMat = new THREE.MeshBasicMaterial({
+                        color: color,
+                        transparent: true,
+                        opacity: 0.3,
+                        side: THREE.BackSide
+                    });
+                    const glow = new THREE.Mesh(glowGeo, glowMat);
+                    group.add(glow);
+                }
+
+                // Text label
+                const canvas2d = document.createElement('canvas');
+                canvas2d.width = 2048;
+                canvas2d.height = 512;
+                const ctx = canvas2d.getContext('2d');
+                ctx.font = 'Bold 120px Arial';
+                ctx.fillStyle = 'white';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 4;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.strokeText(node.name, 1024, 256);
+                ctx.fillText(node.name, 1024, 256);
+
+                const texture = new THREE.Texture(canvas2d);
+                texture.needsUpdate = true;
+
+                const spriteMat = new THREE.SpriteMaterial({
+                    map: texture,
+                    transparent: true,
+                    depthTest: false
+                });
+                const sprite = new THREE.Sprite(spriteMat);
+                sprite.scale.set(150, 37.5, 1);
+                sprite.position.y = radius + 20;
+                group.add(sprite);
+
+                group.position.set(node.x, node.y, node.z);
+                nodeGroup.add(group);
+            });
+
+            scene.add(nodeGroup);
+            updateStats();
+        }
+
+        // Links
+        const linkGroup = new THREE.Group();
+        links.forEach(([source, target]) => {
+            const sourceNode = nodes.find(n => n.id === source);
+            const targetNode = nodes.find(n => n.id === target);
+
+            const points = [
+                new THREE.Vector3(sourceNode.x, sourceNode.y, sourceNode.z),
+                new THREE.Vector3(targetNode.x, targetNode.y, targetNode.z)
+            ];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ 
+                color: 0x334466, 
+                transparent: true, 
+                opacity: 0.3 
+            });
+            const line = new THREE.Line(geometry, material);
+            linkGroup.add(line);
+        });
+        scene.add(linkGroup);
+
+        // Starfield
+        const starGeo = new THREE.BufferGeometry();
+        const starVerts = [];
+        for (let i = 0; i < 2000; i++) {
+            starVerts.push(
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000
+            );
+        }
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        // Update stats display
+        function updateStats() {
+            const completed = nodes.filter(n => n.status === 'completed').length;
+            const inProgress = nodes.filter(n => n.status === 'in_progress').length;
+            const notStarted = nodes.filter(n => n.status === 'not_started').length;
+
+            document.getElementById('completed').textContent = `${completed}/${nodes.length}`;
+            document.getElementById('inprogress').textContent = `${inProgress}/${nodes.length}`;
+            document.getElementById('notstarted').textContent = `${notStarted}/${nodes.length}`;
+        }
+
+        // Control functions
+        function completeAll() {
+            nodes.forEach(node => node.status = 'completed');
+            buildGalaxy();
+        }
+
+        function halfProgress() {
+            nodes.forEach((node, i) => {
+                if (i < nodes.length / 2) {
+                    node.status = 'in_progress';
+                } else {
+                    node.status = 'not_started';
+                }
+            });
+            buildGalaxy();
+        }
+
+        function resetAll() {
+            nodes.forEach(node => node.status = 'not_started');
+            buildGalaxy();
+        }
+
+        // Animation
+        let angle = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+
+            angle += 0.001;
+            camera.position.x = 400 * Math.sin(angle);
+            camera.position.z = 400 * Math.cos(angle);
+            camera.lookAt(0, 0, 0);
+
+            nodeGroup.rotation.y += 0.0005;
+
+            renderer.render(scene, camera);
+        }
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start
+        buildGalaxy();
+        animate();
+    </script>
+</body>
+</html>

@@ -90,3 +90,6 @@ async function isLoggedIn() {
     const user = await getCurrentUser();
     return !!user;
 }
+
+// Export supabase to window for use in other scripts
+window.supabase = supabase;

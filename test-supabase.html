@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .success { color: #4c8bf5; }
+        .error { color: #ff4444; }
+        button {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { opacity: 0.8; }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Supabase Connection Diagnostics</h1>
+
+    <div class="test-section">
+        <h2>1. Client Initialization</h2>
+        <div id="client-status">Testing...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Subscription Tiers Query</h2>
+        <button onclick="testSubscriptionTiers()">Test Query</button>
+        <div id="tiers-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Profile Check</h2>
+        <button onclick="testProfile()">Check Profile</button>
+        <div id="profile-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Auth Status</h2>
+        <div id="auth-status">Checking...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+
+    <script>
+        // Test 1: Client initialization
+        setTimeout(() => {
+            const clientStatus = document.getElementById('client-status');
+            if (window.supabase) {
+                clientStatus.innerHTML = '<span class="success">✓ Supabase client initialized</span>';
+                clientStatus.innerHTML += '<pre>' + JSON.stringify({
+                    url: window.supabase.supabaseUrl,
+                    hasAuth: !!window.supabase.auth,
+                    hasFrom: !!window.supabase.from
+                }, null, 2) + '</pre>';
+            } else {
+                clientStatus.innerHTML = '<span class="error">✗ Supabase client NOT found</span>';
+            }
+        }, 100);
+
+        // Test 2: Subscription tiers
+        async function testSubscriptionTiers() {
+            const result = document.getElementById('tiers-result');
+            result.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const { data, error } = await window.supabase
+                    .from('subscription_tiers')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('sort_order');
+
+                if (error) throw error;
+
+                result.innerHTML = `
+                    <span class="success">✓ Found ${data.length} subscription tiers</span>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                result.innerHTML = `
+                    <span class="error">✗ Error: ${error.message}</span>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        }
+
+        // Test 3: Profile
+        async function testProfile() {
+            const result = document.getElementById('profile-result');
+            result.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                
+                if (!user) {
+                    result.innerHTML = '<span class="error">✗ No user logged in</span>';
+                    return;
+                }
+
+                const { data: profile, error } = await window.supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) throw error;
+
+                result.innerHTML = `
+                    <span class="success">✓ Profile found</span>
+                    <pre>${JSON.stringify(profile, null, 2)}</pre>
+                `;
+            } catch (error) {
+                result.innerHTML = `
+                    <span class="error">✗ Error: ${error.message}</span>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        }
+
+        // Test 4: Auth status
+        async function checkAuth() {
+            const authStatus = document.getElementById('auth-status');
+            try {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                
+                if (user) {
+                    authStatus.innerHTML = `
+                        <span class="success">✓ User logged in</span>
+                        <pre>${JSON.stringify({
+                            id: user.id,
+                            email: user.email,
+                            display_name: user.user_metadata?.display_name
+                        }, null, 2)}</pre>
+                    `;
+                } else {
+                    authStatus.innerHTML = '<span class="error">✗ No user logged in</span><p><a href="auth.html" style="color: #4c8bf5;">Go to login</a></p>';
+                }
+            } catch (error) {
+                authStatus.innerHTML = `<span class="error">✗ Auth error: ${error.message}</span>`;
+            }
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>

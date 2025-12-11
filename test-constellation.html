@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Skill Constellation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        h1 {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .node-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(76, 139, 245, 0.8);
+        }
+        .node-card.completed {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        .node-card.in_progress {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        .node-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .node-status {
+            font-size: 12px;
+            color: #aaa;
+        }
+        button {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { opacity: 0.8; }
+        #galaxy-preview {
+            width: 100%;
+            height: 500px;
+            border: 2px solid rgba(76, 139, 245, 0.3);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            flex: 1;
+            background: rgba(76, 139, 245, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4c8bf5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌌 Skill Constellation System</h1>
+    
+    <div class="controls">
+        <h2>Quick Actions</h2>
+        <button onclick="markAllCompleted()">✓ Complete All Nodes</button>
+        <button onclick="markHalfInProgress()">⏳ Set Half to In Progress</button>
+        <button onclick="resetAll()">🔄 Reset All</button>
+        <button onclick="refreshGalaxy()">🔃 Refresh Galaxy</button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-value" id="completed-stat">0</div>
+            <div>Completed</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="progress-stat">0</div>
+            <div>In Progress</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="streak-stat">0</div>
+            <div>Day Streak</div>
+        </div>
+    </div>
+
+    <h2>Your Nodes (Click to change status)</h2>
+    <div class="node-grid" id="node-grid"></div>
+
+    <h2>Live Galaxy Preview</h2>
+    <iframe id="galaxy-preview" src="galaxy-constellation.html"></iframe>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+
+    <script>
+        const nodes = [
+            { id: 'React', name: 'React.js' },
+            { id: 'HTML', name: 'HTML5' },
+            { id: 'CSS', name: 'CSS3' },
+            { id: 'JS', name: 'JavaScript' },
+            { id: 'NextJS', name: 'Next.js' },
+            { id: 'TS', name: 'TypeScript' },
+            { id: 'LLM', name: 'LLMs' },
+            { id: 'Prompting', name: 'Prompting' },
+            { id: 'Agents', name: 'AI Agents' },
+            { id: 'Python', name: 'Python' },
+            { id: 'Figma', name: 'Figma' },
+            { id: 'UI', name: 'UI/UX' },
+            { id: 'A11y', name: 'Accessibility' }
+        ];
+
+        let currentUser = null;
+
+        async function init() {
+            const { data: { user } } = await window.supabase.auth.getUser();
+            
+            if (!user) {
+                alert('Please sign in first!');
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            currentUser = user;
+            renderNodes();
+            updateStats();
+        }
+
+        async function renderNodes() {
+            const grid = document.getElementById('node-grid');
+            grid.innerHTML = '';
+
+            // Load progress
+            const { data: progress } = await window.supabase
+                .from('user_progress')
+                .select('*')
+                .eq('user_id', currentUser.id);
+
+            const progressMap = {};
+            if (progress) {
+                progress.forEach(p => {
+                    progressMap[p.node_id] = p.status;
+                });
+            }
+
+            nodes.forEach(node => {
+                const status = progressMap[node.id] || 'not_started';
+                const card = document.createElement('div');
+                card.className = `node-card ${status}`;
+                card.innerHTML = `
+                    <div class="node-name">${node.name}</div>
+                    <div class="node-status">${status.replace('_', ' ').toUpperCase()}</div>
+                `;
+                card.onclick = () => cycleStatus(node.id, status);
+                grid.appendChild(card);
+            });
+        }
+
+        async function cycleStatus(nodeId, currentStatus) {
+            const statuses = ['not_started', 'in_progress', 'completed'];
+            const currentIndex = statuses.indexOf(currentStatus);
+            const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+
+            if (nextStatus === 'not_started') {
+                // Delete progress
+                await window.supabase
+                    .from('user_progress')
+                    .delete()
+                    .eq('user_id', currentUser.id)
+                    .eq('node_id', nodeId);
+            } else {
+                // Upsert progress
+                await window.supabase
+                    .from('user_progress')
+                    .upsert({
+                        user_id: currentUser.id,
+                        node_id: nodeId,
+                        status: nextStatus,
+                        completion_date: nextStatus === 'completed' ? new Date().toISOString() : null
+                    }, {
+                        onConflict: 'user_id,node_id'
+                    });
+            }
+
+            await renderNodes();
+            await updateStats();
+            refreshGalaxy();
+        }
+
+        async function markAllCompleted() {
+            for (const node of nodes) {
+                await window.supabase
+                    .from('user_progress')
+                    .upsert({
+                        user_id: currentUser.id,
+                        node_id: node.id,
+                        status: 'completed',
+                        completion_date: new Date().toISOString()
+                    }, {
+                        onConflict: 'user_id,node_id'
+                    });
+            }
+            await renderNodes();
+            await updateStats();
+            refreshGalaxy();
+        }
+
+        async function markHalfInProgress() {
+            for (let i = 0; i < Math.floor(nodes.length / 2); i++) {
+                await window.supabase
+                    .from('user_progress')
+                    .upsert({
+                        user_id: currentUser.id,
+                        node_id: nodes[i].id,
+                        status: 'in_progress'
+                    }, {
+                        onConflict: 'user_id,node_id'
+                    });
+            }
+            await renderNodes();
+            await updateStats();
+            refreshGalaxy();
+        }
+
+        async function resetAll() {
+            await window.supabase
+                .from('user_progress')
+                .delete()
+                .eq('user_id', currentUser.id);
+            
+            await renderNodes();
+            await updateStats();
+            refreshGalaxy();
+        }
+
+        async function updateStats() {
+            const { data: progress } = await window.supabase
+                .from('user_progress')
+                .select('*')
+                .eq('user_id', currentUser.id);
+
+            const completed = progress?.filter(p => p.status === 'completed').length || 0;
+            const inProgress = progress?.filter(p => p.status === 'in_progress').length || 0;
+
+            document.getElementById('completed-stat').textContent = completed;
+            document.getElementById('progress-stat').textContent = inProgress;
+
+            // Load streak
+            const { data: streak } = await window.supabase
+                .from('learning_streaks')
+                .select('current_streak')
+                .eq('user_id', currentUser.id)
+                .single();
+
+            document.getElementById('streak-stat').textContent = streak?.current_streak || 0;
+        }
+
+        function refreshGalaxy() {
+            document.getElementById('galaxy-preview').src = 'galaxy-constellation.html?t=' + Date.now();
+        }
+
+        init();
+    </script>
+</body>
+</html>
