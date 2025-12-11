@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Community Learning Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .pricing-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000005 0%, #1a1a2e 100%);
+            padding: 2rem;
+            padding-top: 100px;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .pricing-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-header p {
+            color: #aaccff;
+            font-size: 1.2rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(76, 139, 245, 0.5);
+            box-shadow: 0 10px 40px rgba(76, 139, 245, 0.2);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid #4c8bf5;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .tier-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tier-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin: 1.5rem 0;
+        }
+
+        .tier-price span {
+            font-size: 1rem;
+            color: #aaccff;
+            font-weight: 400;
+        }
+
+        .tier-description {
+            color: #aaccff;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+        }
+
+        .features-list li {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4c8bf5;
+            font-weight: bold;
+        }
+
+        .pricing-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .pricing-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(76, 139, 245, 0.4);
+        }
+
+        .pricing-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .current-plan {
+            background: rgba(76, 139, 245, 0.2);
+            color: #4c8bf5;
+            border: 1px solid #4c8bf5;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-header h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">Community Learning Hub</a>
+        </div>
+        <div class="nav-menu">
+            <div id="auth-buttons" style="display: flex; gap: 1rem;">
+                <a href="auth.html" class="nav-btn-outline">Sign In</a>
+                <a href="auth.html" class="nav-btn">Get Started</a>
+            </div>
+            <div id="user-menu" style="display: none;">
+                <span id="user-display-name"></span>
+                <a href="profile.html" class="nav-btn-outline">Profile</a>
+                <button onclick="signOut()" class="nav-btn-text">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pricing-container">
+        <div class="pricing-header">
+            <h1><span class="gradient-text">Choose Your Plan</span></h1>
+            <p>Unlock the full potential of community-driven learning</p>
+        </div>
+
+        <div class="pricing-grid" id="pricing-grid">
+            <!-- Pricing cards will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+
+    <script>
+        let currentUser = null;
+        let currentTier = 'free';
+
+        async function loadPricingCards() {
+            try {
+                // Get current user
+                const { data: { user } } = await window.supabase.auth.getUser();
+                currentUser = user;
+
+                // Get user's subscription tier if logged in
+                if (user) {
+                    const { data: profile } = await window.supabase
+                        .from('profiles')
+                        .select('subscription_tier')
+                        .eq('id', user.id)
+                        .single();
+
+                    if (profile) {
+                        currentTier = profile.subscription_tier || 'free';
+                    }
+                }
+
+                // Fetch subscription tiers
+                const { data: tiers, error } = await window.supabase
+                    .from('subscription_tiers')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('sort_order');
+
+                if (error) throw error;
+
+                const pricingGrid = document.getElementById('pricing-grid');
+                pricingGrid.innerHTML = tiers.map(tier => createPricingCard(tier)).join('');
+            } catch (error) {
+                console.error('Error loading pricing:', error);
+                document.getElementById('pricing-grid').innerHTML =
+                    '<p style="color: white; text-align: center;">Error loading pricing plans. Please refresh the page.</p>';
+            }
+        }
+
+        function createPricingCard(tier) {
+            const features = tier.features || [];
+            const isCurrentTier = tier.name === currentTier;
+            const isFeatured = tier.name === 'basic'; // Make Basic the featured plan
+
+            return `
+                <div class="pricing-card ${isFeatured ? 'featured' : ''}">
+                    <div class="tier-name">${tier.display_name}</div>
+                    <div class="tier-price">
+                        $${tier.price.toFixed(2)}
+                        <span>/month</span>
+                    </div>
+                    <div class="tier-description">${tier.description || ''}</div>
+                    
+                    <ul class="features-list">
+                        ${features.map(feature => `<li>${feature}</li>`).join('')}
+                    </ul>
+
+                    ${isCurrentTier
+                    ? '<button class="pricing-btn current-plan" disabled>Current Plan</button>'
+                    : tier.name === 'free'
+                        ? `<button class="pricing-btn" onclick="handleFreePlan()" ${!currentUser ? 'disabled' : ''}>
+                                ${!currentUser ? 'Sign in to downgrade' : 'Downgrade to Free'}
+                              </button>`
+                        : `<button class="pricing-btn" onclick="handleUpgrade('${tier.name}', '${tier.stripe_price_id}')">
+                                ${!currentUser ? 'Sign up to upgrade' : 'Upgrade to ' + tier.display_name}
+                              </button>`
+                }
+                </div>
+            `;
+        }
+
+        async function handleUpgrade(tierName, stripePriceId) {
+            if (!currentUser) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            if (!stripePriceId) {
+                alert('Stripe integration coming soon! Database setup complete.');
+                return;
+            }
+
+            // TODO: Integrate Stripe Checkout
+            alert(`Stripe Checkout for ${tierName} tier coming next!`);
+        }
+
+        async function handleFreePlan() {
+            if (!currentUser) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            if (confirm('Are you sure you want to downgrade to the Free plan?')) {
+                try {
+                    const { error } = await window.supabase
+                        .from('profiles')
+                        .update({ subscription_tier: 'free' })
+                        .eq('id', currentUser.id);
+
+                    if (error) throw error;
+
+                    alert('Successfully downgraded to Free plan!');
+                    location.reload();
+                } catch (error) {
+                    console.error('Error downgrading:', error);
+                    alert('Error downgrading plan. Please try again.');
+                }
+            }
+        }
+
+        // Load pricing on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPricingCards();
+        });
+    </script>
+</body>
+
+</html>
