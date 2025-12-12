@@ -395,6 +395,82 @@ h3 {
   color: white;
 }
 
+/* Dropdown Menu */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-dropdown-btn {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s;
+}
+
+.nav-dropdown-btn:hover {
+  border-color: #4c8bf5;
+  background: rgba(76, 139, 245, 0.1);
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background: rgba(20, 20, 30, 0.98);
+  backdrop-filter: blur(10px);
+  min-width: 200px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  z-index: 1001;
+  margin-top: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.nav-dropdown-content a {
+  color: white;
+  padding: 12px 20px;
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.nav-dropdown-content a:hover {
+  background: rgba(76, 139, 245, 0.2);
+  border-left-color: #4c8bf5;
+  padding-left: 24px;
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+  display: block;
+}
+
+.nav-dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-dropdown-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.nav-dropdown-content::-webkit-scrollbar-thumb {
+  background: rgba(76, 139, 245, 0.5);
+  border-radius: 10px;
+}
+
+.nav-dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(76, 139, 245, 0.8);
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;

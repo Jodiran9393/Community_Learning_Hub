@@ -320,6 +320,11 @@
                 group.add(sprite);
 
                 group.position.set(node.x, node.y, node.z);
+                
+                // Store node reference for clicking
+                group.userData.nodeId = node.id;
+                group.userData.clickable = true;
+                
                 nodeGroup.add(group);
             });
 
@@ -396,6 +401,60 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Click handler for nodes
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        window.addEventListener('click', (event) => {
+            // Calculate mouse position in normalized device coordinates
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // Update raycaster
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Check for intersections with nodes
+            const intersects = raycaster.intersectObjects(nodeGroup.children, true);
+            
+            if (intersects.length > 0) {
+                // Find the parent group that has userData
+                let clickedGroup = intersects[0].object;
+                while (clickedGroup && !clickedGroup.userData.clickable) {
+                    clickedGroup = clickedGroup.parent;
+                }
+                
+                if (clickedGroup && clickedGroup.userData.nodeId) {
+                    const nodeId = clickedGroup.userData.nodeId;
+                    console.log('Clicked node:', nodeId);
+                    
+                    // Navigate to page (convert node ID to lowercase for URL)
+                    const pageUrl = `/pages/${nodeId.toLowerCase()}.html`;
+                    
+                    // Open in parent window if in iframe, otherwise same window
+                    if (window.parent !== window) {
+                        window.parent.location.href = pageUrl;
+                    } else {
+                        window.location.href = pageUrl;
+                    }
+                }
+            }
+        });
+        
+        // Change cursor on hover
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(nodeGroup.children, true);
+            
+            if (intersects.length > 0) {
+                document.body.style.cursor = 'pointer';
+            } else {
+                document.body.style.cursor = 'default';
+            }
         });
 
         // Start
