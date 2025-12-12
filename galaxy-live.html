@@ -204,6 +204,8 @@
                 currentUser = user;
                 document.getElementById('signin-prompt').style.display = 'none';
                 
+                console.log('Loading progress for user:', user.id);
+                
                 // Load user progress
                 const { data: progress, error } = await supabase
                     .from('user_progress')
@@ -212,20 +214,29 @@
 
                 if (error) {
                     console.error('Error loading progress:', error);
-                } else if (progress) {
-                    progress.forEach(p => {
-                        const node = nodes.find(n => n.id === p.node_id);
-                        if (node) {
-                            node.status = p.status;
-                        }
-                    });
+                } else {
+                    console.log('Loaded progress:', progress);
+                    
+                    // Reset all nodes first
+                    nodes.forEach(n => n.status = 'not_started');
+                    
+                    // Update nodes with progress
+                    if (progress && progress.length > 0) {
+                        progress.forEach(p => {
+                            const node = nodes.find(n => n.id === p.node_id);
+                            if (node) {
+                                node.status = p.status;
+                                console.log(`Updated ${p.node_id} to ${p.status}`);
+                            }
+                        });
+                    }
                 }
 
                 updateStats();
                 buildGalaxy();
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error loading progress:', error);
                 buildGalaxy();
             }
         }
@@ -403,9 +414,10 @@
             }
         });
 
-        // Subscribe to real-time changes
+        // Subscribe to real-time changes (with fallback polling)
         let subscription;
         if (supabase) {
+            // Try real-time subscription
             subscription = supabase
                 .channel('user_progress_changes')
                 .on('postgres_changes', 
@@ -415,14 +427,23 @@
                         table: 'user_progress'
                     }, 
                     (payload) => {
-                        console.log('Progress updated!', payload);
+                        console.log('Real-time progress updated!', payload);
                         if (currentUser && payload.new?.user_id === currentUser.id) {
-                            // Reload progress when this user's data changes
                             loadProgress(currentUser);
                         }
                     }
                 )
-                .subscribe();
+                .subscribe((status) => {
+                    console.log('Realtime subscription status:', status);
+                });
+
+            // Fallback: Poll for updates every 5 seconds
+            setInterval(() => {
+                if (currentUser) {
+                    console.log('Polling for progress updates...');
+                    loadProgress(currentUser);
+                }
+            }, 5000);
         }
 
         // Initial load (will show signin prompt until parent sends auth)
