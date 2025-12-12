@@ -271,19 +271,38 @@
                     .from('topic_relationships')
                     .select('from_topic, to_topic');
 
-                if (relationships) {
-                    links = relationships.map(r => [r.from_topic, r.to_topic]);
-                    console.log(`✅ Loaded ${links.length} relationships`);
+                // Get all node IDs for validation
+                const nodeIds = new Set(nodes.map(n => n.id));
+
+                if (relationships && relationships.length > 0) {
+                    // Filter to only include links where both nodes exist
+                    links = relationships
+                        .filter(r => {
+                            const valid = r.from_topic && r.to_topic && 
+                                         nodeIds.has(r.from_topic) && nodeIds.has(r.to_topic);
+                            if (!valid) {
+                                console.warn(`⚠️ Skipping invalid link: ${r.from_topic} -> ${r.to_topic}`);
+                            }
+                            return valid;
+                        })
+                        .map(r => [r.from_topic, r.to_topic]);
+                    console.log(`✅ Loaded ${links.length} valid relationships (filtered from ${relationships.length})`);
                 } else {
                     // Generate default links based on prerequisites
+                    console.log('📦 Generating links from prerequisites...');
                     links = [];
                     topics.forEach(t => {
                         if (t.prerequisites && t.prerequisites.length > 0) {
                             t.prerequisites.forEach(prereq => {
-                                links.push([prereq, t.id]);
+                                if (nodeIds.has(prereq)) {
+                                    links.push([prereq, t.id]);
+                                } else {
+                                    console.warn(`⚠️ Prerequisite ${prereq} not found for ${t.id}`);
+                                }
                             });
                         }
                     });
+                    console.log(`✅ Generated ${links.length} links from prerequisites`);
                 }
 
                 return { nodes, links };
