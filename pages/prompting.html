@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompting Resources - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-node-id="Prompting">
+    <div class="resource-page">
+        <a href="/" class="back-link">← Back to Hub</a>
+        
+        <div class="page-header">
+            <h1 style="color: #d367c1;">Prompting</h1>
+            <p>The art of communicating with AI</p>
+        </div>
+
+        <section class="resource-section">
+            <h3>What is Prompt Engineering?</h3>
+            <p>Prompt engineering is the practice of designing effective inputs to get desired outputs from AI language models. It's both an art and a science of clear communication with AI systems.</p>
+        </section>
+
+        <section class="resource-section">
+            <h3>Core Techniques</h3>
+            <ul class="resource-list">
+                <li><strong>Zero-shot:</strong> Direct instruction without examples</li>
+                <li><strong>Few-shot:</strong> Providing examples to guide the model</li>
+                <li><strong>Chain-of-Thought:</strong> Asking the model to reason step-by-step</li>
+                <li><strong>Role Prompting:</strong> Assigning a persona or expert role</li>
+                <li><strong>Self-Consistency:</strong> Multiple reasoning paths for reliability</li>
+                <li><strong>Tree of Thoughts:</strong> Exploring multiple solution branches</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Best Practices</h3>
+            <ul class="resource-list">
+                <li><strong>Be Specific:</strong> Clear, detailed instructions yield better results</li>
+                <li><strong>Use Delimiters:</strong> Separate instructions from content (e.g., ###, """, ---)</li>
+                <li><strong>Specify Format:</strong> Tell the model exactly what output format you want</li>
+                <li><strong>Break Down Tasks:</strong> Complex tasks work better in steps</li>
+                <li><strong>Iterate:</strong> Refine prompts based on outputs</li>
+                <li><strong>Give Context:</strong> Background information improves accuracy</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Learning Resources</h3>
+            <ul class="resource-list">
+                <li><a href="https://www.promptingguide.ai" target="_blank">Prompt Engineering Guide</a> - Comprehensive guide and techniques</li>
+                <li><a href="https://learnprompting.org" target="_blank">Learn Prompting</a> - Free interactive course</li>
+                <li><a href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank">OpenAI Prompt Engineering</a> - Official best practices</li>
+                <li><a href="https://docs.anthropic.com/claude/docs/prompt-engineering" target="_blank">Anthropic Prompt Engineering</a> - Claude-specific techniques</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Prompt Patterns</h3>
+            <ul class="resource-list">
+                <li><strong>Instruction + Context + Input + Output:</strong> Clear structure</li>
+                <li><strong>Persona Pattern:</strong> "You are an expert [role]..."</li>
+                <li><strong>Template Pattern:</strong> Reusable prompt structures</li>
+                <li><strong>Refinement Pattern:</strong> Iterative improvement requests</li>
+                <li><strong>Reflection Pattern:</strong> Ask model to critique its own output</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Tools & Playgrounds</h3>
+            <ul class="resource-list">
+                <li><a href="https://platform.openai.com/playground" target="_blank">OpenAI Playground</a> - Test GPT models</li>
+                <li><a href="https://console.anthropic.com/workbench" target="_blank">Claude Workbench</a> - Experiment with Claude</li>
+                <li><a href="https://sdk.vercel.ai" target="_blank">Vercel AI SDK</a> - Build AI applications with prompts</li>
+                <li><strong>LangSmith:</strong> Prompt management and testing</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Advanced Topics</h3>
+            <ul class="resource-list">
+                <li><strong>Prompt Injection:</strong> Security considerations</li>
+                <li><strong>Prompt Chaining:</strong> Multi-step workflows</li>
+                <li><strong>Dynamic Prompts:</strong> Runtime prompt generation</li>
+                <li><strong>Model-specific Tuning:</strong> Optimizing for different models</li>
+            </ul>
+        </section>
+
+        <!-- Mark Complete Button -->
+        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+            <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning Prompting?</h3>
+            <button id="mark-complete-btn" style="
+                background: linear-gradient(90deg, #4c8bf5, #d367c1);
+                color: white;
+                border: none;
+                padding: 16px 40px;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
+            " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                ✅ Mark as Complete
+            </button>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up Prompting in your Knowledge Galaxy! 🌟</p>
+        </div>
+    </div>
+
+    <!-- Load Supabase and completion tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/mark-complete.js"></script>
+</body>
+</html>

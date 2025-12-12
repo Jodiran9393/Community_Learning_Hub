@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React.js Resources - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-node-id="React">
+    <div class="resource-page">
+        <a href="/" class="back-link">← Back to Hub</a>
+        
+        <div class="page-header">
+            <h1 style="color: #4c8bf5;">React.js</h1>
+            <p>Modern UI library for building interactive interfaces</p>
+        </div>
+
+        <section class="resource-section">
+            <h3>Getting Started</h3>
+            <p>React is a JavaScript library for building user interfaces. It's maintained by Meta (Facebook) and a community of individual developers and companies.</p>
+            
+            <ul class="resource-list">
+                <li><a href="https://react.dev" target="_blank">Official React Documentation</a> - The best place to start learning React</li>
+                <li><a href="https://react.dev/learn" target="_blank">React Tutorial</a> - Interactive step-by-step tutorial</li>
+                <li><a href="https://www.youtube.com/watch?v=Tn6-PIqc4UM" target="_blank">React in 100 Seconds</a> - Quick overview by Fireship</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Core Concepts</h3>
+            <ul class="resource-list">
+                <li><strong>Components</strong> - Building blocks of React applications</li>
+                <li><strong>JSX</strong> - JavaScript syntax extension for describing UI</li>
+                <li><strong>Props</strong> - Passing data between components</li>
+                <li><strong>State</strong> - Managing component data that changes over time</li>
+                <li><strong>Hooks</strong> - Special functions like useState and useEffect</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Learning Path</h3>
+            <ul class="resource-list">
+                <li><strong>Week 1-2:</strong> Learn JavaScript fundamentals and ES6+ features</li>
+                <li><strong>Week 3-4:</strong> Understand React basics - components, JSX, props</li>
+                <li><strong>Week 5-6:</strong> Master hooks and state management</li>
+                <li><strong>Week 7-8:</strong> Build real projects and learn best practices</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Recommended Courses</h3>
+            <ul class="resource-list">
+                <li><a href="https://scrimba.com/learn/learnreact" target="_blank">Scrimba - Learn React for Free</a> - Interactive coding course</li>
+                <li><a href="https://www.freecodecamp.org/learn/front-end-development-libraries/#react" target="_blank">freeCodeCamp - React Course</a> - Free certification program</li>
+                <li><a href="https://egghead.io/courses/the-beginner-s-guide-to-react" target="_blank">Egghead.io - Beginner's Guide to React</a> - Video course</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Community Resources</h3>
+            <ul class="resource-list">
+                <li><a href="https://www.reddit.com/r/reactjs/" target="_blank">r/reactjs</a> - Active Reddit community</li>
+                <li><a href="https://discord.gg/reactiflux" target="_blank">Reactiflux Discord</a> - Chat with React developers</li>
+                <li><a href="https://github.com/enaqx/awesome-react" target="_blank">Awesome React</a> - Curated list of React resources</li>
+            </ul>
+        </section>
+
+        <!-- Mark Complete Button -->
+        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+            <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning React?</h3>
+            <button id="mark-complete-btn" style="
+                background: linear-gradient(90deg, #4c8bf5, #d367c1);
+                color: white;
+                border: none;
+                padding: 16px 40px;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
+            " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                ✅ Mark as Complete
+            </button>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up React in your Knowledge Galaxy! 🌟</p>
+        </div>
+    </div>
+
+    <!-- Load Supabase and completion tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/mark-complete.js"></script>
+</body>
+</html>
