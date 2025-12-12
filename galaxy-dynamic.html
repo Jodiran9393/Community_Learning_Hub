@@ -210,22 +210,12 @@
         </div>
     </div>
 
-    <!-- Load Supabase FIRST -->
+    <!-- Load libraries (browser builds, not ES modules) -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph@1.73.1/dist/3d-force-graph.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Import Three.js and dependencies -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "3d-force-graph": "https://unpkg.com/3d-force-graph@1.73.1/dist/3d-force-graph.mjs"
-        }
-    }
-    </script>
-
-    <script type="module">
-        import * as THREE from 'three';
-        import ForceGraph3D from '3d-force-graph';
+    <script>
 
         // Initialize Supabase
         const supabaseUrl = 'https://mwkbezrdprlotddxegqo.supabase.co';
