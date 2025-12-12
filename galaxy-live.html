@@ -110,9 +110,9 @@
     </div>
     
     <!-- Sign in prompt (shown if not logged in) -->
-    <div id="signin-prompt">
+    <div id="signin-prompt" style="display: none;">
         <p>🔐 Sign in to track your progress!</p>
-        <button onclick="window.parent.location.href='auth.html'">Sign In</button>
+        <button onclick="window.top.location.href='auth.html'">Sign In</button>
     </div>
     
     <!-- Legend -->
@@ -191,17 +191,9 @@
         const nodeGroup = new THREE.Group();
 
         // Load user progress from Supabase
-        async function loadProgress() {
-            if (!supabase) {
-                console.log('No Supabase client - using demo mode');
-                document.getElementById('signin-prompt').style.display = 'block';
-                buildGalaxy();
-                return;
-            }
-
+        async function loadProgress(user = null) {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
-                
+                // If no user passed, show signin prompt
                 if (!user) {
                     console.log('Not logged in - using demo mode');
                     document.getElementById('signin-prompt').style.display = 'block';
@@ -396,15 +388,23 @@
         });
 
         // Start
-        loadProgress();
         animate();
 
-        // Listen for progress updates from parent window
+        // Listen for messages from parent window
         window.addEventListener('message', (event) => {
-            if (event.data?.type === 'PROGRESS_UPDATED') {
-                loadProgress();
+            if (event.data?.type === 'AUTH_STATE') {
+                // Received auth state from parent
+                loadProgress(event.data.user);
+            } else if (event.data?.type === 'PROGRESS_UPDATED') {
+                // Reload progress when updated
+                if (currentUser) {
+                    loadProgress(currentUser);
+                }
             }
         });
+
+        // Initial load (will show signin prompt until parent sends auth)
+        loadProgress();
     </script>
 </body>
 </html>

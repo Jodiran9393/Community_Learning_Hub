@@ -158,6 +158,27 @@
   <!-- Supabase Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
+  
+  <!-- Pass auth state to galaxy iframe -->
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (window.supabase) {
+        const iframe = document.querySelector('#galaxy-hero iframe');
+        
+        // Wait for iframe to load
+        iframe.addEventListener('load', async () => {
+          // Get current user
+          const { data: { user } } = await window.supabase.auth.getUser();
+          
+          // Send auth state to iframe
+          iframe.contentWindow.postMessage({
+            type: 'AUTH_STATE',
+            user: user
+          }, '*');
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>
