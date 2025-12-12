@@ -227,6 +227,15 @@
         let nodes = [];
         let links = [];
 
+        // Helper: Get validated links that only reference existing nodes
+        function getValidatedLinks() {
+            const nodeIds = new Set(nodes.map(n => n.id));
+            return links
+                .filter(l => l && l[0] && l[1])
+                .filter(l => nodeIds.has(l[0]) && nodeIds.has(l[1]))
+                .map(l => ({ source: l[0], target: l[1] }));
+        }
+
         // Load topics from database
         async function loadTopics() {
             console.log('🔍 Attempting to load topics from database...');
@@ -399,7 +408,7 @@
 
             // Rebuild galaxy with updated colors
             if (graph) {
-                graph.graphData({ nodes, links });
+                graph.graphData({ nodes, links: getValidatedLinks() });
             }
 
             updateStats();
@@ -431,15 +440,8 @@
 
             const elem = document.getElementById('galaxy-container');
             
-            // Final validation - remove any links with undefined source/target
-            const validLinks = links
-                .filter(l => l && l[0] && l[1])
-                .map(l => ({ source: l[0], target: l[1] }))
-                .filter(l => {
-                    const nodeIds = new Set(nodes.map(n => n.id));
-                    return nodeIds.has(l.source) && nodeIds.has(l.target);
-                });
-
+            // Get validated links
+            const validLinks = getValidatedLinks();
             console.log(`🔗 Final links count: ${validLinks.length} (from ${links.length} raw links)`);
 
             graph = ForceGraph3D()(elem)
