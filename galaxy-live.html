@@ -403,6 +403,28 @@
             }
         });
 
+        // Subscribe to real-time changes
+        let subscription;
+        if (supabase) {
+            subscription = supabase
+                .channel('user_progress_changes')
+                .on('postgres_changes', 
+                    { 
+                        event: '*', 
+                        schema: 'public', 
+                        table: 'user_progress'
+                    }, 
+                    (payload) => {
+                        console.log('Progress updated!', payload);
+                        if (currentUser && payload.new?.user_id === currentUser.id) {
+                            // Reload progress when this user's data changes
+                            loadProgress(currentUser);
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
         // Initial load (will show signin prompt until parent sends auth)
         loadProgress();
     </script>
