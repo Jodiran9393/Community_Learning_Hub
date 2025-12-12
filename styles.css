@@ -420,7 +420,7 @@ h3 {
 }
 
 .nav-dropdown-content {
-  display: none;
+  display: none !important;
   position: absolute;
   background: rgba(20, 20, 30, 0.98);
   backdrop-filter: blur(10px);
@@ -432,6 +432,7 @@ h3 {
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-height: 400px;
   overflow-y: auto;
+  left: 0;
 }
 
 .nav-dropdown-content a {
@@ -450,7 +451,7 @@ h3 {
 }
 
 .nav-dropdown:hover .nav-dropdown-content {
-  display: block;
+  display: block !important;
 }
 
 .nav-dropdown-content::-webkit-scrollbar {
