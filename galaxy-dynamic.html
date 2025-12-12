@@ -239,24 +239,29 @@
 
         // Load topics from database
         async function loadTopics() {
+            console.log('🔍 Attempting to load topics from database...');
             try {
+                console.log('📡 Querying learning_topics table...');
                 const { data: topics, error } = await supabase
                     .from('learning_topics')
                     .select('*')
                     .eq('is_published', true)
                     .order('display_order');
 
+                console.log('📊 Query result:', { topics, error });
+
                 if (error) {
-                    console.error('Failed to load topics:', error);
+                    console.error('❌ Failed to load topics:', error);
+                    console.error('Error details:', JSON.stringify(error, null, 2));
                     return loadFallbackTopics();
                 }
 
                 if (!topics || topics.length === 0) {
-                    console.warn('No topics found, using fallback');
+                    console.warn('⚠️ No topics found in database, using fallback');
                     return loadFallbackTopics();
                 }
 
-                console.log(`✅ Loaded ${topics.length} topics from database`);
+                console.log(`✅ Loaded ${topics.length} topics from database:`, topics.map(t => t.name));
                 
                 // Convert to node format
                 nodes = topics.map(t => ({
