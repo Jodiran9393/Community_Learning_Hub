@@ -48,11 +48,11 @@ CREATE TABLE IF NOT EXISTS topic_categories (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_topics_category ON learning_topics(category);
-CREATE INDEX idx_topics_published ON learning_topics(is_published);
-CREATE INDEX idx_topics_display_order ON learning_topics(display_order);
-CREATE INDEX idx_relationships_from ON topic_relationships(from_topic);
-CREATE INDEX idx_relationships_to ON topic_relationships(to_topic);
+CREATE INDEX IF NOT EXISTS idx_topics_category ON learning_topics(category);
+CREATE INDEX IF NOT EXISTS idx_topics_published ON learning_topics(is_published);
+CREATE INDEX IF NOT EXISTS idx_topics_display_order ON learning_topics(display_order);
+CREATE INDEX IF NOT EXISTS idx_relationships_from ON topic_relationships(from_topic);
+CREATE INDEX IF NOT EXISTS idx_relationships_to ON topic_relationships(to_topic);
 
 -- RLS Policies
 ALTER TABLE learning_topics ENABLE ROW LEVEL SECURITY;
@@ -60,16 +60,19 @@ ALTER TABLE topic_relationships ENABLE ROW LEVEL SECURITY;
 ALTER TABLE topic_categories ENABLE ROW LEVEL SECURITY;
 
 -- Anyone can read published topics
+DROP POLICY IF EXISTS "Anyone can view published topics" ON learning_topics;
 CREATE POLICY "Anyone can view published topics"
     ON learning_topics FOR SELECT
     USING (is_published = true);
 
 -- Anyone can view relationships
+DROP POLICY IF EXISTS "Anyone can view relationships" ON topic_relationships;
 CREATE POLICY "Anyone can view relationships"
     ON topic_relationships FOR SELECT
     USING (true);
 
 -- Anyone can view categories
+DROP POLICY IF EXISTS "Anyone can view categories" ON topic_categories;
 CREATE POLICY "Anyone can view categories"
     ON topic_categories FOR SELECT
     USING (is_visible = true);
