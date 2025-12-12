@@ -250,6 +250,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_update_topic_timestamp ON learning_topics;
 CREATE TRIGGER trigger_update_topic_timestamp
     BEFORE UPDATE ON learning_topics
     FOR EACH ROW
