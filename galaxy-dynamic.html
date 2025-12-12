@@ -431,10 +431,21 @@
 
             const elem = document.getElementById('galaxy-container');
             
+            // Final validation - remove any links with undefined source/target
+            const validLinks = links
+                .filter(l => l && l[0] && l[1])
+                .map(l => ({ source: l[0], target: l[1] }))
+                .filter(l => {
+                    const nodeIds = new Set(nodes.map(n => n.id));
+                    return nodeIds.has(l.source) && nodeIds.has(l.target);
+                });
+
+            console.log(`🔗 Final links count: ${validLinks.length} (from ${links.length} raw links)`);
+
             graph = ForceGraph3D()(elem)
                 .graphData({ 
                     nodes: nodes,
-                    links: links.map(l => ({ source: l[0], target: l[1] }))
+                    links: validLinks
                 })
                 .nodeLabel('name')
                 .nodeVal('val')
