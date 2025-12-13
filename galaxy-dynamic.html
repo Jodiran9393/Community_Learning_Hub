@@ -496,9 +496,9 @@
                 // Random sizes: mostly small, some medium, few large (like real stars)
                 const rand = Math.random();
                 let size;
-                if (rand < 0.7) size = 2 + Math.random() * 2;      // 70% small stars
-                else if (rand < 0.95) size = 4 + Math.random() * 3; // 25% medium stars
-                else size = 7 + Math.random() * 5;                  // 5% bright stars
+                if (rand < 0.7) size = 3 + Math.random() * 3;      // 70% small stars (increased)
+                else if (rand < 0.95) size = 6 + Math.random() * 4; // 25% medium stars (increased)
+                else size = 10 + Math.random() * 8;                 // 5% bright stars (increased)
                 starSizes.push(size);
                 
                 // Slight color variation: white, blue-white, yellow-white
@@ -527,12 +527,12 @@
             starGeo.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
             
             const starMat = new THREE.PointsMaterial({ 
+                size: 2,
                 vertexColors: true,
-                size: 3,
-                sizeAttenuation: false,
                 transparent: true,
-                opacity: 0.95,
-                blending: THREE.AdditiveBlending // Makes stars glow
+                opacity: 1.0,  // Full opacity
+                sizeAttenuation: true,
+                blending: THREE.AdditiveBlending // Glowing effect
             });
             const stars = new THREE.Points(starGeo, starMat);
             scene.add(stars);
@@ -641,9 +641,10 @@
                 cometGeometry.setAttribute('position', new THREE.Float32BufferAttribute(cometPositions, 3));
                 
                 const cometMaterial = new THREE.LineBasicMaterial({ 
-                    color: 0x4c8bf5,
+                    color: 0x00ccff,  // Brighter cyan
                     transparent: true,
-                    opacity: 0.6
+                    opacity: 0.9,  // More visible
+                    linewidth: 2  // Thicker lines
                 });
                 
                 const cometLine = new THREE.Line(cometGeometry, cometMaterial);
@@ -717,7 +718,7 @@
                 const sizes = stars.geometry.attributes.size.array;
                 pulsatingStars.forEach(star => {
                     const pulse = Math.sin(time * star.speed + star.phase) * 0.5 + 0.5; // 0 to 1
-                    sizes[star.index] = star.baseSize * (0.7 + pulse * 0.6); // Pulsate 70% to 130% of base
+                    sizes[star.index] = star.baseSize * (0.5 + pulse * 1.0); // Pulsate 50% to 150% of base (more dramatic)
                 });
                 stars.geometry.attributes.size.needsUpdate = true;
                 
