@@ -164,72 +164,79 @@ async function renderCommunityInsights() {
         let insightsHTML = '';
 
         if (user) {
-            // Get user's current topics
-            const { data: userProgress } = await window.supabase
-                .from('user_progress')
-                .select('node_id, status')
-                .eq('user_id', user.id)
-                .in('status', ['in_progress', 'completed']);
+            try {
+                // Get user's current topics
+                const { data: userProgress } = await window.supabase
+                    .from('user_progress')
+                    .select('node_id, status')
+                    .eq('user_id', user.id)
+                    .in('status', ['in_progress', 'completed']);
 
-            if (userProgress && userProgress.length > 0) {
-                const currentTopic = userProgress.find(p => p.status === 'in_progress')?.node_id;
-                
-                if (currentTopic) {
-                    // Get context for current topic
-                    const { data: topicStats } = await window.supabase
-                        .from('node_stats')
-                        .select('*')
-                        .eq('node_id', currentTopic)
-                        .single();
+                if (userProgress && userProgress.length > 0) {
+                    const currentTopic = userProgress.find(p => p.status === 'in_progress')?.node_id;
+                    
+                    if (currentTopic) {
+                        // Get context for current topic (may fail if table doesn't exist yet)
+                        const { data: topicStats } = await window.supabase
+                            .from('node_stats')
+                            .select('*')
+                            .eq('node_id', currentTopic)
+                            .single();
 
-                    if (topicStats) {
-                        insightsHTML += `
-                            <div class="insight-card">
-                                <h3>📊 In Your Current Topic: ${currentTopic}</h3>
-                                <div class="insight-stats">
-                                    <div class="stat">
-                                        <strong>${topicStats.total_completions || 0}</strong>
-                                        <span>Total completions</span>
-                                    </div>
-                                    <div class="stat">
-                                        <strong>${topicStats.avg_time_hours || 'N/A'}h</strong>
-                                        <span>Avg completion time</span>
-                                    </div>
-                                    <div class="stat">
-                                        <strong>${topicStats.difficulty_rating || 'N/A'}/5</strong>
-                                        <span>Community difficulty</span>
+                        if (topicStats) {
+                            insightsHTML += `
+                                <div class="insight-card">
+                                    <h3>📊 In Your Current Topic: ${currentTopic}</h3>
+                                    <div class="insight-stats">
+                                        <div class="stat">
+                                            <strong>${topicStats.total_completions || 0}</strong>
+                                            <span>Total completions</span>
+                                        </div>
+                                        <div class="stat">
+                                            <strong>${topicStats.avg_time_hours || 'N/A'}h</strong>
+                                            <span>Avg completion time</span>
+                                        </div>
+                                        <div class="stat">
+                                            <strong>${topicStats.difficulty_rating || 'N/A'}/5</strong>
+                                            <span>Community difficulty</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
+                        }
                     }
                 }
+            } catch (userError) {
+                console.warn('Could not load user-specific insights (RLS)');
             }
         }
 
         // Always show aggregate milestones (anonymous)
-        const { data: recentMilestones } = await window.supabase
-            .from('user_progress')
-            .select('status, completion_date')
-            .eq('status', 'completed')
-            .gte('completion_date', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-            .select('count');
+        try {
+            const { count } = await window.supabase
+                .from('user_progress')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'completed')
+                .gte('completion_date', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
-        const weeklyCompletions = recentMilestones?.length || 0;
+            const weeklyCompletions = count || 0;
 
-        insightsHTML += `
-            <div class="insight-card">
-                <h3>🏆 Recent Community Milestones</h3>
-                <div class="milestone-stats">
-                    <p><strong>${weeklyCompletions}</strong> topics completed this week</p>
-                    <p>Learning happens every day in our community</p>
+            insightsHTML += `
+                <div class="insight-card">
+                    <h3>🏆 Recent Community Milestones</h3>
+                    <div class="milestone-stats">
+                        <p><strong>${weeklyCompletions}</strong> topics completed this week</p>
+                        <p>Learning happens every day in our community</p>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        } catch (milestoneError) {
+            console.warn('Could not load community milestones (RLS)');
+        }
 
         container.innerHTML = insightsHTML || '<p>Sign in to see personalized learning insights</p>';
     } catch (error) {
-        console.error('Error loading insights:', error);
+        console.warn('Community insights loading with limitations');
         container.innerHTML = '';
     }
 }
@@ -239,42 +246,51 @@ async function renderPlatformStats() {
     const container = document.getElementById('stats-container');
     if (!container || !window.supabase) return;
 
+    // Default values in case queries fail
+    let completions = 0;
+    let topics = 36;
+    let active = 0;
+    let totalProgress = 0;
+
     try {
-        // Get aggregate statistics
-        const { data: progressCount } = await window.supabase
-            .from('user_progress')
-            .select('id', { count: 'exact', head: true });
+        // Try to get statistics (may fail due to RLS)
+        const [progressRes, completionRes, topicsRes, activeRes] = await Promise.allSettled([
+            window.supabase.from('user_progress').select('id', { count: 'exact', head: true }),
+            window.supabase.from('user_progress').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
+            window.supabase.from('learning_topics').select('id', { count: 'exact', head: true }).eq('is_published', true),
+            window.supabase.from('user_progress').select('user_id', { count: 'exact', head: true })
+                .gte('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        ]);
 
-        const { data: completionCount } = await window.supabase
-            .from('user_progress')
-            .select('id', { count: 'exact', head: true })
-            .eq('status', 'completed');
-
-        const { data: topicsCount } = await window.supabase
-            .from('learning_topics')
-            .select('id', { count: 'exact', head: true })
-            .eq('is_published', true);
-
-        const { data: activeUsers } = await window.supabase
-            .from('user_progress')
-            .select('user_id', { count: 'exact', head: true })
-            .gte('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+        // Extract counts from successful queries
+        if (progressRes.status === 'fulfilled' && progressRes.value.count !== null) {
+            totalProgress = progressRes.value.count;
+        }
+        if (completionRes.status === 'fulfilled' && completionRes.value.count !== null) {
+            completions = completionRes.value.count;
+        }
+        if (topicsRes.status === 'fulfilled' && topicsRes.value.count !== null) {
+            topics = topicsRes.value.count;
+        }
+        if (activeRes.status === 'fulfilled' && activeRes.value.count !== null) {
+            active = activeRes.value.count;
+        }
 
         const statsHTML = `
             <div class="stat-box">
-                <div class="stat-number">${completionCount?.count || 0}</div>
+                <div class="stat-number">${completions}</div>
                 <div class="stat-label">🎯 Topics Completed</div>
             </div>
             <div class="stat-box">
-                <div class="stat-number">${topicsCount?.count || 36}</div>
+                <div class="stat-number">${topics}</div>
                 <div class="stat-label">📚 Learning Topics</div>
             </div>
             <div class="stat-box">
-                <div class="stat-number">${activeUsers?.count || 0}</div>
+                <div class="stat-number">${active}</div>
                 <div class="stat-label">🔥 Active This Week</div>
             </div>
             <div class="stat-box">
-                <div class="stat-number">${progressCount?.count || 0}</div>
+                <div class="stat-number">${totalProgress}</div>
                 <div class="stat-label">📈 Total Progress Records</div>
             </div>
         `;
@@ -284,8 +300,27 @@ async function renderPlatformStats() {
         // Animate numbers
         animateNumbers();
     } catch (error) {
-        console.error('Error loading stats:', error);
-        container.innerHTML = '<p>Statistics will be available soon.</p>';
+        console.warn('Stats loading with defaults (RLS restrictions may apply)');
+        // Still render with default values
+        const statsHTML = `
+            <div class="stat-box">
+                <div class="stat-number">0</div>
+                <div class="stat-label">🎯 Topics Completed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">36</div>
+                <div class="stat-label">📚 Learning Topics</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">0</div>
+                <div class="stat-label">🔥 Active This Week</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">0</div>
+                <div class="stat-label">📈 Total Progress Records</div>
+            </div>
+        `;
+        container.innerHTML = statsHTML;
     }
 }
 
