@@ -484,6 +484,7 @@
             const starVerts = [];
             const starSizes = [];
             const starColors = [];
+            const pulsatingStars = []; // Track which stars pulsate
             
             // Create 3000 stars with varying sizes and brightness
             for (let i = 0; i < 3000; i++) {
@@ -509,6 +510,16 @@
                 } else {
                     starColors.push(1, 1, 0.8); // Yellow-white
                 }
+
+                // 5% of stars will pulsate (variable stars)
+                if (Math.random() < 0.05) {
+                    pulsatingStars.push({
+                        index: i,
+                        baseSize: size,
+                        speed: 0.02 + Math.random() * 0.03,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
             }
             
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
@@ -525,6 +536,66 @@
             });
             const stars = new THREE.Points(starGeo, starMat);
             scene.add(stars);
+
+            // ============================================
+            // DISTANT STAR CLUSTERS (4-6 small clusters)
+            // ============================================
+            const clusters = [];
+            const clusterCount = 5;
+
+            for (let c = 0; c < clusterCount; c++) {
+                const clusterGeo = new THREE.BufferGeometry();
+                const clusterVerts = [];
+                const clusterColors = [];
+                
+                // Random cluster position (far away)
+                const centerX = (Math.random() - 0.5) * 6000;
+                const centerY = (Math.random() - 0.5) * 6000;
+                const centerZ = (Math.random() - 0.5) * 6000;
+                
+                // 30-50 stars per cluster
+                const starsInCluster = 30 + Math.floor(Math.random() * 20);
+                const clusterRadius = 100 + Math.random() * 100;
+                
+                for (let i = 0; i < starsInCluster; i++) {
+                    // Stars clustered around center point
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.random() * Math.PI;
+                    const r = Math.random() * clusterRadius;
+                    
+                    const x = centerX + r * Math.sin(phi) * Math.cos(theta);
+                    const y = centerY + r * Math.sin(phi) * Math.sin(theta);
+                    const z = centerZ + r * Math.cos(phi);
+                    
+                    clusterVerts.push(x, y, z);
+                    
+                    // Clusters have similar colored stars (same stellar age)
+                    const clusterColor = Math.random();
+                    if (clusterColor < 0.4) {
+                        clusterColors.push(0.7, 0.8, 1); // Blue cluster (young)
+                    } else if (clusterColor < 0.8) {
+                        clusterColors.push(1, 1, 1); // White cluster
+                    } else {
+                        clusterColors.push(1, 0.9, 0.7); // Yellow/red cluster (old)
+                    }
+                }
+                
+                clusterGeo.setAttribute('position', new THREE.Float32BufferAttribute(clusterVerts, 3));
+                clusterGeo.setAttribute('color', new THREE.Float32BufferAttribute(clusterColors, 3));
+                
+                const clusterMat = new THREE.PointsMaterial({
+                    vertexColors: true,
+                    size: 1.5,
+                    sizeAttenuation: false,
+                    transparent: true,
+                    opacity: 0.6,
+                    blending: THREE.AdditiveBlending
+                });
+                
+                const cluster = new THREE.Points(clusterGeo, clusterMat);
+                scene.add(cluster);
+                clusters.push(cluster);
+            }
 
             // ============================================
             // SHOOTING COMETS (5 active at a time)
@@ -630,13 +701,25 @@
             // Camera animation with comet updates
             const distance = 1000;
             let angle = 0;
+            let time = 0;
+            
             function animate() {
+                time += 0.016; // ~60fps
                 angle += 0.002;
+                
                 graph.cameraPosition({
                     x: distance * Math.sin(angle),
                     z: distance * Math.cos(angle),
                     y: 300
                 });
+                
+                // Animate pulsating stars (variable stars)
+                const sizes = stars.geometry.attributes.size.array;
+                pulsatingStars.forEach(star => {
+                    const pulse = Math.sin(time * star.speed + star.phase) * 0.5 + 0.5; // 0 to 1
+                    sizes[star.index] = star.baseSize * (0.7 + pulse * 0.6); // Pulsate 70% to 130% of base
+                });
+                stars.geometry.attributes.size.needsUpdate = true;
                 
                 // Animate comets
                 animateComets();
@@ -644,12 +727,19 @@
                 // Slow star rotation for depth
                 stars.rotation.y += 0.0001;
                 
+                // Very slow cluster rotation for depth
+                clusters.forEach((cluster, index) => {
+                    cluster.rotation.x += 0.00005 * (index % 2 ? 1 : -1);
+                    cluster.rotation.y += 0.00007 * (index % 2 ? -1 : 1);
+                });
+                
                 requestAnimationFrame(animate);
             }
             animate();
 
             console.log('🌌 Galaxy initialized with', nodes.length, 'topics');
-            console.log('✨ Starfield active: 2000 stars');
+            console.log('✨ Starfield: 3000 stars (' + pulsatingStars.length + ' pulsating)');
+            console.log('🌟 Star clusters: ' + clusterCount + ' distant clusters');
             console.log('☄️ Comets active:', cometCount);
         }
 
