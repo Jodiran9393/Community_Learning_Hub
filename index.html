@@ -10,6 +10,8 @@
     rel="stylesheet">
   <!-- Main CSS file -->
   <link rel="stylesheet" href="styles.css" />
+  <!-- Homepage Sections CSS -->
+  <link rel="stylesheet" href="css/homepage-sections.css" />
   <!-- Import Map -->
   <script type="importmap">
     {
@@ -109,20 +111,51 @@
       </div>
     </section>
 
-    <!-- Get Involved Section -->
-    <section class="post-involved">
-      <h2>Get Involved</h2>
-      <ul class="involved-list">
-        <li>Join the conversation in our forums and comment on posts.</li>
-        <li>Share your projects, ideas, and success stories with the community.</li>
-        <li>Provide feedback and suggestions to help us grow and improve.</li>
-        <li>Participate in upcoming events, workshops, and challenges.</li>
-      </ul>
+    <!-- Featured Learning Paths Section -->
+    <section class="featured-paths">
+      <h2>🛤️ Featured Learning Paths</h2>
+      <p class="section-subtitle">Proven learning sequences from our community</p>
+      <div id="learning-paths-container" class="paths-grid">
+        <!-- Populated by JavaScript -->
+        <div class="path-loading">Loading learning paths...</div>
+      </div>
     </section>
 
-    <!-- Closing Section -->
+    <!-- Topic Explorer Section -->
+    <section class="topic-explorer">
+      <h2>📚 Explore Topics by Category</h2>
+      <p class="section-subtitle">Browse our growing library of learning topics</p>
+      <div id="topic-categories-container" class="categories-grid">
+        <!-- Populated by JavaScript -->
+        <div class="categories-loading">Loading topics...</div>
+      </div>
+    </section>
+
+    <!-- Community Insights (Hybrid Approach) -->
+    <section class="community-insights">
+      <h2>🌍 Your Learning Context</h2>
+      <div id="learning-context-container" class="context-grid">
+        <!-- Populated by JavaScript based on user's topics -->
+      </div>
+    </section>
+
+    <!-- Platform Statistics -->
+    <section class="platform-stats">
+      <h2>📊 Platform at a Glance</h2>
+      <div id="stats-container" class="stats-grid">
+        <!-- Populated by JavaScript -->
+        <div class="stats-loading">Loading statistics...</div>
+      </div>
+    </section>
+
+    <!-- Closing CTA -->
     <section class="post-closing">
-      <p><strong>We can't wait to see what we'll build together!</strong></p>
+      <h2>Ready to Start Your Journey?</h2>
+      <p>Join our community of learners and start exploring the Knowledge Galaxy today.</p>
+      <div class="cta-buttons">
+        <a href="auth.html" class="cta-primary">Get Started Free</a>
+        <a href="#galaxy-hero" class="cta-secondary">Explore Galaxy</a>
+      </div>
     </section>
   </article>
 
@@ -181,6 +214,9 @@
   
   <!-- Learning Intelligence Cards -->
   <script src="js/intelligence-cards.js"></script>
+  
+  <!-- Homepage Content (Paths, Topics, Insights) -->
+  <script src="js/homepage-content.js"></script>
   
   <!-- Pass auth state to galaxy iframe -->
   <script>
