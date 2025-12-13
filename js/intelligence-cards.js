@@ -3,12 +3,17 @@
 // Transform mission cards into live data dashboards
 // ============================================
 
-(async function() {
-    if (!window.supabase) return;
+async function initIntelligenceCards() {
+    console.log('🧠 Intelligence Cards: Starting initialization...');
+    
+    if (!window.supabase) {
+        console.log('⚠️ Supabase not available yet');
+        return;
+    }
 
     const { data: { user } } = await window.supabase.auth.getUser();
     
-    console.log('🧠 Loading Learning Intelligence...');
+    console.log('🧠 Loading Learning Intelligence...', user ? 'User logged in' : 'Guest user');
 
     // ============================================
     // CARD 1: YOUR LEARNING JOURNEY
@@ -376,5 +381,13 @@
     });
 
     console.log('✨ Intelligence Cards Updated!');
+}
 
-})();
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initIntelligenceCards, 500); // Wait for Supabase to load
+    });
+} else {
+    setTimeout(initIntelligenceCards, 500);
+}
