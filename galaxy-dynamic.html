@@ -705,7 +705,7 @@
             
             function animate() {
                 time += 0.016; // ~60fps
-                angle += 0.002;
+                angle += 0.0005; // Slowed down 4x for comfortable viewing
                 
                 graph.cameraPosition({
                     x: distance * Math.sin(angle),
