@@ -496,9 +496,9 @@
                 // Random sizes: mostly small, some medium, few large (like real stars)
                 const rand = Math.random();
                 let size;
-                if (rand < 0.7) size = 3 + Math.random() * 3;      // 70% small stars (increased)
-                else if (rand < 0.95) size = 6 + Math.random() * 4; // 25% medium stars (increased)
-                else size = 10 + Math.random() * 8;                 // 5% bright stars (increased)
+                if (rand < 0.7) size = 4 + Math.random() * 4;      // 70% small stars (4-8)
+                else if (rand < 0.95) size = 8 + Math.random() * 6; // 25% medium stars (8-14)
+                else size = 14 + Math.random() * 10;                // 5% bright stars (14-24)
                 starSizes.push(size);
                 
                 // Slight color variation: white, blue-white, yellow-white
@@ -527,7 +527,7 @@
             starGeo.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
             
             const starMat = new THREE.PointsMaterial({ 
-                size: 2,
+                size: 3,  // Increased base size multiplier
                 vertexColors: true,
                 transparent: true,
                 opacity: 1.0,  // Full opacity
