@@ -329,6 +329,7 @@ class TopicPageLoader {
                     `<span class="cache-indicator fresh" title="Freshly generated">✨ Fresh</span>`;
 
                 container.innerHTML = `
+                ${html}
                 <div class="content-feedback-toolbar">
                     <button class="content-feedback-btn copy-content-btn" title="Copy all content">
                         <span class="icon">📋</span> Copy
@@ -342,7 +343,6 @@ class TopicPageLoader {
                         <span class="icon">👎</span>
                     </button>
                 </div>
-                ${html}
                 <div class="content-actions">
                     ${cacheIndicator}
                     <button class="regenerate-btn" onclick="window.topicPageLoader.generateContent(true)">
@@ -390,9 +390,20 @@ class TopicPageLoader {
      * Attach feedback handlers for generated content
      */
     attachContentFeedbackHandlers(content) {
-        const contentText = typeof content === 'object' ?
-            Object.values(content).map(s => s.title + '\n' + s.text).join('\n\n') :
-            content;
+        // Extract text from content object (values are markdown strings)
+        let contentText = '';
+        if (typeof content === 'object') {
+            if (content.rawContent) {
+                contentText = content.rawContent;
+            } else {
+                contentText = Object.entries(content)
+                    .filter(([key]) => typeof content[key] === 'string')
+                    .map(([key, value]) => value)
+                    .join('\n\n');
+            }
+        } else {
+            contentText = content || '';
+        }
 
         const copyBtn = document.querySelector('.copy-content-btn');
         const upvoteBtn = document.querySelector('.upvote-content-btn');
