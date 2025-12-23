@@ -98,11 +98,14 @@ const LLM_CONFIG = {
         // Determine which settings to use based on purpose
         let providerId, model, endpoint;
 
-        if (purpose === 'content' && settings.contentProvider) {
+        // Only use purpose-specific settings if dual mode is enabled
+        const dualModeEnabled = settings.dualModeEnabled === true;
+
+        if (dualModeEnabled && purpose === 'content' && settings.contentProvider) {
             providerId = settings.contentProvider;
             model = settings.contentModel;
             endpoint = settings.contentEndpoint;
-        } else if (purpose === 'chat' && settings.chatProvider) {
+        } else if (dualModeEnabled && purpose === 'chat' && settings.chatProvider) {
             providerId = settings.chatProvider;
             model = settings.chatModel;
             endpoint = settings.chatEndpoint;
