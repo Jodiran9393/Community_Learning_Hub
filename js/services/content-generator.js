@@ -76,6 +76,39 @@ class ContentGenerator {
             }
         }
 
+        // Check quota before generation
+        if (window.quotaManager) {
+            const quotaCheck = window.quotaManager.canUse('content');
+
+            if (!quotaCheck.allowed) {
+                if (quotaCheck.reason === 'email_required') {
+                    // Show email capture modal
+                    if (window.emailCaptureModal) {
+                        try {
+                            await window.emailCaptureModal.show({
+                                title: "🔓 Unlock AI-Generated Content",
+                                subtitle: "Enter your email to get 5 free AI-generated topic explanations per week.",
+                                buttonText: "Unlock Content →"
+                            });
+                            // Retry after email capture
+                            return this.generateTopicContent(topic, template, forceRegenerate);
+                        } catch (e) {
+                            return { success: false, error: 'Email required to generate content' };
+                        }
+                    }
+                    return { success: false, error: 'Please sign in to generate content' };
+                } else {
+                    // Quota exceeded
+                    const resetIn = window.quotaManager.getTimeUntilReset('content');
+                    return {
+                        success: false,
+                        error: `Content generation limit reached (5/week). Resets in ${resetIn}. Upgrade for unlimited access!`,
+                        quotaExceeded: true
+                    };
+                }
+            }
+        }
+
         console.log(`📝 Generating content for: ${topic.name}`);
 
         const prompt = this.buildPrompt(topic, template);
@@ -83,6 +116,11 @@ class ContentGenerator {
         try {
             const rawContent = await this.providers.generate(prompt, { purpose: 'content' });
             const structured = this.parseContent(rawContent, template);
+
+            // Record quota usage
+            if (window.quotaManager) {
+                window.quotaManager.recordUsage('content');
+            }
 
             // Cache the generated content
             this.cacheContent(topicId, structured);

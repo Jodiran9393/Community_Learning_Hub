@@ -896,6 +896,35 @@ class TopicChat {
 
         if ((!message && !hasAttachment) || this.isGenerating) return;
 
+        // Check quota before sending
+        if (window.quotaManager) {
+            const quotaCheck = window.quotaManager.canUse('chat');
+
+            if (!quotaCheck.allowed) {
+                if (quotaCheck.reason === 'email_required') {
+                    // Show email capture modal
+                    if (window.emailCaptureModal) {
+                        try {
+                            await window.emailCaptureModal.show({
+                                title: "💬 Unlock AI Chat",
+                                subtitle: "Enter your email to chat with AI about this topic (10 messages/day free).",
+                                buttonText: "Start Chatting →"
+                            });
+                            // Retry after email capture
+                            return this.sendMessage();
+                        } catch (e) {
+                            return; // User cancelled
+                        }
+                    }
+                } else {
+                    // Quota exceeded - show message
+                    const resetIn = window.quotaManager.getTimeUntilReset('chat');
+                    this.addMessageToUI(`❌ Daily chat limit reached (10/day). Resets in ${resetIn}. Upgrade for unlimited chat!`, 'assistant');
+                    return;
+                }
+            }
+        }
+
         // Build message with file info if attached
         let displayMessage = message;
         let promptMessage = message;
@@ -1008,6 +1037,11 @@ class TopicChat {
             // Add to history
             this.messages.push({ role: 'assistant', content: response });
             this.saveHistory();
+
+            // Record quota usage
+            if (window.quotaManager) {
+                window.quotaManager.recordUsage('chat');
+            }
 
             // Add follow-up suggestions
             this.addFollowUpSuggestions();
