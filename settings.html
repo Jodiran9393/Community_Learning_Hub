@@ -440,6 +440,10 @@
                         <input type="text" id="content-model" placeholder="gpt-4o">
                     </div>
                 </div>
+                <button class="btn btn-secondary" onclick="testContentConnection()" style="margin-top: 12px;">
+                    🔌 Test Content Model
+                </button>
+                <div id="content-test-status" class="status-message" style="margin-top: 8px;"></div>
             </div>
 
             <!-- Chat Provider (when dual mode enabled) -->
@@ -463,6 +467,10 @@
                         <input type="text" id="chat-model" placeholder="gpt-4o-mini">
                     </div>
                 </div>
+                <button class="btn btn-secondary" onclick="testChatConnection()" style="margin-top: 12px;">
+                    🔌 Test Chat Model
+                </button>
+                <div id="chat-test-status" class="status-message" style="margin-top: 8px;"></div>
             </div>
 
             <div class="button-row" id="dual-mode-save-row" style="display: none; margin-top: 20px;">
@@ -850,6 +858,44 @@
             setTimeout(() => {
                 statusEl.style.display = 'none';
             }, 4000);
+        }
+
+        async function testContentConnection() {
+            const statusEl = document.getElementById('content-test-status');
+            statusEl.className = 'status-message info';
+            statusEl.textContent = '🔄 Testing content model...';
+            statusEl.style.display = 'block';
+
+            // Save settings first
+            saveDualModeSettings();
+
+            try {
+                const result = await window.llmProviders.generate('Say "Content model works!" in exactly those words.', { purpose: 'content' });
+                statusEl.className = 'status-message success';
+                statusEl.textContent = '✅ Content model connected: ' + result.substring(0, 50);
+            } catch (error) {
+                statusEl.className = 'status-message error';
+                statusEl.textContent = '❌ Content model error: ' + error.message;
+            }
+        }
+
+        async function testChatConnection() {
+            const statusEl = document.getElementById('chat-test-status');
+            statusEl.className = 'status-message info';
+            statusEl.textContent = '🔄 Testing chat model...';
+            statusEl.style.display = 'block';
+
+            // Save settings first
+            saveDualModeSettings();
+
+            try {
+                const result = await window.llmProviders.generate('Say "Chat model works!" in exactly those words.', { purpose: 'chat' });
+                statusEl.className = 'status-message success';
+                statusEl.textContent = '✅ Chat model connected: ' + result.substring(0, 50);
+            } catch (error) {
+                statusEl.className = 'status-message error';
+                statusEl.textContent = '❌ Chat model error: ' + error.message;
+            }
         }
 
         // Add dual mode loading to init
