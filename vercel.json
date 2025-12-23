@@ -1,39 +1,8 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "api/**/*.js",
-            "use": "@vercel/node"
-        },
-        {
-            "src": "**/*.html",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "**/*.css",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "js/**/*.js",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "data/**/*",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "css/**/*",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "pages/**/*",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "ai-builder/**/*",
-            "use": "@vercel/static"
-        }
-    ],
+    "framework": null,
+    "buildCommand": null,
+    "outputDirectory": null,
     "routes": [
         {
             "src": "/api/(.*)",
