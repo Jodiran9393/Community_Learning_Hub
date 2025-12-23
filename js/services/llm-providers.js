@@ -1,11 +1,15 @@
 /**
  * LLM Providers - Abstraction layer for different LLM APIs
  * Supports Ollama (local), OpenAI, Anthropic, and custom endpoints
+ * In production, routes through /api/chat proxy for secure API key handling
  */
 
 class LLMProviders {
     constructor() {
         this.config = window.LLM_CONFIG;
+        // Detect if we're in production (not localhost)
+        this.isProduction = !window.location.hostname.includes('localhost') &&
+            !window.location.hostname.includes('127.0.0.1');
     }
 
     /**
@@ -17,7 +21,12 @@ class LLMProviders {
     async generate(prompt, options = {}) {
         const provider = this.config.getActiveProvider();
         const hasImage = !!options.imageData;
-        console.log(`🤖 Using LLM provider: ${provider.name} (${provider.model})${hasImage ? ' [with image]' : ''}`);
+        console.log(`🤖 Using LLM provider: ${provider.name} (${provider.model})${hasImage ? ' [with image]' : ''}${this.isProduction ? ' [via proxy]' : ''}`);
+
+        // In production, use the secure proxy for cloud providers
+        if (this.isProduction && (provider.id === 'openai' || provider.id === 'anthropic')) {
+            return this.generateViaProxy(prompt, provider, options);
+        }
 
         switch (provider.id) {
             case 'ollama':
@@ -30,6 +39,38 @@ class LLMProviders {
                 return this.generateOpenAI(prompt, provider, options); // Assume OpenAI-compatible
             default:
                 throw new Error(`Unknown provider: ${provider.id}`);
+        }
+    }
+
+    /**
+     * Generate via secure server-side proxy (production only)
+     * API keys are stored on the server, not in the browser
+     */
+    async generateViaProxy(prompt, provider, options) {
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    provider: provider.id,
+                    prompt: prompt,
+                    model: options.model || provider.model,
+                    imageData: options.imageData || null
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Proxy request failed');
+            }
+
+            const data = await response.json();
+            return data.response;
+        } catch (error) {
+            console.error('Proxy error:', error);
+            throw error;
         }
     }
 
