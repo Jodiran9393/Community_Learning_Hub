@@ -53,6 +53,11 @@ class TopicPageLoader {
                 window.topicChat.init(this.topic);
             }
 
+            // Show quota status indicator
+            if (window.quotaStatusIndicator) {
+                window.quotaStatusIndicator.render();
+            }
+
         } catch (error) {
             console.error('Failed to load topic:', error);
             this.showError('Failed to load topic. Please try again.');
