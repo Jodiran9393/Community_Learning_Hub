@@ -96,41 +96,128 @@ class ContentGenerator {
 
     /**
      * Build the prompt using topic_card_template
+     * Enhanced for in-depth, comprehensive educational content
      */
     buildPrompt(topic, template) {
         const sections = template?.sections || [
-            'What it is (2-4 sentences)',
-            'Why it matters (2-3 bullets)',
-            'Key ideas (5-8 bullets)',
-            'Common misconceptions (3 bullets)',
-            'Worked example',
-            'Practice (3 questions with answers)',
-            'Proof task (measurable activity)'
+            'What it is (comprehensive explanation)',
+            'Why it matters (real-world impact)',
+            'Core concepts (detailed breakdown)',
+            'Common misconceptions (with corrections)',
+            'Worked example (step-by-step)',
+            'Practice challenges (progressive difficulty)',
+            'Proof task (portfolio-worthy project)'
         ];
 
         const prerequisites = topic.prerequisites?.join(', ') || 'None';
+        const difficulty = topic.difficulty_level || 1;
+        const difficultyLabel = ['Beginner', 'Elementary', 'Intermediate', 'Advanced', 'Expert'][difficulty - 1] || 'Beginner';
 
-        const prompt = `${template?.prompt_skeleton || 'Generate a Topic Card for {topic.name}. Keep it practical and beginner-friendly.'}
+        const prompt = `You are an expert educator creating comprehensive learning content for a self-paced online learning platform. Your goal is to create content that truly teaches and transforms learners, not just provides surface-level information.
 
+=== TOPIC INFORMATION ===
 Topic: ${topic.name}
 Description: ${topic.description || 'No description provided'}
 Category: ${topic.category || 'general'}
-Difficulty: ${topic.difficulty_level || 1}/5
-Estimated Time: ${topic.estimated_hours || 2} hours
+Difficulty Level: ${difficultyLabel} (${difficulty}/5)
+Estimated Study Time: ${topic.estimated_hours || 2} hours
 Prerequisites: ${prerequisites}
 
-Generate learning content with the following sections. Use markdown formatting. Be practical and engaging.
+=== CONTENT REQUIREMENTS ===
 
-${sections.map((s, i) => `## ${i + 1}. ${s}`).join('\n')}
+Generate comprehensive learning content following this structure. Write as an expert mentor who genuinely wants the learner to succeed. Be thorough, practical, and engaging.
 
-Important guidelines:
-- Be concise but thorough
-- Include practical, real-world examples
-- Make the worked example hands-on and copyable
-- Practice questions should test understanding, not memorization
-- The proof task should be something the learner can actually build or do
-- Use code blocks with syntax highlighting where appropriate
-- Format for web display (markdown)`;
+## 1. What It Is (Comprehensive Explanation)
+Write 4-6 detailed paragraphs that:
+- Define the concept clearly with proper technical terminology
+- Explain the historical context or origin (why was this created/developed?)
+- Describe how it fits into the broader ecosystem/field
+- Compare and contrast with related concepts to clarify boundaries
+- Use analogies from everyday life to make abstract concepts tangible
+- Explain what problem this solves and for whom
+
+## 2. Why It Matters (Real-World Impact)
+Write a compelling section that:
+- Lists 5-7 specific real-world applications with concrete examples
+- Explains career relevance (what jobs use this? how does it help?)
+- Quantifies the impact where possible (adoption rates, industry statistics)
+- Describes what becomes possible once you master this
+- Connects to current industry trends and future directions
+- Motivates the learner by showing the "before and after" of knowing this
+
+## 3. Core Concepts (Detailed Breakdown)
+For each of 6-10 key concepts:
+- **Concept Name**: One-line definition
+- Detailed explanation (2-3 paragraphs each)
+- How it connects to other concepts
+- Common patterns and best practices
+- Anti-patterns to avoid
+- Code snippet or example if applicable
+Structure this as interconnected knowledge, not isolated facts.
+
+## 4. Common Misconceptions (With Corrections)
+Address 5-7 misconceptions that learners commonly have:
+- State the misconception clearly (what people wrongly believe)
+- Explain why it seems reasonable to believe this
+- Provide the correct understanding with evidence
+- Give an example that demonstrates the correct approach
+- Explain the consequences of the misconception in practice
+
+## 5. Worked Example (Step-by-Step Tutorial)
+Create a comprehensive, practical example that:
+- Starts with a realistic problem statement
+- Lists what you'll need (tools, setup, prerequisites)
+- Walks through the solution in 8-15 detailed steps
+- Explains the "why" behind each step, not just the "what"
+- Includes complete, working code with extensive comments
+- Shows the expected output/result at key checkpoints
+- Addresses common errors and how to fix them
+- Suggests variations to try after completing the base example
+
+## 6. Practice Challenges (Progressive Difficulty)
+Create 5 practice challenges that build on each other:
+
+**Challenge 1 (Warm-up)**: [Easy - tests basic understanding]
+**Challenge 2 (Foundation)**: [Easy-Medium - combines 2 concepts]
+**Challenge 3 (Application)**: [Medium - real-world scenario]
+**Challenge 4 (Problem-Solving)**: [Medium-Hard - requires research/thinking]
+**Challenge 5 (Mastery)**: [Hard - stretches understanding]
+
+For each challenge, provide:
+- Clear problem statement
+- Hints (hidden in spoiler format)
+- Detailed solution with explanation
+- Extension ideas for further practice
+
+## 7. Proof Task (Portfolio-Worthy Project)
+Design a substantial project that:
+- Takes 2-4 hours to complete properly
+- Produces something the learner can show others
+- Integrates multiple concepts from this topic
+- Has clear acceptance criteria (how do you know you're done?)
+- Includes bonus challenges for ambitious learners
+- Suggests how to present this in a portfolio or interview
+
+=== FORMATTING GUIDELINES ===
+- Use markdown formatting throughout
+- Use \`\`\`language for code blocks with appropriate syntax highlighting
+- Use **bold** for key terms when first introduced
+- Use bullet points for lists, numbered lists for sequences
+- Use blockquotes > for important callouts or tips
+- Structure content with clear visual hierarchy
+- Include emojis sparingly to highlight section transitions
+- Aim for ${topic.estimated_hours || 2} hours worth of study material
+
+=== QUALITY STANDARDS ===
+- Write like you're mentoring a motivated learner one-on-one
+- Anticipate questions and answer them proactively
+- Connect abstract concepts to concrete applications
+- Use first-person plural ("we") to create collaborative feeling
+- Balance breadth (covering all key aspects) with depth (explaining thoroughly)
+- Every code example must be complete and runnable
+- Include context that helps learners remember and apply knowledge
+
+Generate the complete content now:`;
 
         return prompt;
     }
@@ -149,15 +236,24 @@ Important guidelines:
             const header = parts[i]?.trim().toLowerCase().replace(/[^a-z\s]/g, '').trim();
             const content = parts[i + 1]?.trim() || '';
 
-            // Normalize header names
-            if (header.includes('what it is')) sections.whatItIs = content;
-            else if (header.includes('why it matters')) sections.whyItMatters = content;
-            else if (header.includes('key ideas')) sections.keyIdeas = content;
-            else if (header.includes('misconception')) sections.misconceptions = content;
-            else if (header.includes('example')) sections.workedExample = content;
-            else if (header.includes('practice')) sections.practice = content;
-            else if (header.includes('proof') || header.includes('task')) sections.proofTask = content;
-            else if (header.includes('next')) sections.nextSteps = content;
+            // Normalize header names (support both old and new formats)
+            if (header.includes('what it is') || header.includes('comprehensive explanation')) {
+                sections.whatItIs = content;
+            } else if (header.includes('why it matters') || header.includes('real-world impact')) {
+                sections.whyItMatters = content;
+            } else if (header.includes('core concept') || header.includes('key ideas') || header.includes('detailed breakdown')) {
+                sections.coreConcepts = content;
+            } else if (header.includes('misconception') || header.includes('with corrections')) {
+                sections.misconceptions = content;
+            } else if (header.includes('worked example') || header.includes('step-by-step')) {
+                sections.workedExample = content;
+            } else if (header.includes('practice') || header.includes('challenge')) {
+                sections.practice = content;
+            } else if (header.includes('proof') || header.includes('portfolio')) {
+                sections.proofTask = content;
+            } else if (header.includes('next')) {
+                sections.nextSteps = content;
+            }
         }
 
         // If parsing failed, return raw content
@@ -179,10 +275,10 @@ Important guidelines:
         const sections = [
             { key: 'whatItIs', title: '📖 What It Is', icon: '📖' },
             { key: 'whyItMatters', title: '💡 Why It Matters', icon: '💡' },
-            { key: 'keyIdeas', title: '🎯 Key Ideas', icon: '🎯' },
+            { key: 'coreConcepts', title: '🎯 Core Concepts', icon: '🎯' },
             { key: 'misconceptions', title: '⚠️ Common Misconceptions', icon: '⚠️' },
             { key: 'workedExample', title: '💻 Worked Example', icon: '💻' },
-            { key: 'practice', title: '✏️ Practice Questions', icon: '✏️' },
+            { key: 'practice', title: '✏️ Practice Challenges', icon: '✏️' },
             { key: 'proofTask', title: '🏆 Proof Task', icon: '🏆' }
         ];
 
