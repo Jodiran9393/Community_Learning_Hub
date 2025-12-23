@@ -1067,23 +1067,48 @@ class TopicChat {
     }
 
     /**
-     * Record feedback for AI responses
-     */
-    recordFeedback(type, content, vote) {
-        console.log(`📊 Feedback recorded: ${type} - ${vote}`);
-        // Store feedback locally for now
-        try {
-            const feedbackKey = 'clh_ai_feedback';
-            const existing = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
-            existing.push({
+ * Record feedback for AI responses
+ */
+    async recordFeedback(type, content, vote) {
+        // Use new feedback service if available
+        if (window.feedbackService) {
+            const feedbackData = {
                 type,
                 vote,
-                contentPreview: content.substring(0, 100),
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem(feedbackKey, JSON.stringify(existing.slice(-50))); // Keep last 50
-        } catch (e) {
-            console.warn('Could not save feedback:', e);
+                contentPreview: content,
+                topicId: this.currentTopic?.id,
+                model: window.LLM_CONFIG?.getProviderFor('chat')?.model,
+                provider: window.LLM_CONFIG?.getProviderFor('chat')?.id
+            };
+
+            // Show downvote modal for detailed feedback
+            if (vote === 'downvote') {
+                try {
+                    const { reason, customFeedback } = await window.feedbackService.showDownvoteModal();
+                    feedbackData.reason = reason;
+                    feedbackData.customFeedback = customFeedback;
+                } catch (e) {
+                    if (e === 'cancelled') return; // User cancelled
+                }
+            }
+
+            await window.feedbackService.submitFeedback(feedbackData);
+        } else {
+            // Fallback to localStorage only
+            console.log(`📊 Feedback recorded: ${type} - ${vote}`);
+            try {
+                const feedbackKey = 'clh_ai_feedback';
+                const existing = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+                existing.push({
+                    type,
+                    vote,
+                    contentPreview: content.substring(0, 100),
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem(feedbackKey, JSON.stringify(existing.slice(-50)));
+            } catch (e) {
+                console.warn('Could not save feedback:', e);
+            }
         }
     }
     /**

@@ -428,20 +428,52 @@ class TopicPageLoader {
     /**
      * Record feedback for AI content
      */
-    recordFeedback(type, vote) {
-        console.log(`📊 Content feedback: ${type} - ${vote}`);
-        try {
-            const feedbackKey = 'clh_ai_feedback';
-            const existing = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
-            existing.push({
+    async recordFeedback(type, vote) {
+        // Use new feedback service if available
+        if (window.feedbackService) {
+            const feedbackData = {
                 type,
                 vote,
                 topicId: this.topic?.id,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem(feedbackKey, JSON.stringify(existing.slice(-50)));
-        } catch (e) {
-            console.warn('Could not save feedback:', e);
+                model: window.LLM_CONFIG?.getProviderFor('content')?.model,
+                provider: window.LLM_CONFIG?.getProviderFor('content')?.id
+            };
+
+            // Show downvote modal with regenerate option
+            if (vote === 'downvote') {
+                try {
+                    const { reason, customFeedback } = await window.feedbackService.showDownvoteModal({
+                        showRegenerate: true
+                    });
+                    feedbackData.reason = reason;
+                    feedbackData.customFeedback = customFeedback;
+                } catch (e) {
+                    if (e === 'cancelled') return;
+                    if (e === 'regenerate') {
+                        // User chose to regenerate
+                        this.generateContent(true);
+                        return;
+                    }
+                }
+            }
+
+            await window.feedbackService.submitFeedback(feedbackData);
+        } else {
+            // Fallback
+            console.log(`📊 Content feedback: ${type} - ${vote}`);
+            try {
+                const feedbackKey = 'clh_ai_feedback';
+                const existing = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+                existing.push({
+                    type,
+                    vote,
+                    topicId: this.topic?.id,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem(feedbackKey, JSON.stringify(existing.slice(-50)));
+            } catch (e) {
+                console.warn('Could not save feedback:', e);
+            }
         }
     }
 
