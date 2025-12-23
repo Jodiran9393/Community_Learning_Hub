@@ -329,14 +329,30 @@ class TopicPageLoader {
                     `<span class="cache-indicator fresh" title="Freshly generated">✨ Fresh</span>`;
 
                 container.innerHTML = `
-                    ${html}
-                    <div class="content-actions">
-                        ${cacheIndicator}
-                        <button class="regenerate-btn" onclick="window.topicPageLoader.generateContent(true)">
-                            🔄 Regenerate Content
-                        </button>
-                    </div>
-                `;
+                <div class="content-feedback-toolbar">
+                    <button class="content-feedback-btn copy-content-btn" title="Copy all content">
+                        <span class="icon">📋</span> Copy
+                    </button>
+                    <div class="feedback-divider"></div>
+                    <span class="feedback-label">Was this helpful?</span>
+                    <button class="content-feedback-btn upvote-content-btn" title="Helpful">
+                        <span class="icon">👍</span>
+                    </button>
+                    <button class="content-feedback-btn downvote-content-btn" title="Not helpful">
+                        <span class="icon">👎</span>
+                    </button>
+                </div>
+                ${html}
+                <div class="content-actions">
+                    ${cacheIndicator}
+                    <button class="regenerate-btn" onclick="window.topicPageLoader.generateContent(true)">
+                        🔄 Regenerate Content
+                    </button>
+                </div>
+            `;
+
+                // Add feedback handlers
+                this.attachContentFeedbackHandlers(result.content);
             } else {
                 // Show error
                 container.innerHTML = `
@@ -370,6 +386,64 @@ class TopicPageLoader {
         }
     }
 
+    /**
+     * Attach feedback handlers for generated content
+     */
+    attachContentFeedbackHandlers(content) {
+        const contentText = typeof content === 'object' ?
+            Object.values(content).map(s => s.title + '\n' + s.text).join('\n\n') :
+            content;
+
+        const copyBtn = document.querySelector('.copy-content-btn');
+        const upvoteBtn = document.querySelector('.upvote-content-btn');
+        const downvoteBtn = document.querySelector('.downvote-content-btn');
+
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(contentText);
+                copyBtn.querySelector('.icon').textContent = '✓';
+                setTimeout(() => {
+                    copyBtn.querySelector('.icon').textContent = '📋';
+                }, 2000);
+            });
+        }
+
+        if (upvoteBtn) {
+            upvoteBtn.addEventListener('click', () => {
+                upvoteBtn.classList.toggle('active');
+                downvoteBtn?.classList.remove('active');
+                this.recordFeedback('content', 'upvote');
+            });
+        }
+
+        if (downvoteBtn) {
+            downvoteBtn.addEventListener('click', () => {
+                downvoteBtn.classList.toggle('active');
+                upvoteBtn?.classList.remove('active');
+                this.recordFeedback('content', 'downvote');
+            });
+        }
+    }
+
+    /**
+     * Record feedback for AI content
+     */
+    recordFeedback(type, vote) {
+        console.log(`📊 Content feedback: ${type} - ${vote}`);
+        try {
+            const feedbackKey = 'clh_ai_feedback';
+            const existing = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+            existing.push({
+                type,
+                vote,
+                topicId: this.topic?.id,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem(feedbackKey, JSON.stringify(existing.slice(-50)));
+        } catch (e) {
+            console.warn('Could not save feedback:', e);
+        }
+    }
 
     /**
      * Mark topic as complete

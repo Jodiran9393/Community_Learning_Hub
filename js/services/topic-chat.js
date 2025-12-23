@@ -837,6 +837,49 @@ class TopicChat {
                 border-radius: 8px;
                 margin-bottom: 8px;
             }
+
+            /* Message Feedback Icons */
+            .message-feedback {
+                display: flex;
+                gap: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .feedback-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                height: 32px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.05);
+                cursor: pointer;
+                transition: all 0.2s;
+                font-size: 14px;
+            }
+
+            .feedback-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .feedback-btn.active {
+                background: rgba(76, 139, 245, 0.2);
+                border-color: #4c8bf5;
+            }
+
+            .feedback-btn.upvote-btn.active {
+                background: rgba(74, 222, 128, 0.2);
+                border-color: #4ade80;
+            }
+
+            .feedback-btn.downvote-btn.active {
+                background: rgba(248, 113, 113, 0.2);
+                border-color: #f87171;
+            }
         `;
 
         document.head.appendChild(styles);
@@ -959,8 +1002,8 @@ class TopicChat {
     }
 
     /**
-     * Add a message to the chat UI
-     */
+ * Add a message to the chat UI
+ */
     addMessageToUI(content, role) {
         const messagesContainer = document.getElementById('chat-messages');
         if (!messagesContainer) return;
@@ -971,7 +1014,51 @@ class TopicChat {
 
         const messageEl = document.createElement('div');
         messageEl.className = `chat-message ${role}`;
-        messageEl.innerHTML = role === 'assistant' ? this.formatMessage(content) : content;
+
+        // Create message content
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.innerHTML = role === 'assistant' ? this.formatMessage(content) : content;
+        messageEl.appendChild(contentDiv);
+
+        // Add feedback icons for assistant messages
+        if (role === 'assistant') {
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'message-feedback';
+            feedbackDiv.innerHTML = `
+            <button class="feedback-btn copy-btn" title="Copy">
+                <span class="icon">📋</span>
+            </button>
+            <button class="feedback-btn upvote-btn" title="Helpful">
+                <span class="icon">👍</span>
+            </button>
+            <button class="feedback-btn downvote-btn" title="Not helpful">
+                <span class="icon">👎</span>
+            </button>
+        `;
+            messageEl.appendChild(feedbackDiv);
+
+            // Add click handlers
+            feedbackDiv.querySelector('.copy-btn').addEventListener('click', () => {
+                navigator.clipboard.writeText(content);
+                feedbackDiv.querySelector('.copy-btn .icon').textContent = '✓';
+                setTimeout(() => {
+                    feedbackDiv.querySelector('.copy-btn .icon').textContent = '📋';
+                }, 2000);
+            });
+
+            feedbackDiv.querySelector('.upvote-btn').addEventListener('click', (e) => {
+                e.target.closest('.upvote-btn').classList.toggle('active');
+                feedbackDiv.querySelector('.downvote-btn').classList.remove('active');
+                this.recordFeedback('chat', content, 'upvote');
+            });
+
+            feedbackDiv.querySelector('.downvote-btn').addEventListener('click', (e) => {
+                e.target.closest('.downvote-btn').classList.toggle('active');
+                feedbackDiv.querySelector('.upvote-btn').classList.remove('active');
+                this.recordFeedback('chat', content, 'downvote');
+            });
+        }
 
         messagesContainer.appendChild(messageEl);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -979,6 +1066,26 @@ class TopicChat {
         return messageEl;
     }
 
+    /**
+     * Record feedback for AI responses
+     */
+    recordFeedback(type, content, vote) {
+        console.log(`📊 Feedback recorded: ${type} - ${vote}`);
+        // Store feedback locally for now
+        try {
+            const feedbackKey = 'clh_ai_feedback';
+            const existing = JSON.parse(localStorage.getItem(feedbackKey) || '[]');
+            existing.push({
+                type,
+                vote,
+                contentPreview: content.substring(0, 100),
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem(feedbackKey, JSON.stringify(existing.slice(-50))); // Keep last 50
+        } catch (e) {
+            console.warn('Could not save feedback:', e);
+        }
+    }
     /**
      * Generate a response using the LLM
      */
