@@ -220,7 +220,7 @@
                 const clickedGroup = intersects[0].object.parent;
                 const node = clickedGroup.userData;
                 if (node) {
-                    window.parent.postMessage({ type: 'NODE_CLICK', node: JSON.parse(JSON.stringify(node)) }, '*');
+                    window.parent.postMessage({ type: 'NODE_CLICK', node: JSON.parse(JSON.stringify(node)) }, window.location.origin);
                 }
             }
         });

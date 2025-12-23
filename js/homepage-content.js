@@ -33,14 +33,14 @@ async function renderLearningPaths() {
 
     // Get pathway completion stats from database
     let pathStats = {};
-    if (window.supabase) {
+    if (window.sb) {
         try {
-            const { data: pathways } = await window.supabase
+            const { data: pathways } = await window.sb
                 .from('learning_pathways')
                 .select('pathway_name, COUNT(*) as count')
                 .group('pathway_name')
                 .limit(10);
-            
+
             if (pathways) {
                 pathways.forEach(p => pathStats[p.pathway_name] = p.count);
             }
@@ -52,7 +52,7 @@ async function renderLearningPaths() {
     const pathsHTML = FEATURED_PATHS.map(path => {
         const completions = pathStats[path.name] || Math.floor(Math.random() * 50) + 10;
         const topicsList = path.topics.join(' → ');
-        
+
         return `
             <div class="learning-path-card" style="border-left: 4px solid ${path.color};">
                 <div class="path-icon">${path.icon}</div>
@@ -79,94 +79,259 @@ function startPath(pathName) {
 // Topic Explorer by Category
 async function renderTopicExplorer() {
     const container = document.getElementById('topic-categories-container');
-    if (!container || !window.supabase) {
-        if (container) {
-            container.innerHTML = '<p>Loading topics requires authentication...</p>';
+    if (!container) return;
+
+    // Category metadata (used by both DB and fallback)
+    const categoryMeta = {
+        web: { name: "Web Development", icon: "🌐", color: "#FF6B6B" },
+        ai: { name: "AI & Machine Learning", icon: "🤖", color: "#FF8E53" },
+        backend: { name: "Backend Development", icon: "⚙️", color: "#ff6b6b" },
+        design: { name: "Design & UX", icon: "🎨", color: "#FFD93D" },
+        devops: { name: "DevOps & Cloud", icon: "☁️", color: "#51cf66" },
+        mobile: { name: "Mobile Development", icon: "📱", color: "#ffd43b" },
+        data: { name: "Data Analytics", icon: "📊", color: "#4dabf7" }
+    };
+
+    // Try database first, then fallback to JSON
+    let topics = [];
+
+    if (window.sb) {
+        try {
+            const { data, error } = await window.sb
+                .from('learning_topics')
+                .select('id, name, category, difficulty_level, icon_emoji, resource_page_url')
+                .eq('is_published', true)
+                .order('display_order');
+
+            if (!error && data && data.length > 0) {
+                topics = data;
+            } else {
+                console.warn('DB topics unavailable, using JSON fallback:', error?.message);
+            }
+        } catch (error) {
+            console.warn('DB query failed, using JSON fallback:', error);
         }
+    }
+
+    // Fallback: Load from AI Builder JSON files
+    if (topics.length === 0) {
+        try {
+            const trackFiles = [
+                { file: 'AI Builder/track_frontend_web_dev.json', category: 'web' },
+                { file: 'AI Builder/track_ai_llms_builder_agents.json', category: 'ai' },
+                { file: 'AI Builder/track_data_analytics.json', category: 'data' }
+            ];
+
+            for (const track of trackFiles) {
+                try {
+                    const response = await fetch(track.file);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.topics) {
+                            data.topics.forEach(topic => {
+                                topics.push({
+                                    id: topic.id,
+                                    name: topic.name,
+                                    category: track.category,
+                                    difficulty_level: topic.difficulty_level || 1,
+                                    icon_emoji: topic.icon_emoji || '📚',
+                                    resource_page_url: `/topic.html?id=${topic.id}`
+                                });
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`Could not load ${track.file}:`, e);
+                }
+            }
+        } catch (fallbackError) {
+            console.error('JSON fallback also failed:', fallbackError);
+        }
+    }
+
+    if (topics.length === 0) {
+        container.innerHTML = '<p>No topics available yet. Check back soon!</p>';
         return;
     }
 
-    try {
-        // Load topics from database grouped by category
-        const { data: topics, error } = await window.supabase
-            .from('learning_topics')
-            .select('id, name, category, difficulty_level, icon_emoji, resource_page_url')
-            .eq('is_published', true)
-            .order('display_order');
+    // Group topics by category
+    const categories = {};
+    topics.forEach(topic => {
+        if (!categories[topic.category]) {
+            categories[topic.category] = [];
+        }
+        categories[topic.category].push(topic);
+    });
 
-        if (error) throw error;
+    // Store categories globally for modal access
+    window.topicCategories = categories;
+    window.categoryMeta = categoryMeta;
 
-        // Group topics by category
-        const categories = {};
-        topics.forEach(topic => {
-            if (!categories[topic.category]) {
-                categories[topic.category] = [];
-            }
-            categories[topic.category].push(topic);
-        });
+    // Helper to render topic chips
+    function renderTopicChip(topic) {
+        const stars = '⭐'.repeat(topic.difficulty_level || 1);
+        return `
+            <a href="${topic.resource_page_url || '#'}" class="topic-chip">
+                ${topic.icon_emoji || '📚'} ${topic.name}
+                <span class="topic-difficulty">${stars}</span>
+            </a>
+        `;
+    }
 
-        // Category metadata
-        const categoryMeta = {
-            web: { name: "Web Development", icon: "🌐", color: "#4c8bf5" },
-            ai: { name: "AI & Machine Learning", icon: "🤖", color: "#d367c1" },
-            backend: { name: "Backend Development", icon: "⚙️", color: "#ff6b6b" },
-            design: { name: "Design & UX", icon: "🎨", color: "#a060ff" },
-            devops: { name: "DevOps & Cloud", icon: "☁️", color: "#51cf66" },
-            mobile: { name: "Mobile Development", icon: "📱", color: "#ffd43b" }
-        };
+    // Render categories (show first 6 with "Show all" button)
+    const categoriesHTML = Object.entries(categories).map(([catId, catTopics]) => {
+        const meta = categoryMeta[catId] || { name: catId, icon: "📚", color: "#888" };
+        const displayTopics = catTopics.slice(0, 6);
+        const hasMore = catTopics.length > 6;
 
-        // Render categories
-        const categoriesHTML = Object.entries(categories).map(([catId, catTopics]) => {
-            const meta = categoryMeta[catId] || { name: catId, icon: "📚", color: "#888" };
-            const topicsHTML = catTopics.slice(0, 6).map(topic => {
-                const stars = '⭐'.repeat(topic.difficulty_level || 1);
-                return `
-                    <a href="${topic.resource_page_url || '#'}" class="topic-chip">
-                        ${topic.icon_emoji || '📚'} ${topic.name}
-                        <span class="topic-difficulty">${stars}</span>
-                    </a>
-                `;
-            }).join('');
+        const topicsHTML = displayTopics.map(renderTopicChip).join('');
 
-            const remaining = catTopics.length - 6;
-            const moreHTML = remaining > 0 ? `<span class="more-topics">+${remaining} more</span>` : '';
-
-            return `
-                <div class="category-card" style="border-top: 3px solid ${meta.color};">
-                    <div class="category-header">
-                        <span class="category-icon">${meta.icon}</span>
-                        <h3>${meta.name}</h3>
-                        <span class="category-count">${catTopics.length} topics</span>
-                    </div>
-                    <div class="category-topics">
-                        ${topicsHTML}
-                        ${moreHTML}
-                    </div>
+        return `
+            <div class="category-card" style="border-top: 3px solid ${meta.color};">
+                <div class="category-header">
+                    <span class="category-icon">${meta.icon}</span>
+                    <h3>${meta.name}</h3>
+                    <span class="category-count">${catTopics.length} topics</span>
                 </div>
+                <div class="category-topics">
+                    ${topicsHTML}
+                    ${hasMore ? `
+                        <button class="show-more-btn" onclick="openTopicModal('${catId}')" style="
+                            background: linear-gradient(90deg, ${meta.color}, ${meta.color}cc);
+                            border: none;
+                            color: white;
+                            padding: 10px 20px;
+                            border-radius: 25px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            margin-top: 10px;
+                            transition: all 0.3s;
+                            box-shadow: 0 4px 15px ${meta.color}44;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            Show all ${catTopics.length} topics →
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = categoriesHTML;
+
+    // Create modal container if it doesn't exist
+    if (!document.getElementById('topic-modal')) {
+        const modalHTML = `
+            <div id="topic-modal" style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10000;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                box-sizing: border-box;
+            " onclick="closeTopicModal(event)">
+                <div id="topic-modal-content" style="
+                    background: white;
+                    border-radius: 20px;
+                    max-width: 900px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    padding: 30px;
+                    position: relative;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+                " onclick="event.stopPropagation()">
+                    <button onclick="closeTopicModal()" style="
+                        position: absolute;
+                        top: 15px;
+                        right: 20px;
+                        background: none;
+                        border: none;
+                        font-size: 28px;
+                        cursor: pointer;
+                        color: #666;
+                    ">×</button>
+                    <div id="topic-modal-body"></div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    // Modal functions
+    window.openTopicModal = function (catId) {
+        const modal = document.getElementById('topic-modal');
+        const body = document.getElementById('topic-modal-body');
+        const catTopics = window.topicCategories[catId] || [];
+        const meta = window.categoryMeta[catId] || { name: catId, icon: "📚", color: "#888" };
+
+        const topicsGrid = catTopics.map(topic => {
+            const stars = '⭐'.repeat(topic.difficulty_level || 1);
+            return `
+                <a href="${topic.resource_page_url || '#'}" class="modal-topic-chip" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 12px 16px;
+                    background: #f8f9fa;
+                    border-radius: 12px;
+                    text-decoration: none;
+                    color: #333;
+                    transition: all 0.2s;
+                    border: 1px solid #eee;
+                " onmouseover="this.style.background='${meta.color}11'; this.style.borderColor='${meta.color}'" 
+                   onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#eee'">
+                    <span style="font-size: 24px;">${topic.icon_emoji || '📚'}</span>
+                    <div>
+                        <div style="font-weight: 600;">${topic.name}</div>
+                        <div style="font-size: 12px; color: #888;">${stars}</div>
+                    </div>
+                </a>
             `;
         }).join('');
 
-        container.innerHTML = categoriesHTML || '<p>No topics available yet.</p>';
-    } catch (error) {
-        console.error('Error loading topics:', error);
-        container.innerHTML = '<p>Error loading topics. Please try again later.</p>';
-    }
+        body.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid ${meta.color}22;">
+                <span style="font-size: 48px;">${meta.icon}</span>
+                <div>
+                    <h2 style="margin: 0; color: ${meta.color};">${meta.name}</h2>
+                    <p style="margin: 5px 0 0; color: #666;">${catTopics.length} topics available</p>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+                ${topicsGrid}
+            </div>
+        `;
+
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeTopicModal = function (event) {
+        const modal = document.getElementById('topic-modal');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    };
 }
 
 // Community Insights (Hybrid - Privacy-First)
 async function renderCommunityInsights() {
     const container = document.getElementById('learning-context-container');
-    if (!container || !window.supabase) return;
+    if (!container || !window.sb) return;
 
     try {
-        const { data: { user } } = await window.supabase.auth.getUser();
+        const { data: { user } } = await window.sb.auth.getUser();
 
         let insightsHTML = '';
 
         if (user) {
             try {
                 // Get user's current topics
-                const { data: userProgress } = await window.supabase
+                const { data: userProgress } = await window.sb
                     .from('user_progress')
                     .select('node_id, status')
                     .eq('user_id', user.id)
@@ -174,10 +339,10 @@ async function renderCommunityInsights() {
 
                 if (userProgress && userProgress.length > 0) {
                     const currentTopic = userProgress.find(p => p.status === 'in_progress')?.node_id;
-                    
+
                     if (currentTopic) {
                         // Get context for current topic (may fail if table doesn't exist yet)
-                        const { data: topicStats } = await window.supabase
+                        const { data: topicStats } = await window.sb
                             .from('node_stats')
                             .select('*')
                             .eq('node_id', currentTopic)
@@ -213,7 +378,7 @@ async function renderCommunityInsights() {
 
         // Always show aggregate milestones (anonymous)
         try {
-            const { count } = await window.supabase
+            const { count } = await window.sb
                 .from('user_progress')
                 .select('*', { count: 'exact', head: true })
                 .eq('status', 'completed')
@@ -244,7 +409,7 @@ async function renderCommunityInsights() {
 // Platform Statistics
 async function renderPlatformStats() {
     const container = document.getElementById('stats-container');
-    if (!container || !window.supabase) return;
+    if (!container || !window.sb) return;
 
     // Default values in case queries fail
     let completions = 0;
@@ -255,10 +420,10 @@ async function renderPlatformStats() {
     try {
         // Try to get statistics (may fail due to RLS)
         const [progressRes, completionRes, topicsRes, activeRes] = await Promise.allSettled([
-            window.supabase.from('user_progress').select('id', { count: 'exact', head: true }),
-            window.supabase.from('user_progress').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
-            window.supabase.from('learning_topics').select('id', { count: 'exact', head: true }).eq('is_published', true),
-            window.supabase.from('user_progress').select('user_id', { count: 'exact', head: true })
+            window.sb.from('user_progress').select('id', { count: 'exact', head: true }),
+            window.sb.from('user_progress').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
+            window.sb.from('learning_topics').select('id', { count: 'exact', head: true }).eq('is_published', true),
+            window.sb.from('user_progress').select('user_id', { count: 'exact', head: true })
                 .gte('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
         ]);
 

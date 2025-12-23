@@ -1,0 +1,756 @@
+{
+  "track_id": "Frontend_Web_Dev",
+  "name": "Frontend Web Development",
+  "category": "web",
+  "version": "v1.1",
+  "updated_at": "2025-12-15T02:52:27Z",
+  "notes": {
+    "scope": "Day-1 curated backbone (finite).",
+    "onboarding": "User must pick exactly one outcome_id; placement targets that outcome's capstones."
+  },
+  "outcomes": [
+    {
+      "id": "responsive_websites",
+      "label": "Responsive Websites (HTML/CSS/A11y)",
+      "capstones": [
+        "Responsive",
+        "Accessibility",
+        "Performance",
+        "DeployWeb"
+      ],
+      "diagnostic_topic_ids": [
+        "HTML",
+        "CSS",
+        "Responsive",
+        "Accessibility",
+        "Performance",
+        "DeployWeb"
+      ]
+    },
+    {
+      "id": "interactive_apps",
+      "label": "Interactive Web Apps (JS/DOM/APIs)",
+      "capstones": [
+        "DOM",
+        "Events",
+        "Fetch",
+        "DevTools"
+      ],
+      "diagnostic_topic_ids": [
+        "JS",
+        "DOM",
+        "Events",
+        "Async",
+        "Fetch",
+        "DevTools"
+      ]
+    },
+    {
+      "id": "react_builder",
+      "label": "React App Builder (Ship Modern UI)",
+      "capstones": [
+        "React",
+        "State",
+        "Routing",
+        "Forms"
+      ],
+      "diagnostic_topic_ids": [
+        "JS",
+        "NPM",
+        "React",
+        "State",
+        "Routing",
+        "Forms"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "WebIntro",
+      "name": "How the Web Works",
+      "slug": "how-the-web-works",
+      "category": "web",
+      "difficulty_level": 1,
+      "estimated_hours": 1.5,
+      "prerequisites": [],
+      "description": "HTTP, browsers, client/server, basic mental model.",
+      "icon_emoji": "\ud83c\udf0d",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "HTML",
+      "name": "HTML Fundamentals",
+      "slug": "html-fundamentals",
+      "category": "web",
+      "difficulty_level": 1,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "WebIntro"
+      ],
+      "description": "Semantic structure and document layout.",
+      "icon_emoji": "\ud83e\uddf1",
+      "color_hex": "#FFD56E",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "CSS",
+      "name": "CSS Fundamentals",
+      "slug": "css-fundamentals",
+      "category": "web",
+      "difficulty_level": 2,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "HTML"
+      ],
+      "description": "Selectors, box model, layout basics.",
+      "icon_emoji": "\ud83c\udfa8",
+      "color_hex": "#B68CFF",
+      "node_size": 36,
+      "is_published": true
+    },
+    {
+      "id": "Responsive",
+      "name": "Responsive Design",
+      "slug": "responsive-design",
+      "category": "web",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "CSS"
+      ],
+      "description": "Media queries, fluid layouts, mobile-first.",
+      "icon_emoji": "\ud83d\udcf1",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Accessibility",
+      "name": "Accessibility Basics",
+      "slug": "accessibility-basics",
+      "category": "web",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "HTML",
+        "CSS"
+      ],
+      "description": "A11y semantics, contrast, keyboard nav.",
+      "icon_emoji": "\u267f",
+      "color_hex": "#7CFF6E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Git",
+      "name": "Git & Version Control (Basics)",
+      "slug": "git-version-control-basics",
+      "category": "web",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [],
+      "description": "Commits, branches, collaboration.",
+      "icon_emoji": "\ud83d\udd27",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "JS",
+      "name": "JavaScript Fundamentals",
+      "slug": "javascript-fundamentals",
+      "category": "web",
+      "difficulty_level": 2,
+      "estimated_hours": 3.5,
+      "prerequisites": [
+        "WebIntro"
+      ],
+      "description": "Variables, functions, arrays/objects, control flow.",
+      "icon_emoji": "\ud83d\udfe8",
+      "color_hex": "#FFD56E",
+      "node_size": 40,
+      "is_published": true
+    },
+    {
+      "id": "DOM",
+      "name": "DOM Manipulation",
+      "slug": "dom-manipulation",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "JS",
+        "HTML"
+      ],
+      "description": "Select elements, update UI, templates.",
+      "icon_emoji": "\ud83e\uddec",
+      "color_hex": "#FF8BD4",
+      "node_size": 34,
+      "is_published": true
+    },
+    {
+      "id": "Events",
+      "name": "Events & User Interaction",
+      "slug": "events-user-interaction",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DOM"
+      ],
+      "description": "Event listeners, bubbling, forms.",
+      "icon_emoji": "\ud83d\uddb1\ufe0f",
+      "color_hex": "#FF8BD4",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Async",
+      "name": "Async JavaScript (Promises/async-await)",
+      "slug": "async-javascript-promises-async-await",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "JS"
+      ],
+      "description": "Async flow; errors; concurrency basics.",
+      "icon_emoji": "\u23f3",
+      "color_hex": "#6EE7FF",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "Fetch",
+      "name": "Fetching Data (fetch/API)",
+      "slug": "fetching-data-fetch-api",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Async"
+      ],
+      "description": "Calling APIs; JSON; handling errors.",
+      "icon_emoji": "\ud83d\udce1",
+      "color_hex": "#6EE7FF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "DevTools",
+      "name": "Browser DevTools & Debugging",
+      "slug": "browser-devtools-debugging",
+      "category": "web",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "JS"
+      ],
+      "description": "Console, network tab, performance snapshots.",
+      "icon_emoji": "\ud83d\udee0\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "NPM",
+      "name": "npm & Package Basics",
+      "slug": "npm-package-basics",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "JS"
+      ],
+      "description": "Dependencies, scripts, semantic versioning.",
+      "icon_emoji": "\ud83d\udce6",
+      "color_hex": "#6EE7FF",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "Bundlers",
+      "name": "Build Tools (Vite/Webpack) Basics",
+      "slug": "build-tools-vite-webpack-basics",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "NPM"
+      ],
+      "description": "Bundling, dev server, builds.",
+      "icon_emoji": "\ud83c\udfd7\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "Testing",
+      "name": "Frontend Testing Basics",
+      "slug": "frontend-testing-basics",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "JS"
+      ],
+      "description": "Unit tests, integration, test mindset.",
+      "icon_emoji": "\ud83e\uddea",
+      "color_hex": "#FF6E6E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Performance",
+      "name": "Web Performance Basics",
+      "slug": "web-performance-basics",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "DevTools"
+      ],
+      "description": "Loading, rendering, measuring improvements.",
+      "icon_emoji": "\u26a1",
+      "color_hex": "#FFD56E",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "Security",
+      "name": "Frontend Security Basics",
+      "slug": "frontend-security-basics",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "JS"
+      ],
+      "description": "XSS, CSRF basics, safe rendering.",
+      "icon_emoji": "\ud83d\udd12",
+      "color_hex": "#FF6E6E",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "TypeScript",
+      "name": "TypeScript (Intro)",
+      "slug": "typescript-intro",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "JS"
+      ],
+      "description": "Types for safety and scale.",
+      "icon_emoji": "\ud83d\udd37",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "React",
+      "name": "React Fundamentals",
+      "slug": "react-fundamentals",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 4.0,
+      "prerequisites": [
+        "JS",
+        "NPM"
+      ],
+      "description": "Components, props, JSX.",
+      "icon_emoji": "\u269b\ufe0f",
+      "color_hex": "#7CFF6E",
+      "node_size": 44,
+      "is_published": true
+    },
+    {
+      "id": "State",
+      "name": "State & Hooks",
+      "slug": "state-hooks",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "React"
+      ],
+      "description": "useState/useEffect mental model.",
+      "icon_emoji": "\ud83e\ude9d",
+      "color_hex": "#7CFF6E",
+      "node_size": 36,
+      "is_published": true
+    },
+    {
+      "id": "Routing",
+      "name": "Routing (React Router)",
+      "slug": "routing-react-router",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "React"
+      ],
+      "description": "Client-side routing, params, navigation.",
+      "icon_emoji": "\ud83e\udded",
+      "color_hex": "#7CFF6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Forms",
+      "name": "Forms & Validation",
+      "slug": "forms-validation",
+      "category": "web",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "React",
+        "Events"
+      ],
+      "description": "Controlled inputs, validation patterns.",
+      "icon_emoji": "\ud83e\uddfe",
+      "color_hex": "#FF8BD4",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Styling",
+      "name": "Styling Systems (CSS Modules/Tailwind)",
+      "slug": "styling-systems-css-modules-tailwind",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "CSS"
+      ],
+      "description": "Scalable CSS approaches.",
+      "icon_emoji": "\ud83e\uddf5",
+      "color_hex": "#B68CFF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "DeployWeb",
+      "name": "Deploying Frontend Apps",
+      "slug": "deploying-frontend-apps",
+      "category": "web",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "Bundlers",
+        "Git"
+      ],
+      "description": "Build artifacts, hosting, env vars.",
+      "icon_emoji": "\ud83d\ude80",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    }
+  ],
+  "relationships": [
+    {
+      "from_topic": "WebIntro",
+      "to_topic": "HTML",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "HTML",
+      "to_topic": "CSS",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "CSS",
+      "to_topic": "Responsive",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "HTML",
+      "to_topic": "Accessibility",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "CSS",
+      "to_topic": "Accessibility",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "WebIntro",
+      "to_topic": "JS",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "DOM",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "HTML",
+      "to_topic": "DOM",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DOM",
+      "to_topic": "Events",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "Async",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Async",
+      "to_topic": "Fetch",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "DevTools",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "NPM",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "NPM",
+      "to_topic": "Bundlers",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "Testing",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DevTools",
+      "to_topic": "Performance",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "Security",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "TypeScript",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "JS",
+      "to_topic": "React",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "NPM",
+      "to_topic": "React",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "React",
+      "to_topic": "State",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "React",
+      "to_topic": "Routing",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "React",
+      "to_topic": "Forms",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Events",
+      "to_topic": "Forms",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "CSS",
+      "to_topic": "Styling",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Bundlers",
+      "to_topic": "DeployWeb",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Git",
+      "to_topic": "DeployWeb",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Accessibility",
+      "to_topic": "Responsive",
+      "relationship_type": "related",
+      "strength": 6
+    },
+    {
+      "from_topic": "TypeScript",
+      "to_topic": "React",
+      "relationship_type": "related",
+      "strength": 6
+    },
+    {
+      "from_topic": "Styling",
+      "to_topic": "React",
+      "relationship_type": "related",
+      "strength": 6
+    }
+  ],
+  "diagnostic": {
+    "estimated_minutes": 10,
+    "core_confidence_sliders": [
+      {
+        "topic_id": "HTML",
+        "prompt": "How confident are you with semantic HTML?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "CSS",
+        "prompt": "How confident are you with layout (flex/grid)?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "JS",
+        "prompt": "How confident are you with JS fundamentals?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "DevTools",
+        "prompt": "How confident are you debugging in DevTools?",
+        "scale": "0-5"
+      }
+    ],
+    "core_micro_quiz": [
+      {
+        "id": "fe_core_1",
+        "topic_id": "HTML",
+        "prompt": "Semantic HTML primarily helps with\u2026",
+        "options": [
+          "making colors brighter",
+          "accessibility and meaning",
+          "increasing CPU speed",
+          "avoiding CSS"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "fe_core_2",
+        "topic_id": "Async",
+        "prompt": "async/await is syntax for working with\u2026",
+        "options": [
+          "CSS selectors",
+          "Promises",
+          "HTML templates",
+          "Git branches"
+        ],
+        "correct_index": 1
+      }
+    ],
+    "outcome_micro_quiz_pool": [
+      {
+        "id": "fe_resp_1",
+        "outcome_id": "responsive_websites",
+        "topic_id": "Accessibility",
+        "prompt": "Keyboard accessibility requires\u2026",
+        "options": [
+          "mouse-only UI",
+          "focusable controls + visible focus",
+          "only ARIA labels",
+          "no semantic HTML"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "fe_inter_1",
+        "outcome_id": "interactive_apps",
+        "topic_id": "Events",
+        "prompt": "Event bubbling means\u2026",
+        "options": [
+          "events only fire once",
+          "events propagate up the DOM tree",
+          "events skip handlers",
+          "events require React"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "fe_react_1",
+        "outcome_id": "react_builder",
+        "topic_id": "State",
+        "prompt": "In React, state is\u2026",
+        "options": [
+          "CSS styling",
+          "data that drives re-rendering",
+          "a database table",
+          "a browser API"
+        ],
+        "correct_index": 1
+      }
+    ]
+  },
+  "topic_card_template": {
+    "mode": "evidence_first",
+    "retrieval_policy": {
+      "min_sources": 3,
+      "prefer": [
+        "official_docs",
+        "standards",
+        "peer_reviewed",
+        "reputable_org_blogs"
+      ],
+      "avoid": [
+        "paywalled_fulltext",
+        "scraped_long_passages"
+      ],
+      "cache_ttl_hours": 72
+    },
+    "sections": [
+      "What it is (2\u20134 sentences, cited)",
+      "Why it matters (1\u20132 bullets, cited where factual)",
+      "Key ideas (5\u20138 bullets, cited)",
+      "Common misconceptions (3 bullets, cited)",
+      "Worked example (original, can cite concepts)",
+      "Practice (3 questions + answers)",
+      "Proof task (measurable output)",
+      "Next nodes (and why, based on prereqs)"
+    ],
+    "prompt_skeleton": "Generate a Topic Card for {topic.name}. Use ONLY provided evidence snippets for factual claims; cite like [1], [2]. Keep it practical."
+  }
+}

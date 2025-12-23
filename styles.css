@@ -9,6 +9,12 @@ body {
   /* Light background */
 }
 
+/* Warm Highlight Selection */
+::selection {
+  background: #FF8E53;
+  color: white;
+}
+
 h1,
 h2,
 h3 {
@@ -40,8 +46,8 @@ h3 {
 .post-header {
   text-align: center;
   padding: 2rem 1rem;
-  background: #e8f5ff;
-  /* Light colorful accent background (blue tint) */
+  background: #fff5eb;
+  /* Warm accent background (orange tint) */
   border-radius: 8px;
 }
 
@@ -91,8 +97,8 @@ h3 {
   bottom: -0.3em;
   width: 50px;
   height: 4px;
-  background: #4c8bf5;
-  /* Accent color for emphasis (blue) */
+  background: #FF6B6B;
+  /* Accent color for emphasis (Warm Orange/Red) */
 }
 
 .mission-items {
@@ -105,9 +111,9 @@ h3 {
 .mission-item {
   flex: 1;
   min-width: 220px;
-  background: #f9fbff;
-  /* Slightly tinted background for cards */
-  border: 1px solid #eee;
+  background: #fff8f0;
+  /* Slightly tinted warm background */
+  border: 1px solid #ffeacc;
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
@@ -133,11 +139,12 @@ h3 {
 /* Hover effect for mission cards (subtle lift and shadow) */
 .mission-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+  border-color: #FF8E53;
 }
 
 .mission-item:hover h3 {
-  color: #4c8bf5;
+  color: #FF6B6B;
   /* Change title color on hover to accent */
 }
 
@@ -157,9 +164,9 @@ h3 {
 }
 
 .involved-list li {
-  background: #e8f5ff;
+  background: #fff5eb;
   /* Light accent background for list items */
-  border: 1px solid #d0e9ff;
+  border: 1px solid #ffe0cc;
   border-radius: 5px;
   padding: 0.6rem 1rem;
   margin: 0.5rem 0;
@@ -168,7 +175,7 @@ h3 {
 
 /* Hover effect for list items */
 .involved-list li:hover {
-  background: #d0e9ff;
+  background: #ffe0cc;
 }
 
 /* Closing Section */
@@ -207,9 +214,10 @@ h3 {
   width: 100%;
   height: 60vh;
   position: relative;
-  background-color: #000005;
+  background-color: #0d1117;
   overflow: hidden;
-  border-bottom: 4px solid #4c8bf5;
+  border-bottom: 4px solid #FF8E53;
+  /* Warm Orange Border */
 }
 
 #galaxy-hero iframe {
@@ -229,24 +237,27 @@ h3 {
   text-align: left;
   pointer-events: none;
   z-index: 10;
-  max-width: 400px;
+  max-width: 500px;
 }
 
 .galaxy-overlay h1 {
-  font-size: 2.5rem;
-  background: linear-gradient(90deg, #4c8bf5, #d367c1);
+  font-size: 3rem;
+  background: linear-gradient(90deg, #FF6B6B, #FFD93D);
+  /* Sunset Gradient */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(76, 139, 245, 0.4);
+  text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
   margin: 0;
+  line-height: 1.2;
 }
 
 .galaxy-overlay p {
-  color: #aaccff;
-  font-size: 1.2rem;
-  margin-top: 10px;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  color: #fff0e0;
+  font-size: 1.3rem;
+  margin-top: 15px;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+  font-weight: 300;
 }
 
 /* Info Panel */
@@ -257,9 +268,10 @@ h3 {
   /* Hidden */
   width: 350px;
   height: 100vh;
-  background: rgba(10, 15, 30, 0.95);
+  background: rgba(20, 15, 10, 0.95);
+  /* Warmer dark background */
   backdrop-filter: blur(10px);
-  border-left: 1px solid #334466;
+  border-left: 1px solid #553322;
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
   transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1000;
@@ -280,14 +292,14 @@ h3 {
   right: 20px;
   background: none;
   border: none;
-  color: #666;
+  color: #aa8877;
   font-size: 1.5rem;
   cursor: pointer;
   transition: color 0.3s;
 }
 
 .panel-close:hover {
-  color: #fff;
+  color: #ffaa88;
 }
 
 .panel-content h2 {
@@ -297,14 +309,14 @@ h3 {
 
 .panel-content p {
   line-height: 1.6;
-  color: #aaccff;
+  color: #ffdcb0;
   font-size: 1.1rem;
 }
 
 .panel-btn {
   margin-top: 30px;
   padding: 12px 24px;
-  background: #4c8bf5;
+  background: #FF6B6B;
   color: white;
   border: none;
   border-radius: 4px;
@@ -313,13 +325,19 @@ h3 {
   text-transform: uppercase;
   letter-spacing: 1px;
   align-self: flex-start;
+  transition: background 0.3s;
+}
+
+.panel-btn:hover {
+  background: #ff4757;
 }
 
 /* --- NAVBAR STYLES --- */
 .navbar {
-  background: rgba(0, 0, 5, 0.95);
+  background: rgba(10, 5, 0, 0.95);
+  /* Deep warm black */
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 140, 66, 0.2);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -334,7 +352,8 @@ h3 {
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #4c8bf5, #d367c1);
+  background: linear-gradient(90deg, #FF6B6B, #FFD93D);
+  /* Sunset Gradient */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -366,13 +385,14 @@ h3 {
 }
 
 .nav-btn {
-  background: linear-gradient(90deg, #4c8bf5, #d367c1);
+  background: linear-gradient(90deg, #FF6B6B, #FF8E53);
   color: white;
+  box-shadow: 0 4px 10px rgba(255, 107, 107, 0.2);
 }
 
 .nav-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 139, 245, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
 }
 
 .nav-btn-outline {
@@ -382,13 +402,13 @@ h3 {
 }
 
 .nav-btn-outline:hover {
-  border-color: #4c8bf5;
-  background: rgba(76, 139, 245, 0.1);
+  border-color: #FF8E53;
+  background: rgba(255, 142, 83, 0.1);
 }
 
 .nav-btn-text {
   background: none;
-  color: #aaccff;
+  color: #ffccaa;
 }
 
 .nav-btn-text:hover {
@@ -415,22 +435,23 @@ h3 {
 }
 
 .nav-dropdown-btn:hover {
-  border-color: #4c8bf5;
-  background: rgba(76, 139, 245, 0.1);
+  border-color: #FF8E53;
+  background: rgba(255, 142, 83, 0.1);
 }
 
 .nav-dropdown-content {
   display: none !important;
   position: absolute;
-  background: rgba(20, 20, 30, 0.98);
+  background: rgba(25, 15, 10, 0.98);
+  /* Warm dark bg */
   backdrop-filter: blur(10px);
   min-width: 200px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   border-radius: 8px;
   z-index: 1001;
   margin-top: 0;
   padding-top: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 140, 66, 0.2);
   max-height: 400px;
   overflow-y: auto;
   left: 0;
@@ -448,7 +469,7 @@ h3 {
 }
 
 .nav-dropdown-content a {
-  color: white;
+  color: #ffecd1;
   padding: 12px 20px;
   text-decoration: none;
   display: block;
@@ -457,9 +478,10 @@ h3 {
 }
 
 .nav-dropdown-content a:hover {
-  background: rgba(76, 139, 245, 0.2);
-  border-left-color: #4c8bf5;
+  background: rgba(255, 107, 107, 0.15);
+  border-left-color: #FF6B6B;
   padding-left: 24px;
+  color: #fff;
 }
 
 .nav-dropdown:hover .nav-dropdown-content {
@@ -476,12 +498,12 @@ h3 {
 }
 
 .nav-dropdown-content::-webkit-scrollbar-thumb {
-  background: rgba(76, 139, 245, 0.5);
+  background: rgba(255, 107, 107, 0.5);
   border-radius: 10px;
 }
 
 .nav-dropdown-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(76, 139, 245, 0.8);
+  background: rgba(255, 107, 107, 0.8);
 }
 
 @media (max-width: 768px) {

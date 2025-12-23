@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +12,7 @@
             background: radial-gradient(ellipse at bottom, #0d1117 0%, #000000 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
-        
+
         #galaxy-container {
             width: 100vw;
             height: 100vh;
@@ -102,7 +103,7 @@
             transform: translateY(-2px);
         }
 
-        /* Legend */
+        /* Legend - hidden when in iframe */
         #legend {
             position: absolute;
             bottom: 20px;
@@ -114,6 +115,11 @@
             color: white;
             border: 1px solid rgba(76, 139, 245, 0.3);
             z-index: 100;
+        }
+
+        /* Hide legend when embedded in iframe */
+        body.in-iframe #legend {
+            display: none;
         }
 
         .legend-item {
@@ -152,14 +158,20 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div id="galaxy-container"></div>
-    
+
     <!-- Loading State -->
     <div id="loading">
         <div class="spinner"></div>
@@ -205,6 +217,14 @@
             <span>In Progress</span>
         </div>
         <div class="legend-item">
+            <div class="legend-dot" style="background: #ff66ff; box-shadow: 0 0 12px #ff66ff;"></div>
+            <span>Start Here</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #9966ff; box-shadow: 0 0 8px #9966ff;"></div>
+            <span>Your Path</span>
+        </div>
+        <div class="legend-item">
             <div class="legend-dot" style="background: #4488ff;"></div>
             <span>Not Started</span>
         </div>
@@ -213,14 +233,66 @@
     <!-- Load libraries (browser builds, not ES modules) -->
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="https://unpkg.com/3d-force-graph@1.73.1/dist/3d-force-graph.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- NOTE: Supabase client NOT loaded here - iframe receives auth via postMessage from parent -->
 
     <script>
+        // Detect if running in iframe and hide legend
+        if (window.self !== window.top) {
+            document.body.classList.add('in-iframe');
+        }
 
-        // Initialize Supabase
-        const supabaseUrl = 'https://mwkbezrdprlotddxegqo.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a2JlenJkcHJsb3RkZHhlZ3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0MTY5MzcsImV4cCI6MjA4MDk5MjkzN30.Dxo7rlXSB9zxIwsT-bUcXHSJJXMyJ7wqIPorObfB81o';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // The iframe does NOT create its own Supabase client
+        // Auth state is received via postMessage (see applyAuthState function below)
+        const sb = null; // Explicitly null - don't use Supabase in iframe
+
+        // Store recommended path from assessment
+        let recommendedPath = [];
+
+        // Load recommended path from localStorage
+        function loadRecommendedPath() {
+            try {
+                const result = localStorage.getItem('clh_assessment_result');
+                if (result) {
+                    const data = JSON.parse(result);
+                    recommendedPath = data.recommendedPath || [];
+                    console.log('🎯 Recommended path loaded:', recommendedPath);
+                }
+            } catch (e) {
+                console.warn('Could not load recommended path:', e);
+            }
+        }
+
+        async function applyAuthState(user) {
+            // Reload topics in the correct mode (demo vs auth)
+            await loadTopics();
+            loadRecommendedPath();
+            applyRecommendedToNodes();
+
+            if (graph) {
+                graph.graphData({ nodes, links: getValidatedLinks() });
+            }
+
+            // Skip progress loading if no supabase
+            // await loadProgress(user ?? null);
+            updateStats();
+        }
+
+        // Apply recommended status to nodes
+        function applyRecommendedToNodes() {
+            nodes.forEach(node => {
+                if (recommendedPath.includes(node.id)) {
+                    node.isRecommended = true;
+                    // Mark first recommended as "next"
+                    if (recommendedPath[0] === node.id) {
+                        node.isNext = true;
+                    }
+                }
+            });
+        }
+
+        // Wait for parent to send auth state instead of calling sb directly
+        // (sb is null, so we can't call sb.auth.getSession())
 
         let currentUser = null;
         let graph = null;
@@ -238,89 +310,61 @@
 
         // Load topics from database
         async function loadTopics() {
-            console.log('🔍 Attempting to load topics from database...');
-            try {
-                console.log('📡 Querying learning_topics table...');
-                const { data: topics, error } = await supabase
-                    .from('learning_topics')
-                    .select('*')
-                    .eq('is_published', true)
-                    .order('display_order');
-
-                console.log('📊 Query result:', { topics, error });
-
-                if (error) {
-                    console.error('❌ Failed to load topics:', error);
-                    console.error('Error details:', JSON.stringify(error, null, 2));
-                    return loadFallbackTopics();
-                }
-
-                if (!topics || topics.length === 0) {
-                    console.warn('⚠️ No topics found in database, using fallback');
-                    return loadFallbackTopics();
-                }
-
-                console.log(`✅ Loaded ${topics.length} topics from database:`, topics.map(t => t.name));
-                
-                // Convert to node format
-                nodes = topics.map(t => ({
-                    id: t.id,
-                    name: t.name,
-                    group: getCategoryGroup(t.category),
-                    val: t.node_size || 20,
-                    status: 'not_started',
-                    category: t.category,
-                    difficulty: t.difficulty_level,
-                    hours: t.estimated_hours,
-                    emoji: t.icon_emoji
-                }));
-
-                // Load relationships
-                const { data: relationships } = await supabase
-                    .from('topic_relationships')
-                    .select('from_topic, to_topic');
-
-                // Get all node IDs for validation
-                const nodeIds = new Set(nodes.map(n => n.id));
-
-                if (relationships && relationships.length > 0) {
-                    // Filter to only include links where both nodes exist
-                    links = relationships
-                        .filter(r => {
-                            const valid = r.from_topic && r.to_topic && 
-                                         nodeIds.has(r.from_topic) && nodeIds.has(r.to_topic);
-                            if (!valid) {
-                                console.warn(`⚠️ Skipping invalid link: ${r.from_topic} -> ${r.to_topic}`);
-                            }
-                            return valid;
-                        })
-                        .map(r => [r.from_topic, r.to_topic]);
-                    console.log(`✅ Loaded ${links.length} valid relationships (filtered from ${relationships.length})`);
-                } else {
-                    // Generate default links based on prerequisites
-                    console.log('📦 Generating links from prerequisites...');
-                    links = [];
-                    topics.forEach(t => {
-                        if (t.prerequisites && t.prerequisites.length > 0) {
-                            t.prerequisites.forEach(prereq => {
-                                if (nodeIds.has(prereq)) {
-                                    links.push([prereq, t.id]);
-                                } else {
-                                    console.warn(`⚠️ Prerequisite ${prereq} not found for ${t.id}`);
-                                }
-                            });
-                        }
-                    });
-                    console.log(`✅ Generated ${links.length} links from prerequisites`);
-                }
-
-                return { nodes, links };
-
-            } catch (err) {
-                console.error('Error loading topics:', err);
+            // If Supabase is not available (iframe mode), use fallback immediately
+            if (!sb) {
+                console.log('🌌 Galaxy running in iframe mode (no Supabase) - using fallback topics');
                 return loadFallbackTopics();
             }
+
+            const { data: { session } } = await sb.auth.getSession();
+            const isAuthed = !!session?.user;
+
+            const TOPICS_TABLE = isAuthed ? 'learning_topics' : 'demo_learning_topics';
+            const RELS_TABLE = isAuthed ? 'topic_relationships' : 'demo_topic_relationships';
+
+            console.log(`📡 Galaxy mode: ${isAuthed ? 'AUTH' : 'DEMO'} (${TOPICS_TABLE}/${RELS_TABLE})`);
+
+            // Topics
+            let q = sb.from(TOPICS_TABLE).select('*');
+            if (isAuthed) q = q.eq('is_published', true);
+
+            // Only order if column exists; safest approach is to try and ignore errors
+            const { data: topics, error } = await q.order('display_order', { ascending: true });
+
+            if (error || !topics?.length) {
+                console.warn('⚠️ Topics load failed or empty; using fallback.', error);
+                return loadFallbackTopics();
+            }
+
+            nodes = topics.map(t => ({
+                id: t.id,
+                name: t.name ?? String(t.id),
+                group: getCategoryGroup(t.category),
+                val: t.node_size || 20,
+                status: 'not_started',
+                category: t.category,
+                difficulty: t.difficulty_level,
+                hours: t.estimated_hours,
+                emoji: t.icon_emoji,
+                slug: (t.slug || t.id || '').toString()
+            }));
+
+            // Relationships (use RELS_TABLE for demo/auth mode)
+            const { data: relationships, error: relErr } = await sb
+                .from(RELS_TABLE)
+                .select('from_topic, to_topic');
+
+            if (relErr) console.warn('⚠️ Relationships load failed (continuing with no links):', relErr);
+
+            const nodeIds = new Set(nodes.map(n => n.id));
+            links = (relationships || [])
+                .filter(r => r.from_topic && r.to_topic && nodeIds.has(r.from_topic) && nodeIds.has(r.to_topic))
+                .map(r => [r.from_topic, r.to_topic]);
+
+            return { nodes, links };
         }
+
+
 
         // Fallback to hardcoded topics if database fails
         function loadFallbackTopics() {
@@ -379,7 +423,7 @@
 
             console.log('📊 Loading progress for user:', user.id);
 
-            const { data: progress, error } = await supabase
+            const { data: progress, error } = await sb
                 .from('user_progress')
                 .select('*')
                 .eq('user_id', user.id);
@@ -432,6 +476,10 @@
             // Load topics from database
             await loadTopics();
 
+            // Load recommended path from localStorage (no Supabase needed)
+            loadRecommendedPath();
+            applyRecommendedToNodes();
+
             // Hide loading
             document.getElementById('loading').style.display = 'none';
 
@@ -439,13 +487,13 @@
             updateStats();
 
             const elem = document.getElementById('galaxy-container');
-            
+
             // Get validated links
             const validLinks = getValidatedLinks();
             console.log(`🔗 Final links count: ${validLinks.length} (from ${links.length} raw links)`);
 
             graph = ForceGraph3D()(elem)
-                .graphData({ 
+                .graphData({
                     nodes: nodes,
                     links: validLinks
                 })
@@ -454,6 +502,8 @@
                 .nodeColor(node => {
                     if (node.status === 'completed') return '#00ff88';
                     if (node.status === 'in_progress') return '#ffdd00';
+                    if (node.isNext) return '#ff66ff'; // Pulsing magenta for next recommended
+                    if (node.isRecommended) return '#9966ff'; // Purple for recommended path
                     return '#4488ff';
                 })
                 .nodeOpacity(0.9)
@@ -462,13 +512,19 @@
                 .linkOpacity(0.3)
                 .backgroundColor('#000000')
                 .onNodeClick(node => {
-                    if (node.id === 'CLH') return;
-                    const url = `/pages/${node.id.toLowerCase()}.html`;
-                    if (window.parent !== window) {
-                        window.parent.location.href = url;
-                    } else {
-                        window.location.href = url;
+                    if (!node || node.id === 'CLH') return;
+
+                    const slug = (node.slug || '').toLowerCase();
+
+                    // If it doesn't look like one of your tables (React/JS/etc.), don't navigate.
+                    if (!slug || slug.length > 40) {
+                        window.parent?.postMessage({ type: 'NODE_CLICK', node }, window.location.origin);
+                        return;
                     }
+
+                    const url = `/pages/${slug}.html`;
+                    if (window.parent !== window) window.parent.location.href = url;
+                    else window.location.href = url;
                 })
                 .onNodeHover(node => {
                     elem.style.cursor = node && node.id !== 'CLH' ? 'pointer' : 'default';
@@ -485,14 +541,14 @@
             const starSizes = [];
             const starColors = [];
             const pulsatingStars = []; // Track which stars pulsate
-            
+
             // Create 3000 stars with varying sizes and brightness
             for (let i = 0; i < 3000; i++) {
                 const x = (Math.random() - 0.5) * 4000;
                 const y = (Math.random() - 0.5) * 4000;
                 const z = (Math.random() - 0.5) * 4000;
                 starVerts.push(x, y, z);
-                
+
                 // Random sizes: mostly small, some medium, few large (like real stars)
                 const rand = Math.random();
                 let size;
@@ -500,7 +556,7 @@
                 else if (rand < 0.95) size = 8 + Math.random() * 6; // 25% medium stars (8-14)
                 else size = 14 + Math.random() * 10;                // 5% bright stars (14-24)
                 starSizes.push(size);
-                
+
                 // Slight color variation: white, blue-white, yellow-white
                 const colorRand = Math.random();
                 if (colorRand < 0.7) {
@@ -521,12 +577,12 @@
                     });
                 }
             }
-            
+
             starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
             starGeo.setAttribute('size', new THREE.Float32BufferAttribute(starSizes, 1));
             starGeo.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
-            
-            const starMat = new THREE.PointsMaterial({ 
+
+            const starMat = new THREE.PointsMaterial({
                 size: 3,  // Increased base size multiplier
                 vertexColors: true,
                 transparent: true,
@@ -547,28 +603,28 @@
                 const clusterGeo = new THREE.BufferGeometry();
                 const clusterVerts = [];
                 const clusterColors = [];
-                
+
                 // Random cluster position (far away)
                 const centerX = (Math.random() - 0.5) * 6000;
                 const centerY = (Math.random() - 0.5) * 6000;
                 const centerZ = (Math.random() - 0.5) * 6000;
-                
+
                 // 30-50 stars per cluster
                 const starsInCluster = 30 + Math.floor(Math.random() * 20);
                 const clusterRadius = 100 + Math.random() * 100;
-                
+
                 for (let i = 0; i < starsInCluster; i++) {
                     // Stars clustered around center point
                     const theta = Math.random() * Math.PI * 2;
                     const phi = Math.random() * Math.PI;
                     const r = Math.random() * clusterRadius;
-                    
+
                     const x = centerX + r * Math.sin(phi) * Math.cos(theta);
                     const y = centerY + r * Math.sin(phi) * Math.sin(theta);
                     const z = centerZ + r * Math.cos(phi);
-                    
+
                     clusterVerts.push(x, y, z);
-                    
+
                     // Clusters have similar colored stars (same stellar age)
                     const clusterColor = Math.random();
                     if (clusterColor < 0.4) {
@@ -579,10 +635,10 @@
                         clusterColors.push(1, 0.9, 0.7); // Yellow/red cluster (old)
                     }
                 }
-                
+
                 clusterGeo.setAttribute('position', new THREE.Float32BufferAttribute(clusterVerts, 3));
                 clusterGeo.setAttribute('color', new THREE.Float32BufferAttribute(clusterColors, 3));
-                
+
                 const clusterMat = new THREE.PointsMaterial({
                     vertexColors: true,
                     size: 1.5,
@@ -591,7 +647,7 @@
                     opacity: 0.6,
                     blending: THREE.AdditiveBlending
                 });
-                
+
                 const cluster = new THREE.Points(clusterGeo, clusterMat);
                 scene.add(cluster);
                 clusters.push(cluster);
@@ -608,7 +664,7 @@
                 const radius = 2000;
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.random() * Math.PI;
-                
+
                 const startX = radius * Math.sin(phi) * Math.cos(theta);
                 const startY = radius * Math.sin(phi) * Math.sin(theta);
                 const startZ = radius * Math.cos(phi);
@@ -628,7 +684,7 @@
                 const cometGeometry = new THREE.BufferGeometry();
                 const cometPositions = [];
                 const tailLength = 50;
-                
+
                 for (let i = 0; i < 10; i++) {
                     const t = i / 9;
                     cometPositions.push(
@@ -637,16 +693,16 @@
                         startZ - direction.z * t * tailLength
                     );
                 }
-                
+
                 cometGeometry.setAttribute('position', new THREE.Float32BufferAttribute(cometPositions, 3));
-                
-                const cometMaterial = new THREE.LineBasicMaterial({ 
+
+                const cometMaterial = new THREE.LineBasicMaterial({
                     color: 0x00ccff,  // Brighter cyan
                     transparent: true,
                     opacity: 0.9,  // More visible
                     linewidth: 2  // Thicker lines
                 });
-                
+
                 const cometLine = new THREE.Line(cometGeometry, cometMaterial);
                 scene.add(cometLine);
 
@@ -669,10 +725,10 @@
             function animateComets() {
                 comets.forEach((comet, index) => {
                     comet.life++;
-                    
+
                     // Move comet
                     comet.position.add(comet.direction.clone().multiplyScalar(comet.speed));
-                    
+
                     // Update positions
                     const positions = comet.mesh.geometry.attributes.position.array;
                     const tailLength = 50;
@@ -683,14 +739,14 @@
                         positions[i * 3 + 2] = comet.position.z - comet.direction.z * t * tailLength;
                     }
                     comet.mesh.geometry.attributes.position.needsUpdate = true;
-                    
+
                     // Fade out near end of life
                     const fadeStart = comet.maxLife * 0.7;
                     if (comet.life > fadeStart) {
                         const fadeProgress = (comet.life - fadeStart) / (comet.maxLife - fadeStart);
                         comet.mesh.material.opacity = 0.6 * (1 - fadeProgress);
                     }
-                    
+
                     // Respawn if dead or too far
                     if (comet.life > comet.maxLife || comet.position.length() < 100) {
                         scene.remove(comet.mesh);
@@ -703,17 +759,17 @@
             const distance = 1000;
             let angle = 0;
             let time = 0;
-            
+
             function animate() {
                 time += 0.016; // ~60fps
                 angle += 0.0005; // Slowed down 4x for comfortable viewing
-                
+
                 graph.cameraPosition({
                     x: distance * Math.sin(angle),
                     z: distance * Math.cos(angle),
                     y: 300
                 });
-                
+
                 // Animate pulsating stars (variable stars)
                 const sizes = stars.geometry.attributes.size.array;
                 pulsatingStars.forEach(star => {
@@ -721,19 +777,19 @@
                     sizes[star.index] = star.baseSize * (0.5 + pulse * 1.0); // Pulsate 50% to 150% of base (more dramatic)
                 });
                 stars.geometry.attributes.size.needsUpdate = true;
-                
+
                 // Animate comets
                 animateComets();
-                
+
                 // Slow star rotation for depth
                 stars.rotation.y += 0.0001;
-                
+
                 // Very slow cluster rotation for depth
                 clusters.forEach((cluster, index) => {
                     cluster.rotation.x += 0.00005 * (index % 2 ? 1 : -1);
                     cluster.rotation.y += 0.00007 * (index % 2 ? -1 : 1);
                 });
-                
+
                 requestAnimationFrame(animate);
             }
             animate();
@@ -744,37 +800,43 @@
             console.log('☄️ Comets active:', cometCount);
         }
 
-        // Listen for auth state from parent
+
+        // Listen for auth state from parent (hardened)
         window.addEventListener('message', async (event) => {
-            if (event.data?.type === 'AUTH_STATE') {
-                await loadProgress(event.data.user);
-            } else if (event.data?.type === 'PROGRESS_UPDATED') {
-                if (currentUser) {
-                    await loadProgress(currentUser);
-                }
+            // Only accept messages from your own site
+            if (event.origin !== window.location.origin) return;
+
+            const msg = event.data || {};
+            if (msg.type === 'AUTH_STATE') {
+                await applyAuthState(msg.user ?? null); // <— replaces loadProgress(...)
+                return;
+            }
+
+            if (msg.type === 'PROGRESS_UPDATED') {
+                if (currentUser) await loadProgress(currentUser);
+                return;
             }
         });
 
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', initGalaxy);
 
         // Real-time subscription
-        if (window.supabase) {
-            supabase.channel('topic-changes')
-                .on('postgres_changes', {
-                    event: '*',
-                    schema: 'public',
-                    table: 'learning_topics'
-                }, async () => {
-                    console.log('🔄 Topics updated, reloading...');
+        async function startRealtimeIfAuthed() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session?.user) return; // demo mode => no realtime
+
+            sb.channel('topic-changes')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'learning_topics' }, async () => {
                     await loadTopics();
-                    if (graph) {
-                        graph.graphData({ nodes, links });
-                    }
+                    if (graph) graph.graphData({ nodes, links: getValidatedLinks() });
                     updateStats();
                 })
                 .subscribe();
         }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initGalaxy();
+            await startRealtimeIfAuthed();
+        });
 
         // Polling fallback
         setInterval(() => {
@@ -784,4 +846,5 @@
         }, 5000);
     </script>
 </body>
+
 </html>

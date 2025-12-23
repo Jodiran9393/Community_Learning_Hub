@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML5 Resources - Community Learning Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body data-node-id="HTML">
     <div class="resource-page">
         <a href="/" class="back-link">← Back to Hub</a>
-        
+
         <div class="page-header">
             <h1 style="color: #4c8bf5;">HTML5</h1>
             <p>The structural foundation of the web</p>
@@ -18,15 +21,20 @@
 
         <section class="resource-section">
             <h3>What is HTML?</h3>
-            <p>HTML (HyperText Markup Language) is the standard markup language for creating web pages. It describes the structure of a web page semantically and originally included cues for the appearance of the document.</p>
+            <p>HTML (HyperText Markup Language) is the standard markup language for creating web pages. It describes the
+                structure of a web page semantically and originally included cues for the appearance of the document.
+            </p>
         </section>
 
         <section class="resource-section">
             <h3>Learning Resources</h3>
             <ul class="resource-list">
-                <li><a href="https://developer.mozilla.org/en-US/docs/Learn/HTML" target="_blank">MDN HTML Learning</a> - Comprehensive HTML guide</li>
-                <li><a href="https://web.dev/learn/html/" target="_blank">web.dev HTML Course</a> - Modern HTML best practices</li>
-                <li><a href="https://www.w3schools.com/html/" target="_blank">W3Schools HTML</a> - Interactive examples and reference</li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Learn/HTML" target="_blank">MDN HTML Learning</a>
+                    - Comprehensive HTML guide</li>
+                <li><a href="https://web.dev/learn/html/" target="_blank">web.dev HTML Course</a> - Modern HTML best
+                    practices</li>
+                <li><a href="https://www.w3schools.com/html/" target="_blank">W3Schools HTML</a> - Interactive examples
+                    and reference</li>
             </ul>
         </section>
 
@@ -38,7 +46,8 @@
                 <li><strong>Links & Media:</strong> &lt;a&gt;, &lt;img&gt;, &lt;video&gt;, &lt;audio&gt;</li>
                 <li><strong>Lists:</strong> &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</li>
                 <li><strong>Forms:</strong> &lt;form&gt;, &lt;input&gt;, &lt;button&gt;, &lt;select&gt;</li>
-                <li><strong>Semantic HTML5:</strong> &lt;header&gt;, &lt;nav&gt;, &lt;main&gt;, &lt;article&gt;, &lt;section&gt;, &lt;footer&gt;</li>
+                <li><strong>Semantic HTML5:</strong> &lt;header&gt;, &lt;nav&gt;, &lt;main&gt;, &lt;article&gt;,
+                    &lt;section&gt;, &lt;footer&gt;</li>
             </ul>
         </section>
 
@@ -52,10 +61,11 @@
             </ul>
         </section>
         <!-- Mark Complete Button -->
-        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+        <div
+            style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
             <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning HTML5?</h3>
             <button id="mark-complete-btn" style="
-                background: linear-gradient(90px, #4c8bf5, #d367c1);
+                background: linear-gradient(90deg, #4c8bf5, #d367c1);
                 color: white;
                 border: none;
                 padding: 16px 40px;
@@ -66,16 +76,19 @@
                 transition: all 0.3s;
                 box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
             " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
                 ✅ Mark as Complete
             </button>
-            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up HTML5 in your Knowledge Galaxy! 🌟</p>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up HTML5 in your Knowledge
+                Galaxy! 🌟</p>
         </div>
     </div>
 
     <!-- Load Supabase and completion tracking -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+    <script src="/js/supabase-client.js?v=2"></script>
+    <script src="/js/learning-tracker.js"></script>
     <script src="/js/mark-complete.js"></script>
 </body>
+
 </html>

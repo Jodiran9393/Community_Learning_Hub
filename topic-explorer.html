@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Topics - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .explorer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4c8bf5;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            margin: 0 0 16px 0;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1, #7CFF6E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: #b8b9d6;
+            font-size: 18px;
+        }
+
+        .track-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .track-tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #b8b9d6;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .track-tab:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .track-tab.active {
+            border-color: var(--tab-color, #4c8bf5);
+            color: white;
+            background: var(--tab-bg, rgba(76, 139, 245, 0.1));
+        }
+
+        .track-tab[data-track="Frontend_Web_Dev"] {
+            --tab-color: #4c8bf5;
+            --tab-bg: rgba(76, 139, 245, 0.1);
+        }
+
+        .track-tab[data-track="AI_LLMs_Builder_Agents"] {
+            --tab-color: #7CFF6E;
+            --tab-bg: rgba(124, 255, 110, 0.1);
+        }
+
+        .track-tab[data-track="Data_Analytics"] {
+            --tab-color: #FFD56E;
+            --tab-bg: rgba(255, 213, 110, 0.1);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--card-color, #4c8bf5);
+            box-shadow: 0 8px 24px var(--card-glow, rgba(76, 139, 245, 0.2));
+        }
+
+        .topic-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .topic-emoji {
+            font-size: 28px;
+        }
+
+        .topic-name {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .topic-description {
+            color: #9495b3;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .topic-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #7a7b9d;
+        }
+
+        .topic-difficulty {
+            display: flex;
+            gap: 2px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b8b9d6;
+        }
+
+        .topic-stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4c8bf5;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #9495b3;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .track-tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .topic-stats-bar {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="explorer-container">
+        <a href="/" class="back-link">← Back to Hub</a>
+
+        <div class="page-header">
+            <h1>Explore All Topics</h1>
+            <p>74+ topics across 3 learning tracks</p>
+        </div>
+
+        <div class="topic-stats-bar" id="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="total-topics">-</div>
+                <div class="stat-label">Total Topics</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="completed-count">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-hours">-</div>
+                <div class="stat-label">Hours of Content</div>
+            </div>
+        </div>
+
+        <div class="track-tabs" id="track-tabs">
+            <button class="track-tab active" data-track="Frontend_Web_Dev">
+                🌐 Frontend Web Dev
+            </button>
+            <button class="track-tab" data-track="AI_LLMs_Builder_Agents">
+                🤖 AI & LLMs
+            </button>
+            <button class="track-tab" data-track="Data_Analytics">
+                📊 Data Analytics
+            </button>
+        </div>
+
+        <div id="topics-grid" class="topics-grid">
+            <div class="loading-state">Loading topics...</div>
+        </div>
+    </div>
+
+    <script src="/js/track-loader.js"></script>
+    <script>
+        let currentTrack = 'Frontend_Web_Dev';
+        let allTracks = null;
+
+        async function init() {
+            // Load all tracks
+            allTracks = await window.trackLoader.loadAllTracks();
+
+            // Calculate and display stats
+            updateStats();
+
+            // Render initial track
+            renderTopics(currentTrack);
+
+            // Attach tab listeners
+            document.querySelectorAll('.track-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.track-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentTrack = tab.dataset.track;
+                    renderTopics(currentTrack);
+                });
+            });
+        }
+
+        function updateStats() {
+            const allTopics = [
+                ...allTracks.frontend.topics,
+                ...allTracks.ai.topics,
+                ...allTracks.data.topics
+            ];
+
+            const totalHours = allTopics.reduce((sum, t) => sum + (t.estimated_hours || 0), 0);
+
+            document.getElementById('total-topics').textContent = allTopics.length;
+            document.getElementById('total-hours').textContent = Math.round(totalHours);
+        }
+
+        function renderTopics(trackId) {
+            const container = document.getElementById('topics-grid');
+            const trackMap = {
+                'Frontend_Web_Dev': allTracks.frontend,
+                'AI_LLMs_Builder_Agents': allTracks.ai,
+                'Data_Analytics': allTracks.data
+            };
+
+            const track = trackMap[trackId];
+            if (!track) {
+                container.innerHTML = '<div class="loading-state">Track not found.</div>';
+                return;
+            }
+
+            container.innerHTML = track.topics.map(topic => `
+                <a href="/topic.html?id=${topic.id}" class="topic-card" style="--card-color: ${topic.color_hex}; --card-glow: ${topic.color_hex}33;">
+                    <div class="topic-card-header">
+                        <span class="topic-emoji">${topic.icon_emoji || '📚'}</span>
+                        <span class="topic-name">${topic.name}</span>
+                    </div>
+                    <p class="topic-description">${topic.description}</p>
+                    <div class="topic-footer">
+                        <span class="topic-difficulty">${'⭐'.repeat(topic.difficulty_level || 1)}</span>
+                        <span class="topic-hours">${topic.estimated_hours || 2}h</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase Security Test</title>
+</head>
+<body>
+    <h1>Testing Public Access to Supabase</h1>
+    <div id="results"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://mwkbezrdprlotddxegqo.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a2JlenJkcHJsb3RkZHhlZ3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0MTY5MzcsImV4cCI6MjA4MDk5MjkzN30.Dxo7rlXSB9zxIwsT-bUcXHSJJXMyJ7wqIPorObfB81o';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const results = document.getElementById('results');
+
+        async function testAccess() {
+            results.innerHTML = '<h2>🔍 Testing Database Access...</h2>';
+
+            // Test 1: Read learning_topics
+            results.innerHTML += '<h3>Test 1: Reading learning_topics</h3>';
+            const { data: topics, error: topicsError } = await supabase
+                .from('learning_topics')
+                .select('*');
+            
+            if (topicsError) {
+                results.innerHTML += `<p>❌ Error: ${topicsError.message}</p>`;
+            } else {
+                results.innerHTML += `<p>✅ Can read ${topics.length} topics</p>`;
+                results.innerHTML += `<pre>${JSON.stringify(topics.slice(0, 2), null, 2)}</pre>`;
+            }
+
+            // Test 2: Read topic_relationships
+            results.innerHTML += '<h3>Test 2: Reading topic_relationships</h3>';
+            const { data: rels, error: relsError } = await supabase
+                .from('topic_relationships')
+                .select('*');
+            
+            if (relsError) {
+                results.innerHTML += `<p>❌ Error: ${relsError.message}</p>`;
+            } else {
+                results.innerHTML += `<p>✅ Can read ${rels.length} relationships</p>`;
+                results.innerHTML += `<pre>${JSON.stringify(rels.slice(0, 2), null, 2)}</pre>`;
+            }
+
+            // Test 3: Read user_progress
+            results.innerHTML += '<h3>Test 3: Reading user_progress (SHOULD BE RESTRICTED)</h3>';
+            const { data: progress, error: progressError } = await supabase
+                .from('user_progress')
+                .select('*');
+            
+            if (progressError) {
+                results.innerHTML += `<p>✅ GOOD - Access denied: ${progressError.message}</p>`;
+            } else {
+                results.innerHTML += `<p>⚠️ WARNING - Can read ${progress.length} user progress records!</p>`;
+                results.innerHTML += `<pre>${JSON.stringify(progress.slice(0, 2), null, 2)}</pre>`;
+            }
+
+            // Test 4: Try to write to learning_topics (should fail)
+            results.innerHTML += '<h3>Test 4: Attempting to INSERT topic (should fail)</h3>';
+            const { data: insertData, error: insertError } = await supabase
+                .from('learning_topics')
+                .insert({
+                    id: 'TEST_HACK',
+                    name: 'Unauthorized Topic',
+                    is_published: true
+                });
+            
+            if (insertError) {
+                results.innerHTML += `<p>✅ GOOD - Insert blocked: ${insertError.message}</p>`;
+            } else {
+                results.innerHTML += `<p>🚨 CRITICAL - Can insert data! Database is NOT secure!</p>`;
+            }
+
+            // Test 5: Try to delete (should fail)
+            results.innerHTML += '<h3>Test 5: Attempting to DELETE topic (should fail)</h3>';
+            const { data: deleteData, error: deleteError } = await supabase
+                .from('learning_topics')
+                .delete()
+                .eq('id', 'React');
+            
+            if (deleteError) {
+                results.innerHTML += `<p>✅ GOOD - Delete blocked: ${deleteError.message}</p>`;
+            } else {
+                results.innerHTML += `<p>🚨 CRITICAL - Can delete data! Database is NOT secure!</p>`;
+            }
+
+            results.innerHTML += '<h2>✅ Security Test Complete</h2>';
+        }
+
+        testAccess();
+    </script>
+</body>
+</html>

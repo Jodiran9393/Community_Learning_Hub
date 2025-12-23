@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TypeScript Resources - Community Learning Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body data-node-id="TS">
     <div class="resource-page">
         <a href="/" class="back-link">← Back to Hub</a>
-        
+
         <div class="page-header">
             <h1 style="color: #4c8bf5;">TypeScript</h1>
             <p>JavaScript with syntax for types</p>
@@ -18,15 +21,19 @@
 
         <section class="resource-section">
             <h3>What is TypeScript?</h3>
-            <p>TypeScript is a strongly typed programming language that builds on JavaScript. It adds static type definitions, enabling better tooling, error detection, and code documentation.</p>
+            <p>TypeScript is a strongly typed programming language that builds on JavaScript. It adds static type
+                definitions, enabling better tooling, error detection, and code documentation.</p>
         </section>
 
         <section class="resource-section">
             <h3>Getting Started</h3>
             <ul class="resource-list">
-                <li><a href="https://www.typescriptlang.org/docs/" target="_blank">Official TypeScript Docs</a> - The definitive guide</li>
-                <li><a href="https://www.typescriptlang.org/play" target="_blank">TypeScript Playground</a> - Try TypeScript in your browser</li>
-                <li><a href="https://github.com/type-challenges/type-challenges" target="_blank">Type Challenges</a> - Practice TypeScript skills</li>
+                <li><a href="https://www.typescriptlang.org/docs/" target="_blank">Official TypeScript Docs</a> - The
+                    definitive guide</li>
+                <li><a href="https://www.typescriptlang.org/play" target="_blank">TypeScript Playground</a> - Try
+                    TypeScript in your browser</li>
+                <li><a href="https://github.com/type-challenges/type-challenges" target="_blank">Type Challenges</a> -
+                    Practice TypeScript skills</li>
             </ul>
         </section>
 
@@ -56,9 +63,12 @@
         <section class="resource-section">
             <h3>Learning Resources</h3>
             <ul class="resource-list">
-                <li><a href="https://www.totaltypescript.com" target="_blank">Total TypeScript</a> - Matt Pocock's comprehensive course</li>
-                <li><a href="https://www.executeprogram.com/courses/typescript" target="_blank">Execute Program</a> - Interactive TypeScript course</li>
-                <li><a href="https://learntypescript.dev" target="_blank">Learn TypeScript</a> - Free online tutorial</li>
+                <li><a href="https://www.totaltypescript.com" target="_blank">Total TypeScript</a> - Matt Pocock's
+                    comprehensive course</li>
+                <li><a href="https://www.executeprogram.com/courses/typescript" target="_blank">Execute Program</a> -
+                    Interactive TypeScript course</li>
+                <li><a href="https://learntypescript.dev" target="_blank">Learn TypeScript</a> - Free online tutorial
+                </li>
             </ul>
         </section>
 
@@ -73,7 +83,8 @@
         </section>
 
         <!-- Mark Complete Button -->
-        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+        <div
+            style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
             <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning TypeScript?</h3>
             <button id="mark-complete-btn" style="
                 background: linear-gradient(90deg, #4c8bf5, #d367c1);
@@ -87,16 +98,19 @@
                 transition: all 0.3s;
                 box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
             " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
                 ✅ Mark as Complete
             </button>
-            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up TypeScript in your Knowledge Galaxy! 🌟</p>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up TypeScript in your Knowledge
+                Galaxy! 🌟</p>
         </div>
     </div>
 
     <!-- Load Supabase and completion tracking -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+    <script src="/js/supabase-client.js?v=2"></script>
+    <script src="/js/learning-tracker.js"></script>
     <script src="/js/mark-complete.js"></script>
 </body>
+
 </html>

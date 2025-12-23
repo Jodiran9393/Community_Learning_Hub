@@ -4,12 +4,12 @@
 // ============================================
 
 (async function() {
-    if (!window.supabase) {
+    if (!window.sb) {
         console.warn('Supabase not loaded - learning tracking disabled');
         return;
     }
 
-    const { data: { user } } = await window.supabase.auth.getUser();
+    const { data: { user } } = await window.sb.auth.getUser();
     if (!user) {
         console.log('User not logged in - tracking disabled');
         return;
@@ -43,7 +43,7 @@
 
     // Start session
     async function startSession() {
-        const { data, error } = await window.supabase
+        const { data, error } = await window.sb
             .from('learning_sessions')
             .insert({
                 user_id: user.id,
@@ -71,7 +71,7 @@
         const sessionEnd = new Date();
         const durationSeconds = Math.floor((sessionEnd - sessionStart) / 1000);
 
-        const { error } = await window.supabase
+        const { error } = await window.sb
             .from('learning_sessions')
             .update({
                 session_end: sessionEnd.toISOString(),
@@ -95,7 +95,7 @@
         
         // Throttle updates (every 10 interactions)
         if (sessionId && interactions % 10 === 0) {
-            window.supabase
+            window.sb
                 .from('learning_sessions')
                 .update({ interactions: interactions })
                 .eq('id', sessionId)
@@ -148,7 +148,7 @@
     // Show difficulty rating after completion
     async function showDifficultyRating() {
         // Check if already rated
-        const { data: existing } = await window.supabase
+        const { data: existing } = await window.sb
             .from('difficulty_ratings')
             .select('id')
             .eq('user_id', user.id)
@@ -302,7 +302,7 @@
             const struggles = modal.querySelector('#struggles-input').value;
             const tips = modal.querySelector('#tips-input').value;
 
-            const { error } = await window.supabase
+            const { error } = await window.sb
                 .from('difficulty_ratings')
                 .insert({
                     user_id: user.id,
@@ -367,3 +367,4 @@
     }
 
 })();
+

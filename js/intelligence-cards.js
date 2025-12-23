@@ -5,14 +5,14 @@
 
 async function initIntelligenceCards() {
     console.log('🧠 Intelligence Cards: Starting initialization...');
-    
-    if (!window.supabase) {
+
+    if (!window.sb) {
         console.log('⚠️ Supabase not available yet');
         return;
     }
 
-    const { data: { user } } = await window.supabase.auth.getUser();
-    
+    const { data: { user } } = await window.sb.auth.getUser();
+
     console.log('🧠 Loading Learning Intelligence...', user ? 'User logged in' : 'Guest user');
 
     // ============================================
@@ -30,7 +30,7 @@ async function initIntelligenceCards() {
         }
 
         // Get user progress
-        const { data: progress } = await window.supabase
+        const { data: progress } = await window.sb
             .from('user_progress')
             .select('*')
             .eq('user_id', user.id);
@@ -40,7 +40,7 @@ async function initIntelligenceCards() {
         const percentage = Math.round((completed / total) * 100);
 
         // Get streak
-        const { data: streaks } = await window.supabase
+        const { data: streaks } = await window.sb
             .from('learning_streaks')
             .select('current_streak')
             .eq('user_id', user.id)
@@ -49,7 +49,7 @@ async function initIntelligenceCards() {
         const streak = streaks?.current_streak || 0;
 
         // Get learning profile
-        const { data: profile } = await window.supabase
+        const { data: profile } = await window.sb
             .from('user_learning_profiles')
             .select('total_learning_time_hours, learning_velocity')
             .eq('user_id', user.id)
@@ -70,7 +70,7 @@ async function initIntelligenceCards() {
     // ============================================
     async function loadCommunityStats() {
         // Get total completions across all users
-        const { data: allProgress } = await window.supabase
+        const { data: allProgress } = await window.sb
             .from('user_progress')
             .select('node_id, status')
             .eq('status', 'completed');
@@ -87,14 +87,14 @@ async function initIntelligenceCards() {
             .sort((a, b) => b[1] - a[1])[0];
 
         // Get unique learners
-        const { data: users } = await window.supabase
+        const { data: users } = await window.sb
             .from('user_progress')
             .select('user_id', { count: 'exact', head: false });
 
         const uniqueUsers = new Set(users?.map(u => u.user_id)).size;
 
         // Get popular pathway
-        const { data: pathways } = await window.supabase
+        const { data: pathways } = await window.sb
             .from('learning_pathways')
             .select('from_topic, to_topic')
             .limit(1000);
@@ -131,7 +131,7 @@ async function initIntelligenceCards() {
         }
 
         // Get user's completed topics
-        const { data: completed } = await window.supabase
+        const { data: completed } = await window.sb
             .from('user_progress')
             .select('node_id')
             .eq('user_id', user.id)
@@ -140,9 +140,9 @@ async function initIntelligenceCards() {
         const completedIds = completed?.map(c => c.node_id) || [];
 
         // All available topics
-        const allTopics = ['React', 'HTML', 'CSS', 'JavaScript', 'TypeScript', 
-                          'NextJS', 'Python', 'LLM', 'Prompting', 'Agents', 
-                          'Figma', 'UI', 'A11y'];
+        const allTopics = ['React', 'HTML', 'CSS', 'JavaScript', 'TypeScript',
+            'NextJS', 'Python', 'LLM', 'Prompting', 'Agents',
+            'Figma', 'UI', 'A11y'];
 
         // Not completed yet
         const remaining = allTopics.filter(t => !completedIds.includes(t));
@@ -176,7 +176,7 @@ async function initIntelligenceCards() {
         if (completedIds.length > 0) {
             const lastCompleted = completedIds[completedIds.length - 1];
             const rec = recommendations[lastCompleted];
-            
+
             if (rec && remaining.includes(rec.next)) {
                 nextTopic = rec.next;
                 reason = rec.reason;
@@ -195,7 +195,7 @@ async function initIntelligenceCards() {
     // ============================================
     // UPDATE CARDS WITH REAL DATA
     // ============================================
-    
+
     const [personalStats, communityStats, recommendations] = await Promise.all([
         loadPersonalStats(),
         loadCommunityStats(),

@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- Homepage Sections CSS -->
   <link rel="stylesheet" href="css/homepage-sections.css" />
+  <!-- Personalized Dashboard CSS -->
+  <link rel="stylesheet" href="css/personalized-dashboard.css" />
   <!-- Import Map -->
   <script type="importmap">
     {
@@ -50,13 +52,15 @@
           <a href="/pages/a11y.html">Accessibility</a>
         </div>
       </div>
-      
+
       <div id="auth-buttons" style="display: flex; gap: 1rem;">
+        <a href="settings.html" class="nav-btn-text" title="AI Settings">⚙️</a>
         <a href="auth.html" class="nav-btn-outline">Sign In</a>
         <a href="auth.html" class="nav-btn">Get Started</a>
       </div>
       <div id="user-menu" style="display: none;">
         <span id="user-display-name"></span>
+        <a href="settings.html" class="nav-btn-text" title="AI Settings">⚙️</a>
         <a href="profile.html" class="nav-btn-outline">Profile</a>
         <button onclick="signOut()" class="nav-btn-text">Sign Out</button>
       </div>
@@ -66,8 +70,8 @@
   <!-- GALAXY HERO SECTION (IFRAME) -->
   <div id="galaxy-hero">
     <div class="galaxy-overlay">
-      <h1>Knowledge Galaxy</h1>
-      <p>Navigate the Neural Network of Learning.</p>
+      <h1>Grow Together in the Knowledge Galaxy</h1>
+      <p>A collaborative universe where every learner connects, shares, and grows.</p>
     </div>
     <iframe src="galaxy-dynamic.html" title="Knowledge Constellation"></iframe>
   </div>
@@ -76,39 +80,47 @@
   <article class="post">
     <!-- Meta Info (Title moved to Hero) -->
     <div class="post-meta" style="text-align: center; margin-top: 1rem; margin-bottom: 2rem;">
-      April 29, 2025 &middot; by Admin
+      Est. 2025 &middot; Community Learning Hub
     </div>
 
     <!-- Introductory Section -->
     <section class="post-intro">
-      <p>Welcome to our Community Learning Hub! We're excited to have you here. This platform is designed to bring
-        learners together in a friendly, supportive environment where everyone can grow and share knowledge.</p>
+      <p style="font-size: 1.2rem; text-align: center; color: #444;">
+        <strong>More than just a learning platform—it's a home for curiosity.</strong><br>
+        We've built a warm, supportive space where beginners and experts alike come together to explore AI, design, and
+        code. No gatekeeping, just growth.
+      </p>
     </section>
 
     <!-- Mission Section with subpoints -->
     <section class="post-mission">
-      <h2>Our Mission</h2>
+      <h2 style="text-align: center;">Why Join Our Circle?</h2>
       <!-- Mission items (each with an icon, title, and description) -->
       <div class="mission-items">
         <div class="mission-item">
-          <div class="mission-icon">🎓</div> <!-- Icon (replace with actual icon or image if available) -->
-          <h3>Inclusive Learning</h3>
-          <p>We believe education should be accessible to all. Our hub welcomes learners of all backgrounds and skill
-            levels, providing resources that cater to everyone.</p>
+          <div class="mission-icon">🧡</div>
+          <h3>Inclusive & Welcoming</h3>
+          <p>Every voice matters here. Whether you're writing your first line of code or deploying complex agents,
+            you'll find a friendly community ready to cheer you on.</p>
         </div>
         <div class="mission-item">
-          <div class="mission-icon">🤝</div> <!-- Icon (replace with actual icon or image if available) -->
-          <h3>Community Support</h3>
-          <p>Learning is better together. We encourage collaboration, questions, and sharing of ideas so that members
-            can support and inspire one another.</p>
+          <div class="mission-icon">🔥</div>
+          <h3>Better Together</h3>
+          <p>Learning isn't a solo sport. Join live study sessions, collaborate on open-source projects, and find
+            mentorship in our vibrant forums.</p>
         </div>
         <div class="mission-item">
-          <div class="mission-icon">💡</div> <!-- Icon (replace with actual icon or image if available) -->
-          <h3>Practical Knowledge</h3>
-          <p>Our focus is on hands-on learning. You'll find projects, examples, and real-world applications to help you
-            put theory into practice effectively.</p>
+          <div class="mission-icon">🚀</div>
+          <h3>Hands-on Growth</h3>
+          <p>Ditch the boring lectures. We focus on real-world projects and "learning by doing" so you can build a
+            portfolio that shines.</p>
         </div>
       </div>
+    </section>
+
+    <!-- Personalized Dashboard (shows after assessment) -->
+    <section id="personalized-dashboard" class="personalized-section">
+      <!-- Dynamically populated by personalized-dashboard.js -->
     </section>
 
     <!-- Featured Learning Paths Section -->
@@ -155,26 +167,26 @@
       <div class="involved-grid">
         <div class="involved-card">
           <div class="involved-icon">💬</div>
-          <h3>Join the Conversation</h3>
-          <p>Join the conversation in our forums and comment on posts.</p>
+          <h3>Community Forum</h3>
+          <p>Ask questions, share memes, and debug together in our safe, moderated spaces.</p>
           <a href="#" class="involved-link">Visit Forums →</a>
         </div>
         <div class="involved-card">
-          <div class="involved-icon">🚀</div>
-          <h3>Share Your Success</h3>
-          <p>Share your projects, ideas, and success stories with the community.</p>
+          <div class="involved-icon">🌟</div>
+          <h3>Showcase Friday</h3>
+          <p>Share what you've built! Every Friday we highlight amazing community projects.</p>
           <a href="#" class="involved-link">Share Project →</a>
         </div>
         <div class="involved-card">
           <div class="involved-icon">💡</div>
-          <h3>Provide Feedback</h3>
-          <p>Provide feedback and suggestions to help us grow and improve.</p>
+          <h3>Shape the Hub</h3>
+          <p>We build in public. Suggest features and vote on the next big update.</p>
           <a href="#" class="involved-link">Give Feedback →</a>
         </div>
         <div class="involved-card">
-          <div class="involved-icon">🎯</div>
-          <h3>Join Events</h3>
-          <p>Participate in upcoming events, workshops, and challenges.</p>
+          <div class="involved-icon">🎟️</div>
+          <h3>Live Events</h3>
+          <p>Join workshops, AMAs with experts, and community hangouts.</p>
           <a href="#" class="involved-link">View Events →</a>
         </div>
       </div>
@@ -182,10 +194,10 @@
 
     <!-- Closing CTA -->
     <section class="post-closing">
-      <h2>Ready to Start Your Journey?</h2>
+      <h2>Ready to Find Your People?</h2>
       <p>Join our community of learners and start exploring the Knowledge Galaxy today.</p>
       <div class="cta-buttons">
-        <a href="auth.html" class="cta-primary">Get Started Free</a>
+        <a href="auth.html" class="cta-primary">Join for Free</a>
         <a href="#galaxy-hero" class="cta-secondary">Explore Galaxy</a>
       </div>
     </section>
@@ -242,34 +254,33 @@
 
   <!-- Supabase Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
-  
-  <!-- Learning Intelligence Cards -->
-  <script src="js/intelligence-cards.js"></script>
-  
+  <script src="js/supabase-client.js?v=2"></script>
+
+  <!-- Learning Intelligence Cards (Removed: Overwrites Mission Section) -->
+  <!-- <script src="js/intelligence-cards.js"></script> -->
+
   <!-- Homepage Content (Paths, Topics, Insights) -->
   <script src="js/homepage-content.js"></script>
-  
+
+  <!-- Personalized Dashboard -->
+  <script src="js/track-loader.js"></script>
+  <script src="js/personalized-dashboard.js"></script>
+
   <!-- Pass auth state to galaxy iframe -->
+  <!--Replaced auth script-->
   <script>
     window.addEventListener('DOMContentLoaded', async () => {
-      if (window.supabase) {
-        const iframe = document.querySelector('#galaxy-hero iframe');
-        
-        // Wait for iframe to load
-        iframe.addEventListener('load', async () => {
-          // Get current user
-          const { data: { user } } = await window.supabase.auth.getUser();
-          
-          // Send auth state to iframe
-          iframe.contentWindow.postMessage({
-            type: 'AUTH_STATE',
-            user: user
-          }, '*');
-        });
-      }
+      const sb = window.sb;
+      if (!sb) return;
+
+      const iframe = document.querySelector('#galaxy-hero iframe');
+      iframe.addEventListener('load', async () => {
+        const { data: { user } } = await sb.auth.getUser();
+        iframe.contentWindow.postMessage({ type: 'AUTH_STATE', user }, window.location.origin);
+      });
     });
   </script>
+
 </body>
 
 </html>

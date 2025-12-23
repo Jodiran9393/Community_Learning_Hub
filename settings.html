@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .settings-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4c8bf5;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .subtitle {
+            color: #9495b3;
+            margin-bottom: 40px;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .settings-section h2 {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #b8b9d6;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #4c8bf5;
+            background: rgba(76, 139, 245, 0.1);
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .help-toggle {
+            color: #4c8bf5;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+
+        .help-toggle:hover {
+            color: #6a9cf5;
+        }
+
+        .help-box {
+            background: rgba(76, 139, 245, 0.1);
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #b8b9d6;
+        }
+
+        .help-box p {
+            margin: 0 0 8px 0;
+        }
+
+        .help-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .help-box li {
+            margin: 4px 0;
+        }
+
+        .help-box code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(76, 139, 245, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .status-message {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(124, 255, 110, 0.1);
+            border: 1px solid rgba(124, 255, 110, 0.3);
+            color: #7CFF6E;
+            display: block;
+        }
+
+        .status-message.error {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            display: block;
+        }
+
+        .status-message.info {
+            background: rgba(76, 139, 245, 0.1);
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            color: #4c8bf5;
+            display: block;
+        }
+
+        /* Privacy Section */
+        .privacy-section {
+            background: rgba(124, 255, 110, 0.05);
+            border-color: rgba(124, 255, 110, 0.2);
+        }
+
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .privacy-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .privacy-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .privacy-icon.local {
+            background: rgba(124, 255, 110, 0.15);
+        }
+
+        .privacy-icon.cloud {
+            background: rgba(76, 139, 245, 0.15);
+        }
+
+        .privacy-icon.sync {
+            background: rgba(255, 193, 7, 0.15);
+        }
+
+        .privacy-icon.chat {
+            background: rgba(156, 39, 176, 0.15);
+        }
+
+        .privacy-content h4 {
+            margin: 0 0 6px 0;
+            font-size: 15px;
+            color: white;
+        }
+
+        .privacy-content p {
+            margin: 0;
+            font-size: 13px;
+            color: #9495b3;
+            line-height: 1.5;
+        }
+
+        /* Available Models */
+        .models-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .model-tag {
+            background: rgba(76, 139, 245, 0.1);
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #4c8bf5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .model-tag:hover {
+            background: rgba(76, 139, 245, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="settings-container">
+        <a href="/" class="back-link">← Back to Hub</a>
+
+        <h1>⚙️ Settings</h1>
+        <p class="subtitle">Configure your AI learning experience</p>
+
+        <!-- LLM Provider Settings -->
+        <section class="settings-section">
+            <h2>🤖 AI Provider</h2>
+
+            <div class="form-group">
+                <label for="provider">Provider</label>
+                <select id="provider" onchange="updateProviderUI()">
+                    <option value="ollama">Ollama (Local LLM)</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic (Claude)</option>
+                    <option value="custom">Custom Endpoint</option>
+                </select>
+                <p class="form-hint" id="provider-description">Run LLMs locally - free, private, requires Ollama
+                    installation</p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="endpoint">
+                        API Endpoint
+                        <span class="help-toggle" onclick="toggleHelp('endpoint-help')">ⓘ</span>
+                    </label>
+                    <input type="text" id="endpoint" placeholder="http://localhost:11434/api/generate">
+                    <div id="endpoint-help" class="help-box" style="display: none;">
+                        <p><strong>What's this?</strong> The URL where your AI provider accepts requests.</p>
+                        <p><strong>Common endpoints:</strong></p>
+                        <ul>
+                            <li><code>Ollama:</code> http://localhost:11434/api/generate</li>
+                            <li><code>OpenAI:</code> https://api.openai.com/v1/chat/completions</li>
+                            <li><code>Groq:</code> https://api.groq.com/openai/v1/chat/completions</li>
+                            <li><code>LM Studio:</code> http://localhost:1234/v1/chat/completions</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group" id="model-group">
+                    <label for="model">Model</label>
+                    <!-- Dropdown for local LLMs -->
+                    <select id="model-select" style="display: none;">
+                        <option value="">Loading models...</option>
+                    </select>
+                    <!-- Text input for cloud providers -->
+                    <input type="text" id="model-input" placeholder="gpt-4o-mini" style="display: none;">
+                </div>
+            </div>
+
+            <div class="form-group" id="api-key-group" style="display: none;">
+                <label for="api-key">API Key</label>
+                <input type="password" id="api-key" placeholder="sk-...">
+                <p class="form-hint">🔒 Stored locally in your browser only - never sent to our servers</p>
+            </div>
+
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="testConnection()">
+                    🔌 Test Connection
+                </button>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    💾 Save Settings
+                </button>
+            </div>
+
+            <div id="status-message" class="status-message"></div>
+        </section>
+
+        <!-- Web Search Settings -->
+        <section class="settings-section">
+            <h2>🔍 Web Search (Agent Tools)</h2>
+            <p style="color: #9495b3; margin-bottom: 20px;">Enable the AI to search the web and cite sources in answers.
+            </p>
+
+            <div class="form-group">
+                <label for="tavily-key">
+                    Tavily API Key
+                    <span class="help-toggle" onclick="toggleHelp('tavily-help')">ⓘ</span>
+                </label>
+                <input type="password" id="tavily-key" placeholder="tvly-...">
+                <div id="tavily-help" class="help-box" style="display: none;">
+                    <p><strong>What's this?</strong> Tavily provides AI-optimized web search results.</p>
+                    <p><strong>Get a free key:</strong> <a href="https://tavily.com" target="_blank"
+                            style="color: #4c8bf5;">tavily.com</a> (1000 searches/month free)</p>
+                </div>
+                <p class="form-hint">🔒 Stored locally - used for web search when enabled in chat</p>
+            </div>
+
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="testTavilyConnection()">
+                    🔌 Test Search
+                </button>
+                <button class="btn btn-primary" onclick="saveTavilyKey()">
+                    💾 Save Key
+                </button>
+            </div>
+
+            <div id="tavily-status" class="status-message"></div>
+        </section>
+
+
+        <!-- Privacy Info -->
+        <section class="settings-section privacy-section">
+            <h2>🔒 Data Privacy</h2>
+            <p style="color: #9495b3; margin-bottom: 20px;">Your data stays yours. Here's exactly what happens:</p>
+
+            <div class="privacy-grid">
+                <div class="privacy-card">
+                    <div class="privacy-icon local">🔐</div>
+                    <div class="privacy-content">
+                        <h4>API Keys</h4>
+                        <p>Stored only in your browser's local storage. Never sent to our servers.</p>
+                    </div>
+                </div>
+
+                <div class="privacy-card">
+                    <div class="privacy-icon cloud">⚡</div>
+                    <div class="privacy-content">
+                        <h4>Learning Content</h4>
+                        <p>Generated on-the-fly by your AI provider. We don't store or collect it.</p>
+                    </div>
+                </div>
+
+                <div class="privacy-card">
+                    <div class="privacy-icon sync">📊</div>
+                    <div class="privacy-content">
+                        <h4>Your Progress</h4>
+                        <p>Completed topics and learning path stored to sync across devices.</p>
+                    </div>
+                </div>
+
+                <div class="privacy-card">
+                    <div class="privacy-icon chat">💬</div>
+                    <div class="privacy-content">
+                        <h4>Chat Conversations</h4>
+                        <p>Processed directly by your AI provider. Not stored on our servers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/services/llm-config.js"></script>
+    <script src="/js/services/llm-providers.js"></script>
+    <script src="/js/services/web-search.js"></script>
+    <script>
+        // Load saved settings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            loadTavilyKey();
+        });
+
+        function toggleHelp(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function loadSettings() {
+            const settings = LLM_CONFIG.getSettings();
+            const provider = settings.provider || 'ollama';
+
+            document.getElementById('provider').value = provider;
+            document.getElementById('endpoint').value = settings.endpoint || LLM_CONFIG.providers[provider]?.endpoint || '';
+
+            // Store saved model to set after models load
+            window.savedModel = settings.model;
+
+            // Load API key if exists
+            const apiKey = LLM_CONFIG.getApiKey(provider);
+            if (apiKey) {
+                document.getElementById('api-key').value = apiKey;
+            }
+
+            updateProviderUI();
+        }
+
+        function updateProviderUI() {
+            const provider = document.getElementById('provider').value;
+            const config = LLM_CONFIG.providers[provider];
+            const apiKeyGroup = document.getElementById('api-key-group');
+            const modelSelect = document.getElementById('model-select');
+            const modelInput = document.getElementById('model-input');
+            const endpointInput = document.getElementById('endpoint');
+            const description = document.getElementById('provider-description');
+
+            // Update description
+            description.textContent = config?.description || '';
+
+            // Update endpoint to provider's default (not just placeholder)
+            endpointInput.placeholder = config?.endpoint || '';
+            endpointInput.value = config?.endpoint || '';
+
+            // Show/hide elements based on provider
+            if (provider === 'ollama') {
+                apiKeyGroup.style.display = 'none';
+                modelSelect.style.display = 'block';
+                modelInput.style.display = 'none';
+                loadOllamaModels();
+            } else {
+                apiKeyGroup.style.display = 'block';
+                modelSelect.style.display = 'none';
+                modelInput.style.display = 'block';
+                modelInput.placeholder = config?.model || '';
+                modelInput.value = window.savedModel || config?.model || '';
+
+                // Load saved API key for this provider
+                const apiKey = LLM_CONFIG.getApiKey(provider);
+                document.getElementById('api-key').value = apiKey || '';
+            }
+        }
+
+        async function loadOllamaModels() {
+            const modelSelect = document.getElementById('model-select');
+            modelSelect.innerHTML = '<option value="">Loading models...</option>';
+
+            try {
+                const result = await window.llmProviders.checkOllamaAvailable();
+
+                if (result.available && result.models.length > 0) {
+                    modelSelect.innerHTML = result.models.map(m =>
+                        `<option value="${m.name}">${m.name}</option>`
+                    ).join('');
+
+                    // Select saved model if it exists, otherwise first available
+                    if (window.savedModel && result.models.some(m => m.name === window.savedModel)) {
+                        modelSelect.value = window.savedModel;
+                    } else {
+                        modelSelect.value = result.models[0].name;
+                    }
+                } else if (result.available) {
+                    modelSelect.innerHTML = '<option value="">No models installed - run: ollama pull llama3.2</option>';
+                } else {
+                    modelSelect.innerHTML = '<option value="">Ollama not running - start with: ollama serve</option>';
+                }
+            } catch (e) {
+                modelSelect.innerHTML = '<option value="">Could not connect to Ollama</option>';
+            }
+        }
+
+        function getModelValue() {
+            const provider = document.getElementById('provider').value;
+            if (provider === 'ollama') {
+                return document.getElementById('model-select').value;
+            } else {
+                return document.getElementById('model-input').value;
+            }
+        }
+
+        async function testConnection() {
+            const statusEl = document.getElementById('status-message');
+            statusEl.className = 'status-message info';
+            statusEl.textContent = '🔄 Testing connection...';
+            statusEl.style.display = 'block';
+
+            // Apply settings for test
+            const tempSettings = {
+                provider: document.getElementById('provider').value,
+                endpoint: document.getElementById('endpoint').value,
+                model: getModelValue()
+            };
+
+            const apiKey = document.getElementById('api-key').value;
+            if (apiKey) {
+                tempSettings.apiKey = apiKey;
+            }
+
+            LLM_CONFIG.saveSettings(tempSettings);
+            if (apiKey) {
+                LLM_CONFIG.setApiKey(tempSettings.provider, apiKey);
+            }
+
+            try {
+                const result = await window.llmProviders.testConnection();
+                if (result.success) {
+                    statusEl.className = 'status-message success';
+                    statusEl.textContent = '✅ Connection successful! ' + (result.message || '');
+                } else {
+                    statusEl.className = 'status-message error';
+                    statusEl.textContent = '❌ ' + result.message;
+                }
+            } catch (e) {
+                statusEl.className = 'status-message error';
+                statusEl.textContent = '❌ ' + e.message;
+            }
+        }
+
+        function saveSettings() {
+            const settings = {
+                provider: document.getElementById('provider').value,
+                endpoint: document.getElementById('endpoint').value || undefined,
+                model: getModelValue() || undefined
+            };
+
+            LLM_CONFIG.saveSettings(settings);
+
+            // Save API key separately
+            const apiKey = document.getElementById('api-key').value;
+            if (apiKey) {
+                LLM_CONFIG.setApiKey(settings.provider, apiKey);
+            }
+
+            const statusEl = document.getElementById('status-message');
+            statusEl.className = 'status-message success';
+            statusEl.textContent = '✅ Settings saved successfully!';
+            statusEl.style.display = 'block';
+
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // Tavily Web Search functions
+        function loadTavilyKey() {
+            if (window.webSearch) {
+                const key = window.webSearch.getApiKey();
+                if (key) {
+                    document.getElementById('tavily-key').value = key;
+                }
+            }
+        }
+
+        function saveTavilyKey() {
+            const key = document.getElementById('tavily-key').value.trim();
+            if (window.webSearch) {
+                window.webSearch.setApiKey(key);
+            }
+
+            const statusEl = document.getElementById('tavily-status');
+            statusEl.className = 'status-message success';
+            statusEl.textContent = '✅ Tavily API key saved!';
+            statusEl.style.display = 'block';
+
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+        }
+
+        async function testTavilyConnection() {
+            const statusEl = document.getElementById('tavily-status');
+            statusEl.className = 'status-message info';
+            statusEl.textContent = '🔄 Testing search...';
+            statusEl.style.display = 'block';
+
+            // Save key first
+            saveTavilyKey();
+
+            try {
+                const result = await window.webSearch.testConnection();
+                if (result.success) {
+                    statusEl.className = 'status-message success';
+                    statusEl.textContent = '✅ ' + result.message;
+                } else {
+                    statusEl.className = 'status-message error';
+                    statusEl.textContent = '❌ ' + result.message;
+                }
+            } catch (e) {
+                statusEl.className = 'status-message error';
+                statusEl.textContent = '❌ ' + e.message;
+            }
+        }
+    </script>
+</body>
+
+</html>

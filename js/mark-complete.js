@@ -1,33 +1,62 @@
 // Mark Complete Functionality for Resource Pages
 // This script handles marking topics as complete in the Skill Constellation
 
-(async function() {
-    // Wait for Supabase client to be ready
-    if (!window.supabase) {
-        console.error('Supabase client not found');
+(async function () {
+    // Wait for Supabase client to be ready (with timeout)
+    async function waitForSupabase() {
+        for (let i = 0; i < 50; i++) { // Try for 5 seconds
+            if (window.sb) return true;
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        return false;
+    }
+
+    if (!(await waitForSupabase())) {
+        console.error('⚠️ Supabase client not available after 5 seconds');
         return;
     }
 
+    console.log('✅ mark-complete.js: Supabase client ready');
+
     const nodeId = document.body.dataset.nodeId;
+    console.log('🔍 Node ID:', nodeId);
     if (!nodeId) {
-        console.error('No node ID specified');
+        console.error('❌ No node ID specified');
         return;
     }
 
     const button = document.getElementById('mark-complete-btn');
-    if (!button) return;
+    console.log('🔍 Button found:', !!button);
+    if (!button) {
+        console.error('❌ Button not found');
+        return;
+    }
 
     // Check if user is logged in
-    const { data: { user } } = await window.supabase.auth.getUser();
-    
+    console.log('🔍 Checking user auth...');
+
+    let user;
+    try {
+        const { data: { session } } = await window.sb.auth.getSession();
+        console.log('🔍 Session:', session ? 'Active' : 'None');
+        user = session?.user;
+        console.log('🔍 User:', user?.email || 'Not logged in');
+    } catch (error) {
+        console.error('❌ Error getting session:', error);
+        user = null;
+    }
+
     if (!user) {
+        console.log('👤 No user - showing sign-in button');
         button.innerHTML = '🔒 Sign in to track progress';
         button.onclick = () => window.location.href = '/auth.html';
         return;
     }
 
+    console.log('✅ User authenticated, setting up completion tracking...');
+
     // Check if already completed
-    const { data: progress } = await window.supabase
+    const { data: progress } = await window.sb
         .from('user_progress')
         .select('status')
         .eq('user_id', user.id)
@@ -43,13 +72,13 @@
     }
 
     // Mark as complete handler
-    button.onclick = async function() {
+    button.onclick = async function () {
         try {
             button.disabled = true;
             button.innerHTML = '⏳ Saving...';
 
             // Save to database
-            const { error } = await window.supabase
+            const { error } = await window.sb
                 .from('user_progress')
                 .upsert({
                     user_id: user.id,

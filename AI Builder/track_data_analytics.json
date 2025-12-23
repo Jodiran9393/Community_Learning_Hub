@@ -1,0 +1,795 @@
+{
+  "track_id": "Data_Analytics",
+  "name": "Data Analytics",
+  "category": "backend",
+  "version": "v1.1",
+  "updated_at": "2025-12-15T02:52:27Z",
+  "notes": {
+    "scope": "Day-1 curated backbone (finite).",
+    "onboarding": "User must pick exactly one outcome_id; placement targets that outcome's capstones."
+  },
+  "outcomes": [
+    {
+      "id": "excel_dashboard",
+      "label": "Excel/Sheets \u2192 Dashboard Analyst",
+      "capstones": [
+        "Spreadsheets",
+        "VizBasics",
+        "DashboardDesign",
+        "KPIs"
+      ],
+      "diagnostic_topic_ids": [
+        "Spreadsheets",
+        "DataCleaning",
+        "VizBasics",
+        "DashboardDesign",
+        "KPIs"
+      ]
+    },
+    {
+      "id": "sql_bi_reporting",
+      "label": "SQL + BI \u2192 Reporting & Modeling",
+      "capstones": [
+        "SQLJoins",
+        "SQLAgg",
+        "DataModeling",
+        "BIIntro"
+      ],
+      "diagnostic_topic_ids": [
+        "SQL",
+        "SQLJoins",
+        "SQLAgg",
+        "DataModeling",
+        "BIIntro"
+      ]
+    },
+    {
+      "id": "python_stats",
+      "label": "Python + Stats \u2192 Analytical Thinking",
+      "capstones": [
+        "Pandas",
+        "EDA",
+        "Regression",
+        "Hypothesis"
+      ],
+      "diagnostic_topic_ids": [
+        "PythonIntro",
+        "Pandas",
+        "EDA",
+        "Probability",
+        "Hypothesis",
+        "Regression"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "DataIntro",
+      "name": "Data Literacy Foundations",
+      "slug": "data-literacy-foundations",
+      "category": "backend",
+      "difficulty_level": 1,
+      "estimated_hours": 1.5,
+      "prerequisites": [],
+      "description": "What data is, types, and how analytics answers questions.",
+      "icon_emoji": "\ud83d\udcca",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Spreadsheets",
+      "name": "Spreadsheets Basics (Excel/Sheets)",
+      "slug": "spreadsheets-basics-excel-sheets",
+      "category": "backend",
+      "difficulty_level": 1,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "DataIntro"
+      ],
+      "description": "Cells, tables, formulas, filters.",
+      "icon_emoji": "\ud83d\udccb",
+      "color_hex": "#7CFF6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "DataCleaning",
+      "name": "Data Cleaning & Validation",
+      "slug": "data-cleaning-validation",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "Spreadsheets"
+      ],
+      "description": "Missing values, duplicates, types, sanity checks.",
+      "icon_emoji": "\ud83e\uddf9",
+      "color_hex": "#FFD56E",
+      "node_size": 34,
+      "is_published": true
+    },
+    {
+      "id": "DescriptiveStats",
+      "name": "Descriptive Statistics",
+      "slug": "descriptive-statistics",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DataIntro"
+      ],
+      "description": "Mean/median/variance; distributions; summary.",
+      "icon_emoji": "\ud83d\udcd0",
+      "color_hex": "#6EE7FF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "VizBasics",
+      "name": "Data Visualization Basics",
+      "slug": "data-visualization-basics",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DescriptiveStats"
+      ],
+      "description": "Choosing charts; readability; honest visuals.",
+      "icon_emoji": "\ud83d\udcc8",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "KPIs",
+      "name": "KPIs & Business Metrics",
+      "slug": "kpis-business-metrics",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "DataIntro"
+      ],
+      "description": "Define metrics; leading vs lagging indicators.",
+      "icon_emoji": "\ud83c\udfaf",
+      "color_hex": "#FF8BD4",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "SQL",
+      "name": "SQL Fundamentals",
+      "slug": "sql-fundamentals",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "DataIntro"
+      ],
+      "description": "SELECT/WHERE/ORDER; thinking in tables.",
+      "icon_emoji": "\ud83d\uddc3\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 36,
+      "is_published": true
+    },
+    {
+      "id": "SQLJoins",
+      "name": "SQL Joins",
+      "slug": "sql-joins",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "SQL"
+      ],
+      "description": "INNER/LEFT joins; join keys; pitfalls.",
+      "icon_emoji": "\ud83d\udd17",
+      "color_hex": "#6EE7FF",
+      "node_size": 34,
+      "is_published": true
+    },
+    {
+      "id": "SQLAgg",
+      "name": "SQL Aggregations (GROUP BY)",
+      "slug": "sql-aggregations-group-by",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "SQL"
+      ],
+      "description": "GROUP BY, HAVING, windows basics.",
+      "icon_emoji": "\ud83e\uddee",
+      "color_hex": "#6EE7FF",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "DataModeling",
+      "name": "Data Modeling (Star Schema)",
+      "slug": "data-modeling-star-schema",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "SQLAgg"
+      ],
+      "description": "Facts/dimensions; grain; keys.",
+      "icon_emoji": "\u2b50",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "BIIntro",
+      "name": "BI Tools (Power BI/Tableau) Basics",
+      "slug": "bi-tools-power-bi-tableau-basics",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DataModeling"
+      ],
+      "description": "Connect, transform, model, visualize.",
+      "icon_emoji": "\ud83e\udde9",
+      "color_hex": "#7CFF6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "DashboardDesign",
+      "name": "Dashboard Design & Storytelling",
+      "slug": "dashboard-design-storytelling",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "VizBasics",
+        "KPIs"
+      ],
+      "description": "Narrative, hierarchy, and stakeholder clarity.",
+      "icon_emoji": "\ud83d\uddfa\ufe0f",
+      "color_hex": "#FF8BD4",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "APIs",
+      "name": "Working with CSV/JSON & APIs",
+      "slug": "working-with-csv-json-apis",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "DataIntro"
+      ],
+      "description": "Ingesting data from files and endpoints.",
+      "icon_emoji": "\ud83c\udf10",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "PythonIntro",
+      "name": "Python for Analytics (Intro)",
+      "slug": "python-for-analytics-intro",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DataIntro"
+      ],
+      "description": "Python basics for data work.",
+      "icon_emoji": "\ud83d\udc0d",
+      "color_hex": "#FFD56E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Pandas",
+      "name": "Pandas DataFrames",
+      "slug": "pandas-dataframes",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "PythonIntro"
+      ],
+      "description": "Load, clean, transform, aggregate.",
+      "icon_emoji": "\ud83d\udc3c",
+      "color_hex": "#FFD56E",
+      "node_size": 34,
+      "is_published": true
+    },
+    {
+      "id": "EDA",
+      "name": "Exploratory Data Analysis (EDA)",
+      "slug": "exploratory-data-analysis-eda",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Pandas",
+        "DescriptiveStats"
+      ],
+      "description": "Profiles, patterns, anomalies.",
+      "icon_emoji": "\ud83d\udd0d",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Correlation",
+      "name": "Correlation vs Causation",
+      "slug": "correlation-vs-causation",
+      "category": "backend",
+      "difficulty_level": 2,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "DescriptiveStats"
+      ],
+      "description": "Interpret relationships carefully.",
+      "icon_emoji": "\ud83e\udde0",
+      "color_hex": "#6EE7FF",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "Probability",
+      "name": "Probability Basics",
+      "slug": "probability-basics",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "DescriptiveStats"
+      ],
+      "description": "Uncertainty, distributions, intuition.",
+      "icon_emoji": "\ud83c\udfb2",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Hypothesis",
+      "name": "Hypothesis Testing (Intro)",
+      "slug": "hypothesis-testing-intro",
+      "category": "backend",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Probability"
+      ],
+      "description": "p-values, confidence intervals, limitations.",
+      "icon_emoji": "\ud83e\uddea",
+      "color_hex": "#FF6E6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "ABTesting",
+      "name": "A/B Testing & Experiment Design",
+      "slug": "a-b-testing-experiment-design",
+      "category": "backend",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Hypothesis",
+        "KPIs"
+      ],
+      "description": "Design, sample size intuition, interpreting results.",
+      "icon_emoji": "\ud83e\uddeb",
+      "color_hex": "#FF6E6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Regression",
+      "name": "Regression (Basics)",
+      "slug": "regression-basics",
+      "category": "backend",
+      "difficulty_level": 4,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "DescriptiveStats",
+        "Probability"
+      ],
+      "description": "Linear regression intuition; pitfalls.",
+      "icon_emoji": "\ud83d\udcc9",
+      "color_hex": "#B68CFF",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "TimeSeries",
+      "name": "Time Series (Basics)",
+      "slug": "time-series-basics",
+      "category": "backend",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DescriptiveStats"
+      ],
+      "description": "Trends, seasonality, forecasting overview.",
+      "icon_emoji": "\u23f3",
+      "color_hex": "#B68CFF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "ETL",
+      "name": "ETL & Data Pipelines (Intro)",
+      "slug": "etl-data-pipelines-intro",
+      "category": "backend",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "DataCleaning",
+        "SQL"
+      ],
+      "description": "Extract/transform/load; reliability.",
+      "icon_emoji": "\ud83d\udee0\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "DataQuality",
+      "name": "Data Quality (Checks & Monitoring)",
+      "slug": "data-quality-checks-monitoring",
+      "category": "backend",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "DataCleaning"
+      ],
+      "description": "Constraints, validation rules, drift.",
+      "icon_emoji": "\u2705",
+      "color_hex": "#FFD56E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Cohorts",
+      "name": "Cohort & Retention Analysis",
+      "slug": "cohort-retention-analysis",
+      "category": "backend",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "SQLAgg"
+      ],
+      "description": "Cohorts, retention curves, churn.",
+      "icon_emoji": "\ud83d\udc65",
+      "color_hex": "#FF8BD4",
+      "node_size": 28,
+      "is_published": true
+    }
+  ],
+  "relationships": [
+    {
+      "from_topic": "DataIntro",
+      "to_topic": "Spreadsheets",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Spreadsheets",
+      "to_topic": "DataCleaning",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataIntro",
+      "to_topic": "DescriptiveStats",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DescriptiveStats",
+      "to_topic": "VizBasics",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataIntro",
+      "to_topic": "KPIs",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataIntro",
+      "to_topic": "SQL",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "SQL",
+      "to_topic": "SQLJoins",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "SQL",
+      "to_topic": "SQLAgg",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "SQLAgg",
+      "to_topic": "DataModeling",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataModeling",
+      "to_topic": "BIIntro",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "VizBasics",
+      "to_topic": "DashboardDesign",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "KPIs",
+      "to_topic": "DashboardDesign",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataIntro",
+      "to_topic": "APIs",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataIntro",
+      "to_topic": "PythonIntro",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "PythonIntro",
+      "to_topic": "Pandas",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Pandas",
+      "to_topic": "EDA",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DescriptiveStats",
+      "to_topic": "EDA",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DescriptiveStats",
+      "to_topic": "Correlation",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DescriptiveStats",
+      "to_topic": "Probability",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Probability",
+      "to_topic": "Hypothesis",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Hypothesis",
+      "to_topic": "ABTesting",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "KPIs",
+      "to_topic": "ABTesting",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DescriptiveStats",
+      "to_topic": "Regression",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Probability",
+      "to_topic": "Regression",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DescriptiveStats",
+      "to_topic": "TimeSeries",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataCleaning",
+      "to_topic": "ETL",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "SQL",
+      "to_topic": "ETL",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "DataCleaning",
+      "to_topic": "DataQuality",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "SQLAgg",
+      "to_topic": "Cohorts",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "SQLJoins",
+      "to_topic": "DataModeling",
+      "relationship_type": "related",
+      "strength": 6
+    },
+    {
+      "from_topic": "Pandas",
+      "to_topic": "SQLAgg",
+      "relationship_type": "alternative",
+      "strength": 4
+    },
+    {
+      "from_topic": "DashboardDesign",
+      "to_topic": "BIIntro",
+      "relationship_type": "related",
+      "strength": 7
+    }
+  ],
+  "diagnostic": {
+    "estimated_minutes": 10,
+    "core_confidence_sliders": [
+      {
+        "topic_id": "DataCleaning",
+        "prompt": "How confident are you cleaning and validating messy data?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "SQL",
+        "prompt": "How confident are you writing basic SQL queries?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "VizBasics",
+        "prompt": "How confident are you choosing and designing charts?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "KPIs",
+        "prompt": "How confident are you defining good KPIs for a business question?",
+        "scale": "0-5"
+      }
+    ],
+    "core_micro_quiz": [
+      {
+        "id": "da_core_1",
+        "topic_id": "SQLAgg",
+        "prompt": "A GROUP BY query produces\u2026",
+        "options": [
+          "a single raw table",
+          "aggregated rows per group",
+          "a chart",
+          "a database backup"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "da_core_2",
+        "topic_id": "Correlation",
+        "prompt": "Correlation implies causation.",
+        "options": [
+          "True",
+          "False"
+        ],
+        "correct_index": 1
+      }
+    ],
+    "outcome_micro_quiz_pool": [
+      {
+        "id": "da_excel_1",
+        "outcome_id": "excel_dashboard",
+        "topic_id": "DashboardDesign",
+        "prompt": "A good dashboard first answers\u2026",
+        "options": [
+          "every question",
+          "the stakeholder\u2019s key decisions",
+          "only technical metrics",
+          "only daily updates"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "da_sql_1",
+        "outcome_id": "sql_bi_reporting",
+        "topic_id": "SQLJoins",
+        "prompt": "A LEFT JOIN keeps\u2026",
+        "options": [
+          "only matches in both tables",
+          "all rows from the left + matches from right",
+          "all rows from right only",
+          "no rows"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "da_py_1",
+        "outcome_id": "python_stats",
+        "topic_id": "Pandas",
+        "prompt": "A DataFrame is best described as\u2026",
+        "options": [
+          "a database server",
+          "a 2D labeled table structure",
+          "a chart type",
+          "a JSON API"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "da_py_2",
+        "outcome_id": "python_stats",
+        "topic_id": "Hypothesis",
+        "prompt": "A 95% confidence interval means\u2026",
+        "options": [
+          "95% chance the null is true",
+          "a range of plausible values under the model",
+          "the sample is unbiased",
+          "the effect is proven"
+        ],
+        "correct_index": 1
+      }
+    ]
+  },
+  "topic_card_template": {
+    "mode": "evidence_first",
+    "retrieval_policy": {
+      "min_sources": 3,
+      "prefer": [
+        "official_docs",
+        "standards",
+        "peer_reviewed",
+        "reputable_org_blogs"
+      ],
+      "avoid": [
+        "paywalled_fulltext",
+        "scraped_long_passages"
+      ],
+      "cache_ttl_hours": 72
+    },
+    "sections": [
+      "What it is (2\u20134 sentences, cited)",
+      "Why it matters (1\u20132 bullets, cited where factual)",
+      "Key ideas (5\u20138 bullets, cited)",
+      "Common misconceptions (3 bullets, cited)",
+      "Worked example (original, can cite concepts)",
+      "Practice (3 questions + answers)",
+      "Proof task (measurable output)",
+      "Next nodes (and why, based on prereqs)"
+    ],
+    "prompt_skeleton": "Generate a Topic Card for {topic.name}. Use ONLY provided evidence snippets for factual claims; cite like [1], [2]. Keep it practical."
+  }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Resources - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-node-id="Agents">
+    <div class="resource-page">
+        <a href="/" class="back-link">← Back to Hub</a>
+        
+        <div class="page-header">
+            <h1 style="color: #d367c1;">AI Agents</h1>
+            <p>Autonomous systems that take action</p>
+        </div>
+
+        <section class="resource-section">
+            <h3>What are AI Agents?</h3>
+            <p>AI agents are autonomous systems that can perceive their environment, make decisions, and take actions to achieve specific goals. They combine LLMs with tools, memory, and planning capabilities.</p>
+        </section>
+
+        <section class="resource-section">
+            <h3>Core Concepts</h3>
+            <ul class="resource-list">
+                <li><strong>Perception:</strong> Understanding input and context</li>
+                <li><strong>Reasoning:</strong> Planning and decision-making</li>
+                <li><strong>Action:</strong> Executing tasks via tools and APIs</li>
+                <li><strong>Memory:</strong> Short-term and long-term information storage</li>
+                <li><strong>Feedback Loops:</strong> Learning from outcomes</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Agent Frameworks</h3>
+            <ul class="resource-list">
+                <li><a href="https://www.langchain.com" target="_blank">LangChain</a> - Framework for LLM-powered agents</li>
+                <li><a href="https://docs.crewai.com" target="_blank">CrewAI</a> - Multi-agent orchestration</li>
+                <li><a href="https://github.com/Significant-Gravitas/AutoGPT" target="_blank">AutoGPT</a> - Autonomous GPT-4 agent</li>
+                <li><a href="https://www.llamaindex.ai" target="_blank">LlamaIndex</a> - Data framework for LLM agents</li>
+                <li><a href="https://microsoft.github.io/autogen/" target="_blank">AutoGen</a> - Multi-agent conversations by Microsoft</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Agent Capabilities</h3>
+            <ul class="resource-list">
+                <li><strong>Tool Use:</strong> APIs, databases, web search, code execution</li>
+                <li><strong>Planning:</strong> Breaking down complex tasks into steps</li>
+                <li><strong>Reflection:</strong> Self-evaluation and correction</li>
+                <li><strong>Multi-agent Collaboration:</strong> Agents working together</li>
+                <li><strong>RAG Integration:</strong> Accessing external knowledge</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Use Cases</h3>
+            <ul class="resource-list">
+                <li><strong>Research Assistants:</strong> Gathering and synthesizing information</li>
+                <li><strong>Code Generation:</strong> Building applications autonomously</li>
+                <li><strong>Data Analysis:</strong> Processing and visualizing data</li>
+                <li><strong>Customer Support:</strong> Handling complex inquiries</li>
+                <li><strong>Task Automation:</strong> Workflow orchestration</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Learning Resources</h3>
+            <ul class="resource-list">
+                <li><a href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">AI Agents in LangGraph</a> - DeepLearning.AI course</li>
+                <li><a href="https://lilianweng.github.io/posts/2023-06-23-agent/" target="_blank">LLM Powered Autonomous Agents</a> - Lilian Weng's blog</li>
+                <li><a href="https://github.com/e2b-dev/awesome-ai-agents" target="_blank">Awesome AI Agents</a> - Curated list of agent resources</li>
+            </ul>
+        </section>
+
+        <!-- Mark Complete Button -->
+        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+            <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning AI Agents?</h3>
+            <button id="mark-complete-btn" style="
+                background: linear-gradient(90deg, #4c8bf5, #d367c1);
+                color: white;
+                border: none;
+                padding: 16px 40px;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
+            " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                ✅ Mark as Complete
+            </button>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up AI Agents in your Knowledge Galaxy! 🌟</p>
+        </div>
+    </div>
+
+    <!-- Load Supabase and completion tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/mark-complete.js"></script>
+</body>
+</html>

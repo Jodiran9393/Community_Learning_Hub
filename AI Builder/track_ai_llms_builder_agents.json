@@ -1,0 +1,901 @@
+{
+  "track_id": "AI_LLMs_Builder_Agents",
+  "name": "AI/LLMs \u2014 Builder/Agents",
+  "category": "ai",
+  "version": "v1.1",
+  "updated_at": "2025-12-15T02:52:27Z",
+  "notes": {
+    "scope": "Day-1 curated backbone (finite). Long-tail topics stay experimental.",
+    "prereq_direction": "prereq \u2192 dependent (learning_topics.prerequisites is source of truth).",
+    "onboarding": "User must pick exactly one outcome_id; placement targets that outcome's capstones."
+  },
+  "outcomes": [
+    {
+      "id": "build_tool_agent",
+      "label": "Build a Tool\u2011Using Agent",
+      "capstones": [
+        "ToolCalling",
+        "AgentLoop",
+        "Tracing",
+        "Safety"
+      ],
+      "diagnostic_topic_ids": [
+        "LLM",
+        "Prompting",
+        "ToolCalling",
+        "AgentLoop",
+        "Tracing",
+        "Safety"
+      ]
+    },
+    {
+      "id": "build_rag_app",
+      "label": "Build a RAG App with Citations",
+      "capstones": [
+        "RAG",
+        "Chunking",
+        "Reranking",
+        "Citations"
+      ],
+      "diagnostic_topic_ids": [
+        "Embeddings",
+        "RAG",
+        "Chunking",
+        "Reranking",
+        "Citations",
+        "Hallucinations"
+      ]
+    },
+    {
+      "id": "fine_tune_peft",
+      "label": "Fine\u2011tune (PEFT) + Evaluate Responsibly",
+      "capstones": [
+        "FineTuningIntro",
+        "LoRA",
+        "EvalBasics",
+        "PromptEvals"
+      ],
+      "diagnostic_topic_ids": [
+        "Prompting",
+        "FineTuningIntro",
+        "LoRA",
+        "EvalBasics",
+        "PromptEvals"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "AIIntro",
+      "name": "AI & ML Basics",
+      "slug": "ai-ml-basics",
+      "category": "ai",
+      "difficulty_level": 1,
+      "estimated_hours": 1.5,
+      "prerequisites": [],
+      "description": "Core vocabulary: model, data, training, inference.",
+      "icon_emoji": "\ud83e\udde0",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "LLM",
+      "name": "Large Language Models (LLMs)",
+      "slug": "large-language-models-llms",
+      "category": "ai",
+      "difficulty_level": 1,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "AIIntro"
+      ],
+      "description": "What LLMs are and what they are not.",
+      "icon_emoji": "\ud83c\udf10",
+      "color_hex": "#7CFF6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Tokens",
+      "name": "Tokens & Context Window",
+      "slug": "tokens-context-window",
+      "category": "ai",
+      "difficulty_level": 1,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "LLM"
+      ],
+      "description": "Tokens, context length, why it matters.",
+      "icon_emoji": "\ud83d\udd24",
+      "color_hex": "#FFD56E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Embeddings",
+      "name": "Embeddings (Intuition)",
+      "slug": "embeddings-intuition",
+      "category": "ai",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "LLM"
+      ],
+      "description": "Vectors that represent meaning for retrieval and clustering.",
+      "icon_emoji": "\ud83e\uddf2",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Transformer",
+      "name": "Transformer Overview",
+      "slug": "transformer-overview",
+      "category": "ai",
+      "difficulty_level": 2,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Tokens"
+      ],
+      "description": "High-level transformer architecture and flow.",
+      "icon_emoji": "\ud83e\udde9",
+      "color_hex": "#6EE7FF",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "Attention",
+      "name": "Attention (Conceptual)",
+      "slug": "attention-conceptual",
+      "category": "ai",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "Transformer"
+      ],
+      "description": "Why attention works; query/key/value intuition.",
+      "icon_emoji": "\ud83d\udc41\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "Sampling",
+      "name": "Sampling (temp/top-p)",
+      "slug": "sampling-temp-top-p",
+      "category": "ai",
+      "difficulty_level": 2,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "LLM"
+      ],
+      "description": "Why outputs vary; how sampling controls style vs risk.",
+      "icon_emoji": "\ud83c\udfb2",
+      "color_hex": "#FFD56E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Prompting",
+      "name": "Prompt Engineering Basics",
+      "slug": "prompt-engineering-basics",
+      "category": "ai",
+      "difficulty_level": 2,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "LLM"
+      ],
+      "description": "Instructions, constraints, examples, and rubrics.",
+      "icon_emoji": "\ud83d\udcdd",
+      "color_hex": "#7CFF6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "SystemRole",
+      "name": "System vs User vs Developer Messages",
+      "slug": "system-vs-user-vs-developer-messages",
+      "category": "ai",
+      "difficulty_level": 2,
+      "estimated_hours": 1.0,
+      "prerequisites": [
+        "Prompting"
+      ],
+      "description": "Role hierarchy and behavior contracts.",
+      "icon_emoji": "\ud83e\uddfe",
+      "color_hex": "#7CFF6E",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "ToolCalling",
+      "name": "Tool Calling (Function Calling)",
+      "slug": "tool-calling-function-calling",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "Prompting"
+      ],
+      "description": "When the model should act; schemas; tool results.",
+      "icon_emoji": "\ud83d\udee0\ufe0f",
+      "color_hex": "#FF8BD4",
+      "node_size": 36,
+      "is_published": true
+    },
+    {
+      "id": "AgentLoop",
+      "name": "Agent Loop (Plan\u2192Act\u2192Observe\u2192Refine)",
+      "slug": "agent-loop-plan-act-observe-refine",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "ToolCalling"
+      ],
+      "description": "Core loop design; failure modes.",
+      "icon_emoji": "\ud83d\udd01",
+      "color_hex": "#FF8BD4",
+      "node_size": 34,
+      "is_published": true
+    },
+    {
+      "id": "Memory",
+      "name": "Agent Memory Patterns",
+      "slug": "agent-memory-patterns",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "AgentLoop"
+      ],
+      "description": "Short-term vs long-term memory; retrieval-backed memory.",
+      "icon_emoji": "\ud83e\udde0",
+      "color_hex": "#FF8BD4",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "RAG",
+      "name": "Retrieval-Augmented Generation (RAG)",
+      "slug": "retrieval-augmented-generation-rag",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 3.0,
+      "prerequisites": [
+        "Embeddings",
+        "Prompting"
+      ],
+      "description": "Ground answers using retrieved context and citations.",
+      "icon_emoji": "\ud83d\udcda",
+      "color_hex": "#B68CFF",
+      "node_size": 36,
+      "is_published": true
+    },
+    {
+      "id": "Chunking",
+      "name": "Chunking & Document Prep",
+      "slug": "chunking-document-prep",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "RAG"
+      ],
+      "description": "Chunk size/overlap; metadata; splitting strategies.",
+      "icon_emoji": "\ud83e\uddf1",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "VectorDB",
+      "name": "Vector Databases (Concepts)",
+      "slug": "vector-databases-concepts",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "Embeddings"
+      ],
+      "description": "Indexing, similarity search, filtering, and recall/precision.",
+      "icon_emoji": "\ud83d\uddc4\ufe0f",
+      "color_hex": "#B68CFF",
+      "node_size": 32,
+      "is_published": true
+    },
+    {
+      "id": "Reranking",
+      "name": "Reranking & Hybrid Search",
+      "slug": "reranking-hybrid-search",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "RAG"
+      ],
+      "description": "Improve retrieval quality with rerankers and keyword+vector.",
+      "icon_emoji": "\ud83d\udcc8",
+      "color_hex": "#B68CFF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Citations",
+      "name": "Citations & Evidence Discipline",
+      "slug": "citations-evidence-discipline",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "RAG"
+      ],
+      "description": "Cite sources; avoid unsupported claims.",
+      "icon_emoji": "\ud83d\udd0e",
+      "color_hex": "#B68CFF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Hallucinations",
+      "name": "Hallucinations & Refusal",
+      "slug": "hallucinations-refusal",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "LLM",
+        "Citations"
+      ],
+      "description": "Why hallucinations happen; safe refusal behaviors.",
+      "icon_emoji": "\ud83d\udeab",
+      "color_hex": "#FFD56E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "EvalBasics",
+      "name": "Evaluation Basics (LLM apps)",
+      "slug": "evaluation-basics-llm-apps",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Hallucinations"
+      ],
+      "description": "What to test: correctness, grounding, latency, safety.",
+      "icon_emoji": "\ud83e\uddea",
+      "color_hex": "#FFD56E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "PromptEvals",
+      "name": "Prompt & Response Grading",
+      "slug": "prompt-response-grading",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "EvalBasics"
+      ],
+      "description": "Rubrics, test sets, regression checks.",
+      "icon_emoji": "\u2705",
+      "color_hex": "#FFD56E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Tracing",
+      "name": "Tracing & Observability",
+      "slug": "tracing-observability",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "AgentLoop"
+      ],
+      "description": "Logs, traces, tool calls, and debugging workflows.",
+      "icon_emoji": "\ud83d\udef0\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "Safety",
+      "name": "Guardrails & Safety Patterns",
+      "slug": "guardrails-safety-patterns",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "AgentLoop",
+        "Hallucinations"
+      ],
+      "description": "Allowlists, refusal rules, and tool safety.",
+      "icon_emoji": "\ud83d\udee1\ufe0f",
+      "color_hex": "#FF6E6E",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "LatencyCost",
+      "name": "Latency & Cost Basics",
+      "slug": "latency-cost-basics",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "LLM"
+      ],
+      "description": "Tokens, batching, caching; why latency explodes.",
+      "icon_emoji": "\u23f1\ufe0f",
+      "color_hex": "#6EE7FF",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "Quantization",
+      "name": "Quantization (Why/When)",
+      "slug": "quantization-why-when",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "LatencyCost"
+      ],
+      "description": "Tradeoffs: speed/memory vs quality.",
+      "icon_emoji": "\ud83d\udcc9",
+      "color_hex": "#6EE7FF",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "Serving",
+      "name": "Serving & Deployment Basics",
+      "slug": "serving-deployment-basics",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "LatencyCost"
+      ],
+      "description": "Deploying models; rate limiting; monitoring.",
+      "icon_emoji": "\ud83d\ude80",
+      "color_hex": "#6EE7FF",
+      "node_size": 30,
+      "is_published": true
+    },
+    {
+      "id": "Privacy",
+      "name": "Data Privacy for LLM Apps",
+      "slug": "data-privacy-for-llm-apps",
+      "category": "ai",
+      "difficulty_level": 3,
+      "estimated_hours": 1.5,
+      "prerequisites": [
+        "LLM"
+      ],
+      "description": "PII handling; retention; redaction; safe logs.",
+      "icon_emoji": "\ud83d\udd12",
+      "color_hex": "#FF6E6E",
+      "node_size": 26,
+      "is_published": true
+    },
+    {
+      "id": "FineTuningIntro",
+      "name": "Fine-tuning (Overview)",
+      "slug": "fine-tuning-overview",
+      "category": "ai",
+      "difficulty_level": 4,
+      "estimated_hours": 2.5,
+      "prerequisites": [
+        "Prompting"
+      ],
+      "description": "When tuning helps vs prompts/RAG; data formats.",
+      "icon_emoji": "\ud83e\uddec",
+      "color_hex": "#7CFF6E",
+      "node_size": 28,
+      "is_published": true
+    },
+    {
+      "id": "LoRA",
+      "name": "LoRA / Parameter-Efficient Tuning",
+      "slug": "lora-parameter-efficient-tuning",
+      "category": "ai",
+      "difficulty_level": 5,
+      "estimated_hours": 2.0,
+      "prerequisites": [
+        "FineTuningIntro"
+      ],
+      "description": "PEFT concepts; low-rank adapters; evaluation needs.",
+      "icon_emoji": "\ud83e\uddf7",
+      "color_hex": "#7CFF6E",
+      "node_size": 26,
+      "is_published": true
+    }
+  ],
+  "relationships": [
+    {
+      "from_topic": "AIIntro",
+      "to_topic": "LLM",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "Tokens",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "Embeddings",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Tokens",
+      "to_topic": "Transformer",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Transformer",
+      "to_topic": "Attention",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "Sampling",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "Prompting",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Prompting",
+      "to_topic": "SystemRole",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Prompting",
+      "to_topic": "ToolCalling",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "ToolCalling",
+      "to_topic": "AgentLoop",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "AgentLoop",
+      "to_topic": "Memory",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Embeddings",
+      "to_topic": "RAG",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Prompting",
+      "to_topic": "RAG",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "RAG",
+      "to_topic": "Chunking",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Embeddings",
+      "to_topic": "VectorDB",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "RAG",
+      "to_topic": "Reranking",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "RAG",
+      "to_topic": "Citations",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "Hallucinations",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Citations",
+      "to_topic": "Hallucinations",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Hallucinations",
+      "to_topic": "EvalBasics",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "EvalBasics",
+      "to_topic": "PromptEvals",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "AgentLoop",
+      "to_topic": "Tracing",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "AgentLoop",
+      "to_topic": "Safety",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Hallucinations",
+      "to_topic": "Safety",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "LatencyCost",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LatencyCost",
+      "to_topic": "Quantization",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LatencyCost",
+      "to_topic": "Serving",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "LLM",
+      "to_topic": "Privacy",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "Prompting",
+      "to_topic": "FineTuningIntro",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "FineTuningIntro",
+      "to_topic": "LoRA",
+      "relationship_type": "prerequisite",
+      "strength": 9
+    },
+    {
+      "from_topic": "ToolCalling",
+      "to_topic": "RAG",
+      "relationship_type": "related",
+      "strength": 6
+    },
+    {
+      "from_topic": "RAG",
+      "to_topic": "EvalBasics",
+      "relationship_type": "related",
+      "strength": 7
+    },
+    {
+      "from_topic": "Tracing",
+      "to_topic": "EvalBasics",
+      "relationship_type": "related",
+      "strength": 7
+    },
+    {
+      "from_topic": "Serving",
+      "to_topic": "Privacy",
+      "relationship_type": "related",
+      "strength": 6
+    },
+    {
+      "from_topic": "FineTuningIntro",
+      "to_topic": "RAG",
+      "relationship_type": "alternative",
+      "strength": 4
+    }
+  ],
+  "diagnostic": {
+    "estimated_minutes": 10,
+    "core_confidence_sliders": [
+      {
+        "topic_id": "LLM",
+        "prompt": "How confident are you explaining what an LLM is (and is not)?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "Attention",
+        "prompt": "How confident are you explaining attention conceptually?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "Prompting",
+        "prompt": "How confident are you writing clear, constrained prompts?",
+        "scale": "0-5"
+      },
+      {
+        "topic_id": "Hallucinations",
+        "prompt": "How confident are you spotting and preventing hallucinations?",
+        "scale": "0-5"
+      }
+    ],
+    "core_micro_quiz": [
+      {
+        "id": "ai_core_1",
+        "topic_id": "Attention",
+        "prompt": "In simple terms, attention helps a model\u2026",
+        "options": [
+          "store facts permanently",
+          "focus on relevant tokens in context",
+          "avoid tokenization",
+          "increase GPU memory"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "ai_core_2",
+        "topic_id": "Hallucinations",
+        "prompt": "When evidence is missing, the safest behavior is to\u2026",
+        "options": [
+          "guess confidently",
+          "refuse / ask for sources",
+          "increase temperature",
+          "repeat the prompt"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "ai_core_3",
+        "topic_id": "Sampling",
+        "prompt": "Temperature mainly affects\u2026",
+        "options": [
+          "context length",
+          "randomness/variation",
+          "tokenization",
+          "embedding size"
+        ],
+        "correct_index": 1
+      }
+    ],
+    "outcome_micro_quiz_pool": [
+      {
+        "id": "ai_tool_1",
+        "outcome_id": "build_tool_agent",
+        "topic_id": "ToolCalling",
+        "prompt": "Tool calling is most useful when the task requires\u2026",
+        "options": [
+          "style rewriting",
+          "external actions or fresh info",
+          "more emojis",
+          "longer context"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "ai_tool_2",
+        "outcome_id": "build_tool_agent",
+        "topic_id": "AgentLoop",
+        "prompt": "A robust agent loop typically includes\u2026",
+        "options": [
+          "plan \u2192 act \u2192 observe \u2192 refine",
+          "only prompting",
+          "only fine-tuning",
+          "only retrieval"
+        ],
+        "correct_index": 0
+      },
+      {
+        "id": "ai_rag_1",
+        "outcome_id": "build_rag_app",
+        "topic_id": "RAG",
+        "prompt": "RAG primarily helps by\u2026",
+        "options": [
+          "making the model larger",
+          "grounding answers in retrieved evidence",
+          "removing tokenization",
+          "forcing deterministic output"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "ai_rag_2",
+        "outcome_id": "build_rag_app",
+        "topic_id": "Chunking",
+        "prompt": "Chunking matters because\u2026",
+        "options": [
+          "it changes GPU RAM",
+          "it affects retrieval recall/precision",
+          "it changes the UI theme",
+          "it changes token vocabulary"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "ai_peft_1",
+        "outcome_id": "fine_tune_peft",
+        "topic_id": "FineTuningIntro",
+        "prompt": "Fine-tuning is usually preferred over prompts/RAG when\u2026",
+        "options": [
+          "you need style only",
+          "you need consistent behavior from examples not in context",
+          "you only need citations",
+          "you have no data"
+        ],
+        "correct_index": 1
+      },
+      {
+        "id": "ai_peft_2",
+        "outcome_id": "fine_tune_peft",
+        "topic_id": "LoRA",
+        "prompt": "LoRA is best described as\u2026",
+        "options": [
+          "full model retraining",
+          "parameter-efficient adapters",
+          "a vector DB",
+          "a web framework"
+        ],
+        "correct_index": 1
+      }
+    ]
+  },
+  "topic_card_template": {
+    "mode": "evidence_first",
+    "retrieval_policy": {
+      "min_sources": 3,
+      "prefer": [
+        "official_docs",
+        "standards",
+        "peer_reviewed",
+        "reputable_org_blogs"
+      ],
+      "avoid": [
+        "paywalled_fulltext",
+        "scraped_long_passages"
+      ],
+      "cache_ttl_hours": 72
+    },
+    "sections": [
+      "What it is (2\u20134 sentences, cited)",
+      "Why it matters (1\u20132 bullets, cited where factual)",
+      "Key ideas (5\u20138 bullets, cited)",
+      "Common misconceptions (3 bullets, cited)",
+      "Worked example (original, can cite concepts)",
+      "Practice (3 questions + answers)",
+      "Proof task (measurable output)",
+      "Next nodes (and why, based on prereqs)"
+    ],
+    "prompt_skeleton": "Generate a Topic Card for {topic.name}. Use ONLY provided evidence snippets for factual claims; cite like [1], [2]. Keep it practical."
+  }
+}

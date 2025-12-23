@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figma Resources - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-node-id="Figma">
+    <div class="resource-page">
+        <a href="/" class="back-link">← Back to Hub</a>
+        
+        <div class="page-header">
+            <h1 style="color: #a060ff;">Figma</h1>
+            <p>Collaborative interface design tool</p>
+        </div>
+
+        <section class="resource-section">
+            <h3>What is Figma?</h3>
+            <p>Figma is a cloud-based design tool for creating user interfaces, prototypes, and design systems. It enables real-time collaboration and is widely used by designers and developers worldwide.</p>
+        </section>
+
+        <section class="resource-section">
+            <h3>Getting Started</h3>
+            <ul class="resource-list">
+                <li><a href="https://help.figma.com/hc/en-us/categories/360002051613-Get-started" target="_blank">Figma Help Center</a> - Official documentation</li>
+                <li><a href="https://www.figma.com/resources/learn-design/" target="_blank">Learn Design</a> - Free Figma courses</li>
+                <li><a href="https://www.youtube.com/c/Figma" target="_blank">Figma YouTube</a> - Video tutorials and tips</li>
+                <li><strong>Free Plan:</strong> Available for individual designers</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Core Features</h3>
+            <ul class="resource-list">
+                <li><strong>Frames & Layouts:</strong> Flexible container system</li>
+                <li><strong>Auto Layout:</strong> Responsive component design</li>
+                <li><strong>Components:</strong> Reusable design elements</li>
+                <li><strong>Variants:</strong> Multiple states of components</li>
+                <li><strong>Constraints:</strong> Responsive resizing behavior</li>
+                <li><strong>Styles:</strong> Color, text, and effect libraries</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Advanced Capabilities</h3>
+            <ul class="resource-list">
+                <li><strong>Prototyping:</strong> Interactive flows and animations</li>
+                <li><strong>Design Systems:</strong> Shared component libraries</li>
+                <li><strong>Plugins:</strong> Extend Figma with custom tools</li>
+                <li><strong>Variables:</strong> Dynamic values for themes and responsiveness</li>
+                <li><strong>Dev Mode:</strong> Developer handoff features</li>
+                <li><strong>FigJam:</strong> Collaborative whiteboarding</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Learning Path</h3>
+            <ul class="resource-list">
+                <li><strong>Week 1:</strong> Interface basics, frames, shapes, text</li>
+                <li><strong>Week 2:</strong> Components, auto layout, constraints</li>
+                <li><strong>Week 3:</strong> Prototyping, interactions, animations</li>
+                <li><strong>Week 4:</strong> Design systems, plugins, collaboration</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Community Resources</h3>
+            <ul class="resource-list">
+                <li><a href="https://www.figma.com/community" target="_blank">Figma Community</a> - Free templates and plugins</li>
+                <li><a href="https://www.figma.com/best-practices/" target="_blank">Best Practices</a> - Professional workflows</li>
+                <li><strong>Figma Friends:</strong> Local meetup groups worldwide</li>
+                <li><strong>Config:</strong> Annual Figma conference</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Popular Plugins</h3>
+            <ul class="resource-list">
+                <li><strong>Unsplash:</strong> Free stock photos</li>
+                <li><strong>Iconify:</strong> Thousands of icons</li>
+                <li><strong>Autoflow:</strong> User flow diagrams</li>
+                <li><strong>Content Reel:</strong> Generate realistic content</li>
+                <li><strong>Stark:</strong> Accessibility checking</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Designer-Developer Handoff</h3>
+            <ul class="resource-list">
+                <li><strong>Inspect Mode:</strong> CSS code generation</li>
+                <li><strong>Export Assets:</strong> PNG, SVG, PDF formats</li>
+                <li><strong>Measure Tool:</strong> Spacing and dimensions</li>
+                <li><strong>Comments:</strong> Feedback and annotations</li>
+            </ul>
+        </section>
+
+        <!-- Mark Complete Button -->
+        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+            <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning Figma?</h3>
+            <button id="mark-complete-btn" style="
+                background: linear-gradient(90deg, #4c8bf5, #d367c1);
+                color: white;
+                border: none;
+                padding: 16px 40px;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
+            " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                ✅ Mark as Complete
+            </button>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up Figma in your Knowledge Galaxy! 🌟</p>
+        </div>
+    </div>
+
+    <!-- Load Supabase and completion tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/mark-complete.js"></script>
+</body>
+</html>

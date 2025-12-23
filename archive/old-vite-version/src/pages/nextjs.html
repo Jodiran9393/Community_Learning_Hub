@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next.js Resources - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-node-id="NextJS">
+    <div class="resource-page">
+        <a href="/" class="back-link">← Back to Hub</a>
+        
+        <div class="page-header">
+            <h1 style="color: #4c8bf5;">Next.js</h1>
+            <p>The React Framework for production</p>
+        </div>
+
+        <section class="resource-section">
+            <h3>What is Next.js?</h3>
+            <p>Next.js is a React framework that provides server-side rendering, static site generation, file-based routing, API routes, and optimized performance out of the box.</p>
+        </section>
+
+        <section class="resource-section">
+            <h3>Official Resources</h3>
+            <ul class="resource-list">
+                <li><a href="https://nextjs.org/docs" target="_blank">Next.js Documentation</a> - Comprehensive official docs</li>
+                <li><a href="https://nextjs.org/learn" target="_blank">Learn Next.js</a> - Interactive tutorial from Vercel</li>
+                <li><a href="https://github.com/vercel/next.js/tree/canary/examples" target="_blank">Next.js Examples</a> - 300+ example projects</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Key Features</h3>
+            <ul class="resource-list">
+                <li><strong>App Router:</strong> Modern routing with React Server Components</li>
+                <li><strong>Server & Client Components:</strong> Optimized rendering strategies</li>
+                <li><strong>File-based Routing:</strong> Pages automatically created from file structure</li>
+                <li><strong>API Routes:</strong> Build backend endpoints within your app</li>
+                <li><strong>Image Optimization:</strong> Automatic image optimization with next/image</li>
+                <li><strong>TypeScript Support:</strong> First-class TypeScript integration</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Rendering Methods</h3>
+            <ul class="resource-list">
+                <li><strong>Static Site Generation (SSG):</strong> Pre-render at build time</li>
+                <li><strong>Server-Side Rendering (SSR):</strong> Render on each request</li>
+                <li><strong>Incremental Static Regeneration (ISR):</strong> Update static pages after build</li>
+                <li><strong>Client-Side Rendering (CSR):</strong> Traditional React rendering</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Learning Path</h3>
+            <ul class="resource-list">
+                <li><strong>Week 1:</strong> Master React fundamentals first</li>
+                <li><strong>Week 2:</strong> Next.js basics - routing, pages, layouts</li>
+                <li><strong>Week 3:</strong> Data fetching patterns and API routes</li>
+                <li><strong>Week 4:</strong> Advanced features - middleware, authentication, deployment</li>
+            </ul>
+        </section>
+
+        <section class="resource-section">
+            <h3>Popular Stacks</h3>
+            <ul class="resource-list">
+                <li><strong>T3 Stack:</strong> Next.js + TypeScript + tRPC + Prisma + Tailwind</li>
+                <li><strong>Next.js + Supabase:</strong> Full-stack with auth and database</li>
+                <li><strong>Next.js + Sanity:</strong> Headless CMS integration</li>
+                <li><strong>Deployment:</strong> Vercel (native), Netlify, or self-hosted</li>
+            </ul>
+        </section>
+
+        <!-- Mark Complete Button -->
+        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+            <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning Next.js?</h3>
+            <button id="mark-complete-btn" style="
+                background: linear-gradient(90deg, #4c8bf5, #d367c1);
+                color: white;
+                border: none;
+                padding: 16px 40px;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
+            " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                ✅ Mark as Complete
+            </button>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up Next.js in your Knowledge Galaxy! 🌟</p>
+        </div>
+    </div>
+
+    <!-- Load Supabase and completion tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/mark-complete.js"></script>
+</body>
+</html>

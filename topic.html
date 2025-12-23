@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Topic... - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .topic-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4c8bf5;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .topic-header {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .topic-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .topic-meta h1 {
+            font-size: 36px;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+
+        .topic-description {
+            font-size: 18px;
+            color: #b8b9d6;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+
+        .topic-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #9495b3;
+        }
+
+        .stat-icon {
+            font-size: 16px;
+        }
+
+        .topic-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .topic-section h3 {
+            font-size: 20px;
+            margin: 0 0 16px 0;
+            color: white;
+        }
+
+        .topic-section p {
+            color: #b8b9d6;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .learning-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .learning-list li {
+            padding: 12px 0;
+            color: #b8b9d6;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .learning-list li::before {
+            content: '✓';
+            color: #7CFF6E;
+            font-weight: bold;
+        }
+
+        .learning-list li:last-child {
+            border-bottom: none;
+        }
+
+        .prerequisites-section {
+            background: rgba(255, 213, 110, 0.05);
+            border-color: rgba(255, 213, 110, 0.2);
+        }
+
+        .prereq-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .prereq-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .prereq-card:hover {
+            background: rgba(76, 139, 245, 0.1);
+            border-color: #4c8bf5;
+        }
+
+        .prereq-arrow {
+            color: #4c8bf5;
+        }
+
+        .next-topics {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .next-topic-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .next-topic-card:hover {
+            background: rgba(76, 139, 245, 0.1);
+            border-color: #4c8bf5;
+            transform: translateX(4px);
+        }
+
+        .next-topic-icon {
+            font-size: 24px;
+        }
+
+        .next-topic-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .next-topic-arrow {
+            color: #4c8bf5;
+            font-size: 20px;
+        }
+
+        .no-next {
+            color: #7CFF6E;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .completion-section {
+            text-align: center;
+            padding: 40px;
+            background: rgba(76, 139, 245, 0.05);
+            border-radius: 16px;
+            margin-top: 40px;
+        }
+
+        .completion-section h3 {
+            margin: 0 0 16px 0;
+            color: #4c8bf5;
+        }
+
+        .completion-section.completed {
+            background: rgba(124, 255, 110, 0.05);
+        }
+
+        .completion-section.completed h3 {
+            color: #7CFF6E;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(76, 139, 245, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .error-container h2 {
+            color: #ff6b6b;
+            margin-bottom: 16px;
+        }
+
+        .loading-text {
+            color: #9495b3;
+            font-style: italic;
+        }
+
+        /* Generated Content Styles */
+        .generated-content {
+            color: #b8b9d6;
+            line-height: 1.7;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .content-section h3 {
+            font-size: 20px;
+            margin: 0 0 16px 0;
+            color: white;
+        }
+
+        .section-content ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .section-content li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-content li:last-child {
+            border-bottom: none;
+        }
+
+        .section-content code {
+            background: rgba(76, 139, 245, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #e0e0ff;
+            display: inline;
+            word-break: break-word;
+        }
+
+        /* Ensure generated content code is also visible */
+        .generated-content code {
+            background: rgba(76, 139, 245, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #e0e0ff;
+            display: inline;
+            word-break: break-word;
+        }
+
+        /* Code block container with copy button */
+        .code-block-container {
+            position: relative;
+            margin: 16px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 8px;
+        }
+
+        .code-block-container .code-lang {
+            position: absolute;
+            top: 10px;
+            left: 14px;
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: rgba(60, 60, 80, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(80, 80, 100, 0.8);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .copy-btn.copied {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: rgba(74, 222, 128, 0.4);
+            color: #4ade80;
+        }
+
+        .copy-btn .copy-icon {
+            display: inline;
+            font-size: 16px;
+        }
+
+        .copy-btn .check-icon {
+            display: none;
+            font-size: 16px;
+            color: #4ade80;
+        }
+
+        .copy-btn.copied .copy-icon {
+            display: none;
+        }
+
+        .copy-btn.copied .check-icon {
+            display: inline;
+        }
+
+        .section-content pre,
+        .code-block-container pre {
+            background: transparent;
+            padding: 16px;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        .section-content pre code,
+        .code-block-container pre code {
+            background: none;
+            padding: 0;
+            display: block;
+            color: #e0e0e0;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Legacy pre without wrapper */
+        .section-content>pre {
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        /* Content Loading */
+        .content-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(76, 139, 245, 0.3);
+            border-top-color: #4c8bf5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-hint {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        /* Content Error */
+        .content-error {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 16px;
+        }
+
+        .content-error h3 {
+            color: #ff6b6b;
+            margin-bottom: 16px;
+        }
+
+        .error-hint {
+            color: #9495b3;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .error-hint a {
+            color: #4c8bf5;
+        }
+
+        /* Generate Button */
+        .generate-content-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 24px;
+        }
+
+        .generate-content-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(76, 139, 245, 0.4);
+        }
+
+        .generate-content-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
+        @media (max-width: 768px) {
+            .topic-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .topic-meta h1 {
+                font-size: 28px;
+            }
+
+            .topic-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topic-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <a href="/" class="back-link" style="margin-bottom: 0;">← Back to Hub</a>
+            <a href="/settings.html" class="back-link" style="margin-bottom: 0;">⚙️ Settings</a>
+        </div>
+
+        <div id="topic-content">
+            <div class="loading-text" style="text-align: center; padding: 60px 20px;">
+                <p>Loading topic...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+    <script src="/js/supabase-client.js"></script>
+    <script src="/js/track-loader.js"></script>
+    <!-- LLM Content Generation Services -->
+    <script src="/js/services/llm-config.js"></script>
+    <script src="/js/services/llm-providers.js"></script>
+    <script src="/js/services/web-search.js"></script>
+    <script src="/js/services/content-generator.js"></script>
+    <script src="/js/services/topic-chat.js"></script>
+    <script src="/js/topic-page-loader.js"></script>
+</body>
+
+</html>

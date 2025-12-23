@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JavaScript Resources - Community Learning Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body data-node-id="JS">
     <div class="resource-page">
         <a href="/" class="back-link">← Back to Hub</a>
-        
+
         <div class="page-header">
             <h1 style="color: #4c8bf5;">JavaScript</h1>
             <p>The language that powers the web</p>
@@ -18,15 +21,19 @@
 
         <section class="resource-section">
             <h3>What is JavaScript?</h3>
-            <p>JavaScript is the programming language of the web. It enables interactive web pages and is an essential part of web applications. It runs in the browser and on servers (Node.js).</p>
+            <p>JavaScript is the programming language of the web. It enables interactive web pages and is an essential
+                part of web applications. It runs in the browser and on servers (Node.js).</p>
         </section>
 
         <section class="resource-section">
             <h3>Essential Resources</h3>
             <ul class="resource-list">
-                <li><a href="https://javascript.info" target="_blank">JavaScript.info</a> - Comprehensive modern JavaScript tutorial</li>
-                <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">MDN Web Docs</a> - The definitive JavaScript reference</li>
-                <li><a href="https://eloquentjavascript.net" target="_blank">Eloquent JavaScript</a> - Free online book</li>
+                <li><a href="https://javascript.info" target="_blank">JavaScript.info</a> - Comprehensive modern
+                    JavaScript tutorial</li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">MDN Web Docs</a> -
+                    The definitive JavaScript reference</li>
+                <li><a href="https://eloquentjavascript.net" target="_blank">Eloquent JavaScript</a> - Free online book
+                </li>
             </ul>
         </section>
 
@@ -45,14 +52,17 @@
         <section class="resource-section">
             <h3>Practice Platforms</h3>
             <ul class="resource-list">
-                <li><a href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" target="_blank">freeCodeCamp</a> - JavaScript Algorithms and Data Structures</li>
+                <li><a href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/"
+                        target="_blank">freeCodeCamp</a> - JavaScript Algorithms and Data Structures</li>
                 <li><a href="https://www.codewars.com" target="_blank">Codewars</a> - Coding challenges and kata</li>
-                <li><a href="https://exercism.org/tracks/javascript" target="_blank">Exercism</a> - Practice with mentor feedback</li>
+                <li><a href="https://exercism.org/tracks/javascript" target="_blank">Exercism</a> - Practice with mentor
+                    feedback</li>
             </ul>
         </section>
 
         <!-- Mark Complete Button -->
-        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+        <div
+            style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
             <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning JavaScript?</h3>
             <button id="mark-complete-btn" style="
                 background: linear-gradient(90deg, #4c8bf5, #d367c1);
@@ -66,16 +76,19 @@
                 transition: all 0.3s;
                 box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
             " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
                 ✅ Mark as Complete
             </button>
-            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up JavaScript in your Knowledge Galaxy! 🌟</p>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up JavaScript in your Knowledge
+                Galaxy! 🌟</p>
         </div>
     </div>
 
     <!-- Load Supabase and completion tracking -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+    <script src="/js/supabase-client.js?v=2"></script>
+    <script src="/js/learning-tracker.js"></script>
     <script src="/js/mark-complete.js"></script>
 </body>
+
 </html>

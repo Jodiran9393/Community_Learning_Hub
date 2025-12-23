@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Galaxy - Data Quality Cleanup Mode</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(ellipse at bottom, #0d1117 0%, #000000 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        #galaxy-container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Stats HUD */
+        #stats-hud {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(20, 20, 30, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            min-width: 200px;
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            z-index: 100;
+        }
+
+        #stats-hud h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #4c8bf5;
+        }
+
+        /* Sign in prompt */
+        #signin-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            display: none;
+            z-index: 200;
+        }
+
+        #signin-prompt h2 {
+            margin: 0 0 15px 0;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #signin-prompt p {
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        #signin-prompt button {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #signin-prompt button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Legend */
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(20, 20, 30, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: white;
+            border: 1px solid rgba(76, 139, 245, 0.3);
+            z-index: 100;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Loading spinner */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 150;
+        }
+
+        .spinner {
+            border: 3px solid rgba(76, 139, 245, 0.3);
+            border-top: 3px solid #4c8bf5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="galaxy-container"></div>
+
+    <!-- Loading State -->
+    <div id="loading">
+        <div class="spinner"></div>
+        <div>Loading Galaxy...</div>
+    </div>
+
+    <!-- Stats HUD -->
+    <div id="stats-hud">
+        <h3>🌌 Progress</h3>
+        <div class="stat-item">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="completed-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">In Progress</span>
+            <span class="stat-value" id="inprogress-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Total Topics</span>
+            <span class="stat-value" id="total-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Progress</span>
+            <span class="stat-value" id="progress-percent">0%</span>
+        </div>
+    </div>
+
+    <!-- Sign In Prompt -->
+    <div id="signin-prompt">
+        <h2>🔒 Track Your Progress</h2>
+        <p>Sign in to save your learning journey and get personalized recommendations!</p>
+        <button onclick="window.top.location.href='/auth.html'">Sign In</button>
+    </div>
+
+    <!-- Legend -->
+    <div id="legend">
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #00ff88; box-shadow: 0 0 10px #00ff88;"></div>
+            <span>Completed</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #ffdd00; box-shadow: 0 0 10px #ffdd00;"></div>
+            <span>In Progress</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #4488ff;"></div>
+            <span>Not Started</span>
+        </div>
+    </div>
+
+    <!-- Load libraries (browser builds, not ES modules) -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph@1.73.1/dist/3d-force-graph.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- DQ System Modules -->
+    <script src="chatgpt-5.2-data-quality-audit-normalize.js"></script>
+    <script src="chatgpt-5.2-mapping-layer.js"></script>
+    <script src="dq-galaxy-visualization.js"></script>
+    <script src="dq-debug-panel-v2.js"></script>
+
+    <script>
+
+        // Initialize Supabase
+        const supabaseUrl = 'https://mwkbezrdprlotddxegqo.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a2JlenJkcHJsb3RkZHhlZ3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0MTY5MzcsImV4cCI6MjA4MDk5MjkzN30.Dxo7rlXSB9zxIwsT-bUcXHSJJXMyJ7wqIPorObfB81o';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentUser = null;
+        let graph = null;
+        let nodes = [];
+        let links = [];
+        let dqPanel = null;
+        let pulseController = null;
+        let rawTopics = [];
+        let rawRelationships = [];
+
+        // Helper: Get validated links that only reference existing nodes
+        function getValidatedLinks() {
+            const nodeIds = new Set(nodes.map(n => n.id));
+            return links
+                .filter(l => l && l[0] && l[1])
+                .filter(l => nodeIds.has(l[0]) && nodeIds.has(l[1]))
+                .map(l => ({ source: l[0], target: l[1] }));
+        }
+
+        // Load topics from database with DQ audit
+        async function loadTopics() {
+            console.log('🔍 Attempting to load topics from database...');
+            try {
+                console.log('📡 Querying learning_topics table...');
+                const { data: topics, error } = await supabase
+                    .from('learning_topics')
+                    .select('*')
+                    .eq('is_published', true)
+                    .order('display_order');
+
+                console.log('📊 Query result:', { topics, error });
+
+                if (error) {
+                    console.error('❌ Failed to load topics:', error);
+                    console.error('Error details:', JSON.stringify(error, null, 2));
+                    return loadFallbackTopics();
+                }
+
+                if (!topics || topics.length === 0) {
+                    console.warn('⚠️ No topics found in database, using fallback');
+                    return loadFallbackTopics();
+                }
+
+                console.log(`✅ Loaded ${topics.length} topics from database:`, topics.map(t => t.name));
+
+                // Store raw data for debug panel
+                rawTopics = topics;
+
+                // Load relationships with full data
+                const { data: relationships } = await supabase
+                    .from('topic_relationships')
+                    .select('*');
+
+                // Store raw relationships for debug panel
+                rawRelationships = relationships || [];
+
+                // DQ AUDIT & NORMALIZE
+                console.log('🔬 Running DQ audit and normalization...');
+                const { nodes: dqNodes, links: dqLinks } = auditAndNormalizeGraphData(
+                    topics,
+                    rawRelationships,
+                    {
+                        mode: "flipAndFlag",              // Cleanup mode: flip + flag issues
+                        createMissingPlaceholders: true,  // Create broken stars for missing topics
+                        warnToConsole: true               // Print console summary
+                    }
+                );
+
+                console.log(`✅ DQ Audit complete. Nodes: ${dqNodes.length}, Links: ${dqLinks.length}`);
+
+                // Convert nodes to galaxy format, preserving DQ metadata
+                nodes = dqNodes.map(n => ({
+                    ...n,
+                    group: getCategoryGroup(n.category),
+                    val: n.node_size || 20,
+                    status: n.status || 'not_started',
+                    difficulty: n.difficulty_level,
+                    hours: n.estimated_hours,
+                    emoji: n.icon_emoji
+                }));
+
+                // Use DQ-normalized links (already have source/target format)
+                links = dqLinks;
+
+                return { nodes, links };
+
+            } catch (err) {
+                console.error('Error loading topics:', err);
+                return loadFallbackTopics();
+            }
+        }
+
+        // Fallback to hardcoded topics if database fails
+        function loadFallbackTopics() {
+            console.log('⚠️ Using fallback hardcoded topics');
+            nodes = [
+                { id: 'CLH', group: 4, val: 100, name: 'CLH HUB', status: 'not_started' },
+                { id: 'React', group: 1, val: 30, name: 'React.js', status: 'not_started' },
+                { id: 'HTML', group: 1, val: 20, name: 'HTML5', status: 'not_started' },
+                { id: 'CSS', group: 1, val: 20, name: 'CSS3', status: 'not_started' },
+                { id: 'JS', group: 1, val: 30, name: 'JavaScript', status: 'not_started' },
+                { id: 'NextJS', group: 1, val: 20, name: 'Next.js', status: 'not_started' },
+                { id: 'TS', group: 1, val: 20, name: 'TypeScript', status: 'not_started' },
+                { id: 'LLM', group: 2, val: 30, name: 'LLMs', status: 'not_started' },
+                { id: 'Prompting', group: 2, val: 20, name: 'Prompting', status: 'not_started' },
+                { id: 'Agents', group: 2, val: 25, name: 'AI Agents', status: 'not_started' },
+                { id: 'Python', group: 2, val: 20, name: 'Python', status: 'not_started' },
+                { id: 'Figma', group: 3, val: 20, name: 'Figma', status: 'not_started' },
+                { id: 'UI', group: 3, val: 20, name: 'UI/UX', status: 'not_started' },
+                { id: 'A11y', group: 3, val: 15, name: 'Accessibility', status: 'not_started' }
+            ];
+
+            links = [
+                ['CLH', 'React'], ['CLH', 'LLM'], ['CLH', 'UI'],
+                ['React', 'JS'], ['React', 'NextJS'], ['JS', 'TS'],
+                ['HTML', 'CSS'], ['CSS', 'UI'],
+                ['LLM', 'Agents'], ['LLM', 'Prompting'], ['LLM', 'Python'],
+                ['Python', 'JS'], ['UI', 'Figma'], ['UI', 'A11y']
+            ];
+
+            return { nodes, links };
+        }
+
+        // Map category to group number for coloring
+        function getCategoryGroup(category) {
+            const groups = {
+                'web': 1,
+                'ai': 2,
+                'design': 3,
+                'backend': 4,
+                'mobile': 5,
+                'devops': 6
+            };
+            return groups[category] || 1;
+        }
+
+        // Load user progress
+        async function loadProgress(user) {
+            if (!user) {
+                document.getElementById('signin-prompt').style.display = 'block';
+                updateStats();
+                return;
+            }
+
+            currentUser = user;
+            document.getElementById('signin-prompt').style.display = 'none';
+
+            console.log('📊 Loading progress for user:', user.id);
+
+            const { data: progress, error } = await supabase
+                .from('user_progress')
+                .select('*')
+                .eq('user_id', user.id);
+
+            if (error) {
+                console.error('Failed to load progress:', error);
+                return;
+            }
+
+            console.log('✅ Progress loaded:', progress?.length || 0, 'records');
+
+            // Reset all nodes to not_started
+            nodes.forEach(node => {
+                node.status = 'not_started';
+            });
+
+            // Update based on progress
+            if (progress) {
+                progress.forEach(p => {
+                    const node = nodes.find(n => n.id === p.node_id);
+                    if (node) {
+                        node.status = p.status;
+                    }
+                });
+            }
+
+            // Rebuild galaxy with updated colors
+            if (graph) {
+                graph.graphData({ nodes, links: getValidatedLinks() });
+            }
+
+            updateStats();
+        }
+
+        // Update stats display
+        function updateStats() {
+            const completed = nodes.filter(n => n.status === 'completed').length;
+            const inProgress = nodes.filter(n => n.status === 'in_progress').length;
+            const total = nodes.filter(n => n.id !== 'CLH').length;
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('completed-count').textContent = completed;
+
+    return { nodes, links };
+}
+
+// Map category to group number for coloring
+function getCategoryGroup(category) {
+    const groups = {
+        'web': 1,
+        'ai': 2,
+        'design': 3,
+        'backend': 4,
+        'mobile': 5,
+        'devops': 6
+    };
+    return groups[category] || 1;
+}
+
+// Load user progress
+async function loadProgress(user) {
+    if (!user) {
+        document.getElementById('signin-prompt').style.display = 'block';
+        updateStats();
+        return;
+    }
+
+    currentUser = user;
+    document.getElementById('signin-prompt').style.display = 'none';
+
+    console.log('📊 Loading progress for user:', user.id);
+
+    const { data: progress, error } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', user.id);
+
+    if (error) {
+        console.error('Failed to load progress:', error);
+        return;
+    }
+
+    console.log('✅ Progress loaded:', progress?.length || 0, 'records');
+
+            // Create 3000 stars with varying sizes and brightness
+            for (let i = 0; i < 3000; i++) {
+                const x = (Math.random() - 0.5) * 4000;
+                const y = (Math.random() - 0.5) * 4000;
+                const z = (Math.random() - 0.5) * 4000;
+                starVerts.push(x, y, z);
+
+                // Random sizes: mostly small, some medium, few large (like real stars)
+                const rand = Math.random();
+                let size;
+                if (rand < 0.7) size = 4 + Math.random() * 4;      // 70% small stars (4-8)
+                else if (rand < 0.95) size = 8 + Math.random() * 6; // 25% medium stars (8-14)
+                else size = 14 + Math.random() * 10;                // 5% bright stars (14-24)
+                starSizes.push(size);
+
+                // Slight color variation: white, blue-white, yellow-white
+                const colorRand = Math.random();
+                if (colorRand < 0.7) {
+                    starColors.push(1, 1, 1); // Pure white
+                } else if (colorRand < 0.85) {
+                    starColors.push(0.8, 0.9, 1); // Blue-white
+                } else {
+                    starColors.push(1, 1, 0.8); // Yellow-white
+                }
+
+                // 5% of stars will pulsate (variable stars)
+                if (Math.random() < 0.05) {
+                    pulsatingStars.push({
+                        index: i,
+                        baseSize: size,
+                        speed: 0.02 + Math.random() * 0.03,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+            starGeo.setAttribute('size', new THREE.Float32BufferAttribute(starSizes, 1));
+            starGeo.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+
+            const starMat = new THREE.PointsMaterial({
+                size: 3,  // Increased base size multiplier
+                vertexColors: true,
+                transparent: true,
+                opacity: 1.0,  // Full opacity
+                sizeAttenuation: true,
+                blending: THREE.AdditiveBlending // Glowing effect
+            });
+            const stars = new THREE.Points(starGeo, starMat);
+            scene.add(stars);
+
+            // ============================================
+            // DISTANT STAR CLUSTERS (4-6 small clusters)
+            // ============================================
+            const clusters = [];
+            const clusterCount = 5;
+
+            for (let c = 0; c < clusterCount; c++) {
+                const clusterGeo = new THREE.BufferGeometry();
+                const clusterVerts = [];
+                const clusterColors = [];
+
+                // Random cluster position (far away)
+                const centerX = (Math.random() - 0.5) * 6000;
+                const centerY = (Math.random() - 0.5) * 6000;
+                const centerZ = (Math.random() - 0.5) * 6000;
+
+                // 30-50 stars per cluster
+                const starsInCluster = 30 + Math.floor(Math.random() * 20);
+                const clusterRadius = 100 + Math.random() * 100;
+
+                for (let i = 0; i < starsInCluster; i++) {
+                    // Stars clustered around center point
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.random() * Math.PI;
+                    const r = Math.random() * clusterRadius;
+
+                    const x = centerX + r * Math.sin(phi) * Math.cos(theta);
+                    const y = centerY + r * Math.sin(phi) * Math.sin(theta);
+                    const z = centerZ + r * Math.cos(phi);
+
+                    clusterVerts.push(x, y, z);
+
+                    // Clusters have similar colored stars (same stellar age)
+                    const clusterColor = Math.random();
+                    if (clusterColor < 0.4) {
+                        clusterColors.push(0.7, 0.8, 1); // Blue cluster (young)
+                    } else if (clusterColor < 0.8) {
+                        clusterColors.push(1, 1, 1); // White cluster
+                    } else {
+                        clusterColors.push(1, 0.9, 0.7); // Yellow/red cluster (old)
+                    }
+                }
+
+                clusterGeo.setAttribute('position', new THREE.Float32BufferAttribute(clusterVerts, 3));
+                clusterGeo.setAttribute('color', new THREE.Float32BufferAttribute(clusterColors, 3));
+
+                const clusterMat = new THREE.PointsMaterial({
+                    vertexColors: true,
+                    size: 1.5,
+                    sizeAttenuation: false,
+                    transparent: true,
+                    opacity: 0.6,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const cluster = new THREE.Points(clusterGeo, clusterMat);
+                scene.add(cluster);
+                clusters.push(cluster);
+            }
+
+            // ============================================
+            // SHOOTING COMETS (5 active at a time)
+            // ============================================
+            const comets = [];
+            const cometCount = 5;
+
+            function createComet() {
+                // Random start position on sphere surface
+                const radius = 2000;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+
+                const startX = radius * Math.sin(phi) * Math.cos(theta);
+                const startY = radius * Math.sin(phi) * Math.sin(theta);
+                const startZ = radius * Math.cos(phi);
+
+                // Direction toward center with some randomness
+                const targetX = (Math.random() - 0.5) * 500;
+                const targetY = (Math.random() - 0.5) * 500;
+                const targetZ = (Math.random() - 0.5) * 500;
+
+                const direction = new THREE.Vector3(
+                    targetX - startX,
+                    targetY - startY,
+                    targetZ - startZ
+                ).normalize();
+
+                // Create comet geometry (line with gradient)
+                const cometGeometry = new THREE.BufferGeometry();
+                const cometPositions = [];
+                const tailLength = 50;
+
+                for (let i = 0; i < 10; i++) {
+                    const t = i / 9;
+                    cometPositions.push(
+                        startX - direction.x * t * tailLength,
+                        startY - direction.y * t * tailLength,
+                        startZ - direction.z * t * tailLength
+                    );
+                }
+
+                cometGeometry.setAttribute('position', new THREE.Float32BufferAttribute(cometPositions, 3));
+
+                const cometMaterial = new THREE.LineBasicMaterial({
+                    color: 0x00ccff,  // Brighter cyan
+                    transparent: true,
+                    opacity: 0.9,  // More visible
+                    linewidth: 2  // Thicker lines
+                });
+
+                const cometLine = new THREE.Line(cometGeometry, cometMaterial);
+                scene.add(cometLine);
+
+                return {
+                    mesh: cometLine,
+                    position: new THREE.Vector3(startX, startY, startZ),
+                    direction: direction,
+                    speed: 15 + Math.random() * 10,
+                    life: 0,
+                    maxLife: 100 + Math.random() * 50
+                };
+            }
+
+            // Initialize comets
+            for (let i = 0; i < cometCount; i++) {
+                comets.push(createComet());
+            }
+
+            // Comet animation
+            function animateComets() {
+                comets.forEach((comet, index) => {
+                    comet.life++;
+
+                    // Move comet
+                    comet.position.add(comet.direction.clone().multiplyScalar(comet.speed));
+
+                    // Update positions
+                    const positions = comet.mesh.geometry.attributes.position.array;
+                    const tailLength = 50;
+                    for (let i = 0; i < 10; i++) {
+                        const t = i / 9;
+                        positions[i * 3] = comet.position.x - comet.direction.x * t * tailLength;
+                        positions[i * 3 + 1] = comet.position.y - comet.direction.y * t * tailLength;
+                        positions[i * 3 + 2] = comet.position.z - comet.direction.z * t * tailLength;
+                    }
+                    comet.mesh.geometry.attributes.position.needsUpdate = true;
+
+                    // Fade out near end of life
+                    const fadeStart = comet.maxLife * 0.7;
+                    if (comet.life > fadeStart) {
+                        const fadeProgress = (comet.life - fadeStart) / (comet.maxLife - fadeStart);
+                        comet.mesh.material.opacity = 0.6 * (1 - fadeProgress);
+                    }
+
+                    // Respawn if dead or too far
+                    if (comet.life > comet.maxLife || comet.position.length() < 100) {
+                        scene.remove(comet.mesh);
+                        comets[index] = createComet();
+                    }
+                });
+            }
+
+            // Camera animation with comet updates
+            const distance = 1000;
+            let angle = 0;
+            let time = 0;
+
+            function animate() {
+                time += 0.016; // ~60fps
+                angle += 0.0005; // Slowed down 4x for comfortable viewing
+
+                graph.cameraPosition({
+                    x: distance * Math.sin(angle),
+                    z: distance * Math.cos(angle),
+                    y: 300
+                });
+
+                // Animate pulsating stars (variable stars)
+                const sizes = stars.geometry.attributes.size.array;
+                pulsatingStars.forEach(star => {
+                    const pulse = Math.sin(time * star.speed + star.phase) * 0.5 + 0.5; // 0 to 1
+                    sizes[star.index] = star.baseSize * (0.5 + pulse * 1.0); // Pulsate 50% to 150% of base (more dramatic)
+                });
+                stars.geometry.attributes.size.needsUpdate = true;
+
+                // Animate comets
+                animateComets();
+
+                // Slow star rotation for depth
+                stars.rotation.y += 0.0001;
+
+                // Very slow cluster rotation for depth
+                clusters.forEach((cluster, index) => {
+                    cluster.rotation.x += 0.00005 * (index % 2 ? 1 : -1);
+                    cluster.rotation.y += 0.00007 * (index % 2 ? -1 : 1);
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            console.log('🌌 Galaxy initialized with', nodes.length, 'topics');
+            console.log('✨ Starfield: 3000 stars (' + pulsatingStars.length + ' pulsating)');
+            console.log('🌟 Star clusters: ' + clusterCount + ' distant clusters');
+            console.log('☄️ Comets active:', cometCount);
+        }
+
+        // Listen for auth state from parent
+        window.addEventListener('message', async (event) => {
+            if (event.data?.type === 'AUTH_STATE') {
+                await loadProgress(event.data.user);
+            } else if (event.data?.type === 'PROGRESS_UPDATED') {
+                if (currentUser) {
+                    await loadProgress(currentUser);
+                }
+            }
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', initGalaxy);
+
+        // Real-time subscription
+        if (window.supabase) {
+            supabase.channel('topic-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'learning_topics'
+                }, async () => {
+                    console.log('🔄 Topics updated, reloading...');
+                    await loadTopics();
+                    if (graph) {
+                        graph.graphData({ nodes, links });
+                    }
+                    updateStats();
+                })
+                .subscribe();
+        }
+
+        // Polling fallback
+        setInterval(() => {
+            if (currentUser) {
+                loadProgress(currentUser);
+            }
+        }, 5000);
+    </script>
+</body>
+
+</html>

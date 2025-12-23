@@ -1,0 +1,30 @@
+{
+  "name": "community-learning-hub",
+  "version": "1.0.0",
+  "description": "Interactive Community Learning Hub with 3D Knowledge Galaxy",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview",
+    "clean": "rm -rf dist node_modules",
+    "reinstall": "npm run clean && npm install"
+  },
+  "dependencies": {
+    "3d-force-graph": "^1.73.3",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.10"
+  },
+  "keywords": [
+    "learning",
+    "community",
+    "3d",
+    "visualization",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT"
+}

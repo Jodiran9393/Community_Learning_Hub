@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS3 Resources - Community Learning Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body data-node-id="CSS">
     <div class="resource-page">
         <a href="/" class="back-link">← Back to Hub</a>
-        
+
         <div class="page-header">
             <h1 style="color: #4c8bf5;">CSS3</h1>
             <p>Styling and layout mastery</p>
@@ -18,14 +21,17 @@
 
         <section class="resource-section">
             <h3>What is CSS?</h3>
-            <p>CSS (Cascading Style Sheets) is used to style and layout web pages. It controls the visual presentation, colors, fonts, spacing, and positioning of HTML elements.</p>
+            <p>CSS (Cascading Style Sheets) is used to style and layout web pages. It controls the visual presentation,
+                colors, fonts, spacing, and positioning of HTML elements.</p>
         </section>
 
         <section class="resource-section">
             <h3>Essential Resources</h3>
             <ul class="resource-list">
-                <li><a href="https://web.dev/learn/css/" target="_blank">web.dev CSS Course</a> - Modern CSS from Google</li>
-                <li><a href="https://developer.mozilla.org/en-US/docs/Learn/CSS" target="_blank">MDN CSS Guide</a> - Comprehensive CSS learning path</li>
+                <li><a href="https://web.dev/learn/css/" target="_blank">web.dev CSS Course</a> - Modern CSS from Google
+                </li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Learn/CSS" target="_blank">MDN CSS Guide</a> -
+                    Comprehensive CSS learning path</li>
                 <li><a href="https://css-tricks.com" target="_blank">CSS-Tricks</a> - Tips, tricks, and techniques</li>
             </ul>
         </section>
@@ -45,8 +51,10 @@
         <section class="resource-section">
             <h3>Modern CSS Features</h3>
             <ul class="resource-list">
-                <li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank">Flexbox Guide</a> - Complete guide to flexbox</li>
-                <li><a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank">Grid Guide</a> - Complete guide to CSS Grid</li>
+                <li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank">Flexbox Guide</a>
+                    - Complete guide to flexbox</li>
+                <li><a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank">Grid Guide</a> -
+                    Complete guide to CSS Grid</li>
                 <li><strong>Container Queries:</strong> Responsive components</li>
                 <li><strong>Subgrid:</strong> Nested grid layouts</li>
                 <li><strong>:has() Selector:</strong> Parent selection capability</li>
@@ -57,13 +65,16 @@
             <h3>Practice & Tools</h3>
             <ul class="resource-list">
                 <li><a href="https://flukeout.github.io" target="_blank">CSS Diner</a> - Selector practice game</li>
-                <li><a href="https://flexboxfroggy.com" target="_blank">Flexbox Froggy</a> - Learn flexbox through games</li>
-                <li><a href="https://cssgridgarden.com" target="_blank">Grid Garden</a> - Learn CSS Grid by growing a garden</li>
+                <li><a href="https://flexboxfroggy.com" target="_blank">Flexbox Froggy</a> - Learn flexbox through games
+                </li>
+                <li><a href="https://cssgridgarden.com" target="_blank">Grid Garden</a> - Learn CSS Grid by growing a
+                    garden</li>
             </ul>
         </section>
 
         <!-- Mark Complete Button -->
-        <div style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
+        <div
+            style="text-align: center; margin: 60px 0 40px; padding: 40px 20px; background: rgba(76, 139, 245, 0.05); border-radius: 16px;">
             <h3 style="margin: 0 0 20px 0; color: #4c8bf5;">Finished learning CSS3?</h3>
             <button id="mark-complete-btn" style="
                 background: linear-gradient(90deg, #4c8bf5, #d367c1);
@@ -77,16 +88,19 @@
                 transition: all 0.3s;
                 box-shadow: 0 4px 15px rgba(76, 139, 245, 0.3);
             " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 25px rgba(76, 139, 245, 0.5)'"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(76, 139, 245, 0.3)'">
                 ✅ Mark as Complete
             </button>
-            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up CSS3 in your Knowledge Galaxy! 🌟</p>
+            <p style="margin: 15px 0 0 0; color: #888; font-size: 14px;">This will light up CSS3 in your Knowledge
+                Galaxy! 🌟</p>
         </div>
     </div>
 
     <!-- Load Supabase and completion tracking -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+    <script src="/js/supabase-client.js?v=2"></script>
+    <script src="/js/learning-tracker.js"></script>
     <script src="/js/mark-complete.js"></script>
 </body>
+
 </html>

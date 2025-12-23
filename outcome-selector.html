@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Outcome - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .outcome-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .outcome-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .track-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .outcome-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+        }
+
+        .outcome-header p {
+            font-size: 18px;
+            color: #b8b9d6;
+            margin: 0;
+        }
+
+        .outcome-cards {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .outcome-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .outcome-card:hover {
+            transform: translateX(8px);
+            border-color: #4c8bf5;
+            box-shadow: 0 8px 32px rgba(76, 139, 245, 0.3);
+        }
+
+        .outcome-card.selected {
+            border-color: #4c8bf5;
+            background: rgba(76, 139, 245, 0.1);
+        }
+
+        .outcome-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .outcome-icon {
+            font-size: 28px;
+        }
+
+        .outcome-description {
+            color: #b8b9d6;
+            font-size: 15px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .capstone-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .capstone-tag {
+            padding: 6px 14px;
+            background: rgba(76, 139, 245, 0.2);
+            border: 1px solid rgba(76, 139, 245, 0.4);
+            border-radius: 20px;
+            font-size: 13px;
+            color: #7bb8ff;
+        }
+
+        .continue-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 40px auto 0;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .continue-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #4c8bf5;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="outcome-container">
+        <a href="/onboarding.html" class="back-link">← Change Track</a>
+
+        <div class="outcome-header">
+            <div class="track-badge" id="track-badge">Loading...</div>
+            <h1>What Do You Want to Build?</h1>
+            <p>Choose the outcome that aligns with your learning goals</p>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <p>Loading outcomes...</p>
+        </div>
+
+        <div id="outcome-cards" class="outcome-cards">
+            <!-- Dynamically populated -->
+        </div>
+
+        <button id="continue-btn" class="continue-btn">
+            Start Diagnostic Assessment →
+        </button>
+    </div>
+
+    <script src="/js/track-loader.js"></script>
+    <script>
+        let selectedOutcome = null;
+        let currentTrack = null;
+
+        // Outcome descriptions
+        const outcomeDescriptions = {
+            // Frontend
+            'responsive_websites': 'Master semantic HTML, modern CSS layouts, accessibility best practices, and web performance optimization',
+            'interactive_apps': 'Build dynamic web applications with JavaScript, DOM manipulation, event handling, and API integration',
+            'react_builder': 'Create production-ready React applications with state management, routing, forms, and component architecture',
+
+            // AI
+            'build_tool_agent': 'Develop intelligent agents that use tools, implement agent loops, add tracing and safety guardrails',
+            'build_rag_app': 'Build retrieval-augmented generation apps with embeddings, chunking, reranking, and proper citations',
+            'fine_tune_peft': 'Fine-tune language models using parameter-efficient methods (LoRA) and implement robust evaluation',
+
+            // Data
+            'excel_dashboard': 'Design compelling dashboards and visualizations using Excel/Google Sheets with proper KPI tracking',
+            'sql_bi_reporting': 'Master SQL joins and aggregations, build data models, and create BI reports with Power BI/Tableau',
+            'python_stats': 'Analyze data with Python Pandas, conduct exploratory data analysis, and apply statistical methods'
+        };
+
+        async function init() {
+            // Get selected track from URL or localStorage
+            const params = new URLSearchParams(window.location.search);
+            currentTrack = params.get('track') || localStorage.getItem('clh_selected_track');
+
+            if (!currentTrack) {
+                window.location.href = '/onboarding.html';
+                return;
+            }
+
+            // Load track data
+            const track = await window.trackLoader.getTrack(currentTrack);
+
+            // Update header
+            document.getElementById('track-badge').textContent = track.name;
+
+            // Render outcome cards
+            renderOutcomes(track.outcomes);
+        }
+
+        function renderOutcomes(outcomes) {
+            const container = document.getElementById('outcome-cards');
+
+            outcomes.forEach(outcome => {
+                const card = document.createElement('div');
+                card.className = 'outcome-card';
+                card.dataset.outcome = outcome.id;
+
+                // Get capstone topic names
+                const capstones = outcome.capstones.map(id => ({
+                    id,
+                    name: id // Will be replaced with actual names in full version
+                }));
+
+                card.innerHTML = `
+                    <div class="outcome-title">
+                        <span class="outcome-icon">🎯</span>
+                        <span>${outcome.label}</span>
+                    </div>
+                    <p class="outcome-description">
+                        ${outcomeDescriptions[outcome.id] || 'Build expertise in this specialized learning path'}
+                    </p>
+                    <div class="capstone-tags">
+                        ${outcome.capstones.map(cap =>
+                    `<span class="capstone-tag">${cap}</span>`
+                ).join('')}
+                    </div>
+                `;
+
+                card.addEventListener('click', () => selectOutcome(outcome.id, card));
+                container.appendChild(card);
+            });
+        }
+
+        function selectOutcome(outcomeId, cardElement) {
+            // Remove previous selection
+            document.querySelectorAll('.outcome-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection
+            cardElement.classList.add('selected');
+            selectedOutcome = outcomeId;
+
+            // Show continue button
+            document.getElementById('continue-btn').classList.add('visible');
+        }
+
+        // Continue to diagnostic
+        document.getElementById('continue-btn').addEventListener('click', () => {
+            if (!selectedOutcome) return;
+
+            // Save selections
+            localStorage.setItem('clh_selected_track', currentTrack);
+            localStorage.setItem('clh_selected_outcome', selectedOutcome);
+
+            // Redirect to diagnostic
+            window.location.href = `/diagnostic.html?track=${currentTrack}&outcome=${selectedOutcome}`;
+        });
+
+        init();
+    </script>
+</body>
+
+</html>

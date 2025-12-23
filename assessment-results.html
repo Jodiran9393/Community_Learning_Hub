@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Learning Path - Community Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .results-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pop 0.5s ease;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .results-header h1 {
+            font-size: 40px;
+            margin: 0 0 16px 0;
+        }
+
+        .results-header p {
+            font-size: 18px;
+            color: #b8b9d6;
+        }
+
+        .proficiency-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 30px;
+        }
+
+        .proficiency-score {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#4c8bf5 var(--score-percent), rgba(255, 255, 255, 0.1) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: attr(data-score);
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #1a1a2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 14px;
+            color: #b8b9d6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .recommended-path {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 30px;
+        }
+
+        .path-header {
+            font-size: 24px;
+            margin: 0 0 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .path-topics {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #4c8bf5;
+            transition: all 0.2s;
+        }
+
+        .topic-item:hover {
+            background: rgba(76, 139, 245, 0.15);
+            border-left-color: #d367c1;
+            transform: translateX(4px);
+        }
+
+        .topic-number {
+            width: 32px;
+            height: 32px;
+            background: rgba(76, 139, 245, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .topic-name {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .topic-next {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .topic-arrow {
+            color: #666;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .topic-item:hover .topic-arrow {
+            color: #4c8bf5;
+            transform: translateX(4px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 18px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #4c8bf5, #d367c1);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(76, 139, 245, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="results-container">
+        <div class="results-header">
+            <div class="success-icon">🎉</div>
+            <h1>Your Personalized Learning Path is Ready!</h1>
+            <p>Based on your assessment, here's where you should start</p>
+        </div>
+
+        <div class="proficiency-card">
+            <div class="proficiency-score">
+                <div id="score-circle" class="score-circle" data-score="0%"></div>
+                <div class="score-label">Overall Proficiency</div>
+            </div>
+        </div>
+
+        <div class="recommended-path">
+            <h2 class="path-header">
+                <span>🗺️</span>
+                <span>Recommended Learning Path</span>
+            </h2>
+            <div id="path-topics" class="path-topics">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn btn-secondary" onclick="window.location.href='/onboarding.html'">
+                ← Retake Assessment
+            </button>
+            <button id="start-learning-btn" class="action-btn btn-primary" onclick="startLearning()">
+                Start Learning! →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let firstTopicId = null;
+
+        function init() {
+            // Get placement results from localStorage
+            const placementStr = localStorage.getItem('clh_assessment_result');
+            if (!placementStr) {
+                window.location.href = '/onboarding.html';
+                return;
+            }
+
+            const placement = JSON.parse(placementStr);
+            renderResults(placement);
+        }
+
+        function renderResults(placement) {
+            // Display proficiency score
+            const proficiency = Math.round(placement.overallProficiency * 100);
+            const scoreCircle = document.getElementById('score-circle');
+            scoreCircle.style.setProperty('--score-percent', proficiency + '%');
+            scoreCircle.setAttribute('data-score', proficiency + '%');
+
+            // Display learning path
+            const pathContainer = document.getElementById('path-topics');
+            const path = placement.recommendedPath || [];
+
+            if (path.length === 0) {
+                pathContainer.innerHTML = '<p style="text-align: center; color: #b8b9d6;">No path generated. Please try the assessment again.</p>';
+                return;
+            }
+
+            // Store first topic for "Start Learning" button
+            firstTopicId = path[0];
+
+            pathContainer.innerHTML = path.map((topicId, index) => `
+                <a href="/topic.html?id=${topicId}" class="topic-item" style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <div class="topic-number">${index + 1}</div>
+                    <div class="topic-name">${topicId}</div>
+                    ${index === 0 ? '<div class="topic-next">START HERE</div>' : '<div class="topic-arrow">→</div>'}
+                </a>
+            `).join('');
+        }
+
+        function startLearning() {
+            if (firstTopicId) {
+                window.location.href = '/topic.html?id=' + firstTopicId;
+            } else {
+                // Fallback to homepage if no topic
+                window.location.href = '/index.html';
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
