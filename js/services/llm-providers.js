@@ -45,12 +45,12 @@ class LLMProviders {
     }
 
     /**
-     * Generate via secure server-side proxy (production only)
-     * API keys are stored on the server, not in the browser
-     */
+ * Generate via secure server-side proxy (production only)
+ * Uses streaming to avoid timeout issues
+ */
     async generateViaProxy(prompt, provider, options) {
         try {
-            const response = await fetch('/api/chat', {
+            const response = await fetch('/api/chat-stream', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -64,12 +64,45 @@ class LLMProviders {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Proxy request failed');
+                const error = await response.text();
+                throw new Error(error || 'Proxy request failed');
             }
 
-            const data = await response.json();
-            return data.response;
+            // Read the stream and accumulate the response
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullContent = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n').filter(line => line.trim() !== '');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.content) {
+                                fullContent += parsed.content;
+                            }
+                            if (parsed.error) {
+                                throw new Error(parsed.error);
+                            }
+                        } catch (e) {
+                            if (e.message && !e.message.includes('JSON')) {
+                                throw e; // Re-throw actual errors
+                            }
+                        }
+                    }
+                }
+            }
+
+            return fullContent;
         } catch (error) {
             console.error('Proxy error:', error);
             throw error;
