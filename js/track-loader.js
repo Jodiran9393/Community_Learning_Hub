@@ -1,6 +1,6 @@
 /**
  * Track Loader - Client-side JSON curriculum loader
- * Loads all 3 tracks from AI Builder folder, caches in localStorage
+ * Loads all 3 tracks from ai-builder folder, caches in localStorage
  * JSON is source of truth, database only stores user progress
  */
 
@@ -8,7 +8,7 @@ class TrackLoader {
     constructor() {
         this.tracks = null;
         this.cacheKey = 'clh_tracks_cache';
-        this.cacheVersion = 'v1.1'; // Increment when JSON structure changes
+        this.cacheVersion = 'v1.2'; // Increment when JSON structure changes
     }
 
     /**
@@ -29,9 +29,9 @@ class TrackLoader {
         // Load from JSON files
         try {
             const [frontend, ai, data] = await Promise.all([
-                fetch('/AI%20Builder/track_frontend_web_dev.json').then(r => r.json()),
-                fetch('/AI%20Builder/track_ai_llms_builder_agents.json').then(r => r.json()),
-                fetch('/AI%20Builder/track_data_analytics.json').then(r => r.json())
+                fetch('/ai-builder/track_frontend_web_dev.json').then(r => r.json()),
+                fetch('/ai-builder/track_ai_llms_builder_agents.json').then(r => r.json()),
+                fetch('/ai-builder/track_data_analytics.json').then(r => r.json())
             ]);
 
             this.tracks = { frontend, ai, data };

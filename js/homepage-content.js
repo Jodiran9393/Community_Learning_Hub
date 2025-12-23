@@ -113,13 +113,13 @@ async function renderTopicExplorer() {
         }
     }
 
-    // Fallback: Load from AI Builder JSON files
+    // Fallback: Load from ai-builder JSON files
     if (topics.length === 0) {
         try {
             const trackFiles = [
-                { file: 'AI Builder/track_frontend_web_dev.json', category: 'web' },
-                { file: 'AI Builder/track_ai_llms_builder_agents.json', category: 'ai' },
-                { file: 'AI Builder/track_data_analytics.json', category: 'data' }
+                { file: 'ai-builder/track_frontend_web_dev.json', category: 'web' },
+                { file: 'ai-builder/track_ai_llms_builder_agents.json', category: 'ai' },
+                { file: 'ai-builder/track_data_analytics.json', category: 'data' }
             ];
 
             for (const track of trackFiles) {
