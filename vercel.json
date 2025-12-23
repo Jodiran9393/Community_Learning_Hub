@@ -28,6 +28,10 @@
         {
             "src": "pages/**/*",
             "use": "@vercel/static"
+        },
+        {
+            "src": "ai-builder/**/*",
+            "use": "@vercel/static"
         }
     ],
     "routes": [
