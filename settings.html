@@ -403,6 +403,76 @@
             <div id="status-message" class="status-message"></div>
         </section>
 
+        <!-- Dual LLM Mode Settings -->
+        <section class="settings-section" id="dual-mode-section">
+            <h2>⚡ Dual LLM Mode (Advanced)</h2>
+            <p style="color: #9495b3; margin-bottom: 20px;">
+                Use different models for different tasks: a smarter model for in-depth content generation,
+                and a faster/cheaper model for chat. Leave disabled to use the same provider for everything.
+            </p>
+
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                    <input type="checkbox" id="dual-mode-toggle" onchange="toggleDualMode()"
+                        style="width: 20px; height: 20px; cursor: pointer;">
+                    <span>Enable separate models for Content vs Chat</span>
+                </label>
+            </div>
+
+            <!-- Content Generation Provider (when dual mode enabled) -->
+            <div id="content-provider-section"
+                style="display: none; margin-top: 20px; padding: 16px; background: rgba(74, 222, 128, 0.05); border: 1px solid rgba(74, 222, 128, 0.2); border-radius: 12px;">
+                <h3 style="color: #4ade80; font-size: 16px; margin: 0 0 16px 0;">📚 Content Generation Model</h3>
+                <p style="color: #9495b3; font-size: 13px; margin-bottom: 16px;">
+                    Used for generating in-depth topic explanations. Recommended: GPT-4o, Claude 3.5 Sonnet
+                </p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="content-provider">Provider</label>
+                        <select id="content-provider" onchange="updateContentProviderUI()">
+                            <option value="openai">OpenAI</option>
+                            <option value="anthropic">Anthropic (Claude)</option>
+                            <option value="ollama">Ollama (Local)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="content-model">Model</label>
+                        <input type="text" id="content-model" placeholder="gpt-4o">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Provider (when dual mode enabled) -->
+            <div id="chat-provider-section"
+                style="display: none; margin-top: 16px; padding: 16px; background: rgba(96, 165, 250, 0.05); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 12px;">
+                <h3 style="color: #60a5fa; font-size: 16px; margin: 0 0 16px 0;">💬 Chat Model</h3>
+                <p style="color: #9495b3; font-size: 13px; margin-bottom: 16px;">
+                    Used for quick Q&A in topic chat. Recommended: GPT-4o-mini, Claude 3 Haiku
+                </p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="chat-provider">Provider</label>
+                        <select id="chat-provider" onchange="updateChatProviderUI()">
+                            <option value="openai">OpenAI</option>
+                            <option value="anthropic">Anthropic (Claude)</option>
+                            <option value="ollama">Ollama (Local)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="chat-model">Model</label>
+                        <input type="text" id="chat-model" placeholder="gpt-4o-mini">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-row" id="dual-mode-save-row" style="display: none; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveDualModeSettings()">
+                    💾 Save Dual Mode Settings
+                </button>
+            </div>
+            <div id="dual-mode-status" class="status-message"></div>
+        </section>
+
         <!-- Web Search Settings -->
         <section class="settings-section">
             <h2>🔍 Web Search (Agent Tools)</h2>
@@ -697,6 +767,96 @@
                 statusEl.textContent = '❌ ' + e.message;
             }
         }
+
+        // ===== Dual LLM Mode Functions =====
+
+        function loadDualModeSettings() {
+            const settings = LLM_CONFIG.getSettings();
+            const dualModeEnabled = settings.dualModeEnabled === true;
+
+            document.getElementById('dual-mode-toggle').checked = dualModeEnabled;
+            toggleDualMode(); // Update UI visibility
+
+            // Load saved dual-mode settings
+            if (settings.contentProvider) {
+                document.getElementById('content-provider').value = settings.contentProvider;
+            }
+            if (settings.contentModel) {
+                document.getElementById('content-model').value = settings.contentModel;
+            }
+            if (settings.chatProvider) {
+                document.getElementById('chat-provider').value = settings.chatProvider;
+            }
+            if (settings.chatModel) {
+                document.getElementById('chat-model').value = settings.chatModel;
+            }
+        }
+
+        function toggleDualMode() {
+            const enabled = document.getElementById('dual-mode-toggle').checked;
+            const contentSection = document.getElementById('content-provider-section');
+            const chatSection = document.getElementById('chat-provider-section');
+            const saveRow = document.getElementById('dual-mode-save-row');
+
+            const display = enabled ? 'block' : 'none';
+            contentSection.style.display = display;
+            chatSection.style.display = display;
+            saveRow.style.display = display;
+
+            // Save the toggle state
+            const settings = LLM_CONFIG.getSettings();
+            settings.dualModeEnabled = enabled;
+            LLM_CONFIG.saveSettings(settings);
+        }
+
+        function updateContentProviderUI() {
+            const provider = document.getElementById('content-provider').value;
+            const modelInput = document.getElementById('content-model');
+
+            // Set recommended model placeholder based on provider
+            const recommended = LLM_CONFIG.recommendedModels?.content?.[provider];
+            if (recommended && recommended.length > 0) {
+                modelInput.placeholder = recommended[0];
+            }
+        }
+
+        function updateChatProviderUI() {
+            const provider = document.getElementById('chat-provider').value;
+            const modelInput = document.getElementById('chat-model');
+
+            // Set recommended model placeholder based on provider
+            const recommended = LLM_CONFIG.recommendedModels?.chat?.[provider];
+            if (recommended && recommended.length > 0) {
+                modelInput.placeholder = recommended[0];
+            }
+        }
+
+        function saveDualModeSettings() {
+            const settings = LLM_CONFIG.getSettings();
+
+            settings.dualModeEnabled = document.getElementById('dual-mode-toggle').checked;
+            settings.contentProvider = document.getElementById('content-provider').value;
+            settings.contentModel = document.getElementById('content-model').value || document.getElementById('content-model').placeholder;
+            settings.chatProvider = document.getElementById('chat-provider').value;
+            settings.chatModel = document.getElementById('chat-model').value || document.getElementById('chat-model').placeholder;
+
+            LLM_CONFIG.saveSettings(settings);
+
+            const statusEl = document.getElementById('dual-mode-status');
+            statusEl.className = 'status-message success';
+            statusEl.textContent = '✅ Dual mode settings saved! Content uses ' + settings.contentModel + ', Chat uses ' + settings.chatModel;
+            statusEl.style.display = 'block';
+
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 4000);
+        }
+
+        // Add dual mode loading to init
+        const originalDOMContentLoaded = document.addEventListener;
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadDualModeSettings, 100); // Load after main settings
+        });
     </script>
 </body>
 

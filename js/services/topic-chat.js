@@ -987,7 +987,7 @@ class TopicChat {
             const prompt = this.buildPrompt(userMessage, searchContext);
 
             // Build options (include image data if attached)
-            const options = {};
+            const options = { purpose: 'chat' };
             if (this.attachedImageData) {
                 options.imageData = this.attachedImageData;
                 console.log('📷 Sending image to LLM for analysis');

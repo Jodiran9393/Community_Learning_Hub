@@ -81,7 +81,7 @@ class ContentGenerator {
         const prompt = this.buildPrompt(topic, template);
 
         try {
-            const rawContent = await this.providers.generate(prompt);
+            const rawContent = await this.providers.generate(prompt, { purpose: 'content' });
             const structured = this.parseContent(rawContent, template);
 
             // Cache the generated content

@@ -15,13 +15,15 @@ class LLMProviders {
     /**
      * Generate content using the active provider
      * @param {string} prompt - The prompt to send
-     * @param {object} options - Optional overrides (can include imageData for multimodal)
+     * @param {object} options - Optional overrides (can include imageData for multimodal, purpose for dual-LLM)
      * @returns {Promise<string>} Generated content
      */
     async generate(prompt, options = {}) {
-        const provider = this.config.getActiveProvider();
+        // Get provider based on purpose (content, chat, or general)
+        const purpose = options.purpose || 'general';
+        const provider = this.config.getProviderFor(purpose);
         const hasImage = !!options.imageData;
-        console.log(`🤖 Using LLM provider: ${provider.name} (${provider.model})${hasImage ? ' [with image]' : ''}${this.isProduction ? ' [via proxy]' : ''}`);
+        console.log(`🤖 Using LLM provider: ${provider.name} (${provider.model}) for ${purpose}${hasImage ? ' [with image]' : ''}${this.isProduction ? ' [via proxy]' : ''}`);
 
         // In production, use the secure proxy for cloud providers
         if (this.isProduction && (provider.id === 'openai' || provider.id === 'anthropic')) {

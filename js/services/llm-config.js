@@ -1,11 +1,15 @@
 /**
  * LLM Configuration - Provider settings and preferences
- * Supports local LLMs (Ollama), OpenAI, and other providers
+ * Supports separate configurations for:
+ * - Content Generation (smarter models for comprehensive learning content)
+ * - Chat (faster/cheaper models for quick Q&A)
  */
 
 const LLM_CONFIG = {
-    // Default provider to use (can be overridden in settings)
+    // Default providers for each purpose
     defaultProvider: 'ollama',
+    defaultContentProvider: 'openai',      // Smarter model for content
+    defaultChatProvider: 'openai',          // Cheaper model for chat
 
     // Provider configurations
     providers: {
@@ -48,6 +52,20 @@ const LLM_CONFIG = {
         }
     },
 
+    // Recommended models for each purpose
+    recommendedModels: {
+        content: {
+            openai: ['gpt-4o', 'gpt-4-turbo', 'gpt-4o-mini'],
+            anthropic: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229'],
+            ollama: ['llama3.2', 'mistral', 'mixtral']
+        },
+        chat: {
+            openai: ['gpt-4o-mini', 'gpt-3.5-turbo'],
+            anthropic: ['claude-3-haiku-20240307', 'claude-3-5-sonnet-20241022'],
+            ollama: ['llama3.2', 'phi3', 'gemma2']
+        }
+    },
+
     // Get saved settings from localStorage
     getSettings() {
         try {
@@ -68,19 +86,59 @@ const LLM_CONFIG = {
         }
     },
 
-    // Get the active provider configuration
+    // Get the active provider configuration (legacy - uses general settings)
     getActiveProvider() {
+        return this.getProviderFor('general');
+    },
+
+    // Get provider configuration for a specific purpose
+    getProviderFor(purpose = 'general') {
         const settings = this.getSettings();
-        const providerId = settings.provider || this.defaultProvider;
+
+        // Determine which settings to use based on purpose
+        let providerId, model, endpoint;
+
+        if (purpose === 'content' && settings.contentProvider) {
+            providerId = settings.contentProvider;
+            model = settings.contentModel;
+            endpoint = settings.contentEndpoint;
+        } else if (purpose === 'chat' && settings.chatProvider) {
+            providerId = settings.chatProvider;
+            model = settings.chatModel;
+            endpoint = settings.chatEndpoint;
+        } else {
+            // Fall back to general settings
+            providerId = settings.provider || this.defaultProvider;
+            model = settings.model;
+            endpoint = settings.endpoint;
+        }
+
         const providerConfig = { ...this.providers[providerId] };
 
         // Override with user settings
-        if (settings.endpoint) providerConfig.endpoint = settings.endpoint;
-        if (settings.model) providerConfig.model = settings.model;
-        if (settings.apiKey) providerConfig.apiKey = settings.apiKey;
+        if (endpoint) providerConfig.endpoint = endpoint;
+        if (model) providerConfig.model = model;
+
+        // Get API key
+        const apiKey = this.getApiKey(providerId);
+        if (apiKey) providerConfig.apiKey = apiKey;
 
         providerConfig.id = providerId;
+        providerConfig.purpose = purpose;
         return providerConfig;
+    },
+
+    // Check if dual-mode is enabled (separate configs for content vs chat)
+    isDualModeEnabled() {
+        const settings = this.getSettings();
+        return settings.dualModeEnabled === true;
+    },
+
+    // Enable or disable dual-mode
+    setDualMode(enabled) {
+        const settings = this.getSettings();
+        settings.dualModeEnabled = enabled;
+        this.saveSettings(settings);
     },
 
     // Get API key for a provider (from localStorage)
