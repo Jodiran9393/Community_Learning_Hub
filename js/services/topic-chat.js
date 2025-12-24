@@ -880,6 +880,95 @@ class TopicChat {
                 background: rgba(248, 113, 113, 0.2);
                 border-color: #f87171;
             }
+
+            /* Mobile Responsive Styles */
+            @media (max-width: 480px) {
+                .chat-toggle-btn {
+                    bottom: 16px;
+                    right: 16px;
+                    padding: 14px 20px;
+                    font-size: 14px;
+                }
+
+                .chat-panel {
+                    bottom: 0;
+                    right: 0;
+                    left: 0;
+                    width: 100%;
+                    max-width: 100%;
+                    height: calc(100vh - 60px);
+                    max-height: calc(100vh - 60px);
+                    border-radius: 16px 16px 0 0;
+                    border-bottom: none;
+                }
+
+                .chat-header {
+                    padding: 14px 16px;
+                }
+
+                .chat-header h3 {
+                    font-size: 14px;
+                }
+
+                .chat-header-actions {
+                    gap: 12px;
+                }
+
+                .chat-header-btn {
+                    min-width: 44px;
+                    min-height: 44px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .chat-messages {
+                    padding: 12px;
+                }
+
+                .chat-message {
+                    font-size: 14px;
+                    padding: 12px;
+                    max-width: 90%;
+                }
+
+                .chat-input-area {
+                    padding: 12px;
+                }
+
+                #chat-input {
+                    font-size: 16px; /* Prevents iOS zoom */
+                    padding: 12px 14px;
+                }
+
+                .chat-send-btn {
+                    min-width: 44px;
+                    min-height: 44px;
+                }
+
+                .message-feedback {
+                    gap: 12px;
+                    flex-wrap: wrap;
+                }
+
+                .feedback-btn {
+                    min-width: 44px;
+                    min-height: 44px;
+                }
+
+                .chat-suggestions {
+                    gap: 6px;
+                }
+
+                .chat-suggestion-btn {
+                    font-size: 12px;
+                    padding: 8px 12px;
+                }
+
+                .follow-up-suggestions {
+                    gap: 6px;
+                }
+            }
         `;
 
         document.head.appendChild(styles);

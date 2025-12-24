@@ -300,20 +300,62 @@ class QuotaStatusIndicator {
             }
 
             @media (max-width: 480px) {
+                .quota-card {
+                    padding: 16px;
+                }
+
                 .quota-header {
                     flex-wrap: wrap;
                 }
 
+                .quota-icon {
+                    font-size: 18px;
+                }
+
+                .quota-title {
+                    font-size: 15px;
+                }
+
                 .quota-email {
                     margin-left: 0;
-                    margin-top: 8px;
+                    margin-top: 10px;
                     width: 100%;
                     text-align: center;
+                    font-size: 13px;
+                    padding: 6px 12px;
+                }
+
+                .quota-meters {
+                    grid-template-columns: 1fr;
+                    gap: 16px;
+                }
+
+                .meter-label {
+                    font-size: 14px;
+                }
+
+                .meter-count {
+                    font-size: 14px;
+                }
+
+                .meter-reset {
+                    font-size: 12px;
                 }
 
                 .quota-benefits {
                     flex-direction: column;
-                    gap: 8px;
+                    gap: 10px;
+                }
+
+                .quota-benefits .benefit {
+                    font-size: 14px;
+                }
+
+                .quota-toast {
+                    bottom: 80px;
+                    right: 16px;
+                    left: 16px;
+                    text-align: center;
                 }
             }
         `;

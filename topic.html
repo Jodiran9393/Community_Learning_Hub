@@ -623,6 +623,104 @@
                 justify-content: center;
             }
         }
+
+        @media (max-width: 480px) {
+            .topic-container {
+                padding: 16px;
+                padding-bottom: 100px;
+                /* Space for FAB */
+            }
+
+            .topic-header {
+                gap: 16px;
+            }
+
+            .topic-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            .topic-meta h1 {
+                font-size: 22px;
+            }
+
+            .topic-description {
+                font-size: 14px;
+            }
+
+            .topic-stats {
+                gap: 12px;
+            }
+
+            .topic-stats .stat {
+                font-size: 12px;
+            }
+
+            .topic-section {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .topic-section h3 {
+                font-size: 16px;
+            }
+
+            .learning-list li {
+                font-size: 14px;
+                padding-left: 24px;
+            }
+
+            .generate-content-btn {
+                padding: 16px;
+                font-size: 15px;
+            }
+
+            .content-feedback-toolbar {
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .content-feedback-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+
+            .feedback-label {
+                width: 100%;
+                text-align: center;
+                margin-top: 4px;
+            }
+
+            .feedback-divider {
+                display: none;
+            }
+
+            .next-topic-card {
+                padding: 14px;
+            }
+
+            .completion-section {
+                text-align: center;
+                padding: 20px 16px;
+            }
+
+            .completion-section h3 {
+                font-size: 16px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                padding: 14px 20px;
+            }
+
+            /* Ensure FAB doesn't overlap important content */
+            #generated-content-container {
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
 
