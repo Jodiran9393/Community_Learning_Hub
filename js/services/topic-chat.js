@@ -326,11 +326,24 @@ class TopicChat {
                 box-shadow: 0 4px 20px rgba(76, 139, 245, 0.4);
                 transition: all 0.3s;
                 z-index: 1000;
+                animation: chat-pulse 2s ease-in-out infinite;
+            }
+
+            @keyframes chat-pulse {
+                0%, 100% { 
+                    transform: scale(1);
+                    box-shadow: 0 4px 20px rgba(76, 139, 245, 0.4);
+                }
+                50% { 
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 30px rgba(76, 139, 245, 0.6), 0 0 40px rgba(211, 103, 193, 0.3);
+                }
             }
 
             .chat-toggle-btn:hover {
-                transform: translateY(-3px);
+                transform: translateY(-3px) scale(1.05);
                 box-shadow: 0 6px 30px rgba(76, 139, 245, 0.5);
+                animation: none;
             }
 
             .chat-toggle-btn.hidden {
@@ -884,10 +897,13 @@ class TopicChat {
             /* Mobile Responsive Styles */
             @media (max-width: 480px) {
                 .chat-toggle-btn {
-                    bottom: 16px;
-                    right: 16px;
-                    padding: 14px 20px;
-                    font-size: 14px;
+                    bottom: 20px;
+                    right: 20px;
+                    left: 20px;
+                    padding: 16px 20px;
+                    font-size: 15px;
+                    text-align: center;
+                    border-radius: 16px;
                 }
 
                 .chat-panel {
